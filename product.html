@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Product · Kasalo Kape</title>
+  <meta name="description" content="Order from the Kasalo Kape menu: Filipino coffee, coolers, rice cakes, and pastries on Padre Faura St., Ermita, Manila.">
+  <link rel="icon" href="cup%20logo%202.png">
+
+  <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+  <script src="tailwind.config.js"></script>
+  <link rel="stylesheet" href="brand.css">
+</head>
+
+<body id="top" class="bg-gata text-tinta font-sans antialiased">
+  <!-- Reusable starburst shape -->
+  <svg width="0" height="0" class="absolute" aria-hidden="true">
+    <defs>
+      <polygon id="burst" points="50.0,0.0 57.4,12.7 69.1,3.8 71.1,18.4 85.4,14.6 81.6,28.9 96.2,30.9 87.3,42.6 100.0,50.0 87.3,57.4 96.2,69.1 81.6,71.1 85.4,85.4 71.1,81.6 69.1,96.2 57.4,87.3 50.0,100.0 42.6,87.3 30.9,96.2 28.9,81.6 14.6,85.4 18.4,71.1 3.8,69.1 12.7,57.4 0.0,50.0 12.7,42.6 3.8,30.9 18.4,28.9 14.6,14.6 28.9,18.4 30.9,3.8 42.6,12.7"/>
+    </defs>
+  </svg>
+
+  <a href="#pdp" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:bg-kalamansi focus:px-4 focus:py-2 focus:rounded-full font-label font-bold">Skip to product</a>
+
+  <!-- ===== Utility bar ===== -->
+  <div class="on-dark bg-tinta text-gata font-label font-bold uppercase tracking-wider text-xs">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 h-9 flex items-center justify-between gap-4">
+      <a href="menu.html#visit-cafe" class="inline-flex items-center gap-1.5 hover:text-kalamansi">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M12 21s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>
+        <span class="hidden sm:inline">Padre Faura St., Ermita</span><span class="sm:hidden">Find us</span>
+      </a>
+      <ul class="flex items-center gap-4">
+        <li class="hidden sm:block">Open daily until 10PM</li>
+        <li><a href="mailto:kasalokape@gmail.com" class="hover:text-kalamansi">Help</a></li>
+        <li><a href="index.html#get-your-fix" class="hover:text-kalamansi">Join The Fix</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ===== Header ===== -->
+  <header class="sticky top-0 z-40 bg-gata/95 backdrop-blur border-b-2 border-tinta">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+      <a href="index.html" class="shrink-0">
+        <img src="logo1%20bnw%202.png" alt="Kasalo Kape home" class="h-14 w-[126px] object-cover mix-blend-multiply">
+      </a>
+
+      <nav aria-label="Main" class="hidden lg:block">
+        <ul class="flex gap-7 font-label font-bold uppercase tracking-wider text-sm">
+          <li><a href="menu.html#menu" aria-current="page" class="py-2 border-b-2 border-ube text-banga">Shop</a></li>
+          <li><a href="index.html#get-your-fix" class="py-2 border-b-2 border-transparent hover:text-banga hover:border-ube transition">Subscribe</a></li>
+          <li><a href="index.html" class="py-2 border-b-2 border-transparent hover:text-banga hover:border-ube transition">The Fix</a></li>
+          <li><a href="menu.html#about" class="py-2 border-b-2 border-transparent hover:text-banga hover:border-ube transition">About Us</a></li>
+          <li><a href="index.html#visit" class="py-2 border-b-2 border-transparent hover:text-banga hover:border-ube transition">Wholesale</a></li>
+        </ul>
+      </nav>
+
+      <div class="flex items-center gap-1 sm:gap-2">
+        <a href="#" aria-label="Your account" class="p-2 rounded-full hover:bg-papel transition">
+          <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>
+        </a>
+        <button id="cart-btn" type="button" aria-haspopup="dialog" class="relative inline-flex items-center gap-2 whitespace-nowrap font-label font-bold uppercase tracking-wider text-sm px-3 sm:px-4 py-2 rounded-full border-2 border-tinta bg-papel hover:shadow-ube-sm transition">
+          <span>Cart (<span id="cart-count">0</span>)</span>
+          <span id="cart-dot" class="hidden absolute -top-1 -right-1 w-3 h-3 rounded-full bg-sili border-2 border-gata" aria-hidden="true"></span>
+        </button>
+        <button id="menu-btn" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="mobile-nav" class="lg:hidden p-2 rounded-full hover:bg-papel transition">
+          <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <nav id="mobile-nav" aria-label="Mobile" class="lg:hidden hidden border-t-2 border-tinta bg-gata">
+      <ul class="px-4 py-2 font-label font-bold uppercase tracking-wider">
+        <li><a href="menu.html#menu" aria-current="page" class="block py-3 border-b border-tinta/20 text-banga">Shop</a></li>
+        <li><a href="index.html#get-your-fix" class="block py-3 border-b border-tinta/20 hover:text-banga">Subscribe</a></li>
+        <li><a href="index.html" class="block py-3 border-b border-tinta/20 hover:text-banga">The Fix</a></li>
+        <li><a href="menu.html#about" class="block py-3 border-b border-tinta/20 hover:text-banga">About Us</a></li>
+        <li><a href="index.html#visit" class="block py-3 hover:text-banga">Wholesale</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="pdp">
+    <div id="pdp-root"></div>
+    <section id="pairs" hidden class="border-t-2 border-tinta bg-gata py-14 sm:py-20" aria-labelledby="pairs-title">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6">
+        <h2 id="pairs-title" class="font-display uppercase text-banga text-2xl sm:text-3xl">Pairs well with</h2>
+        <ul id="pairs-list" class="mt-6 grid grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-10 sm:gap-x-6"></ul>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== Footer ===== -->
+  <footer class="bg-papel border-t-2 border-tinta">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 py-14 grid lg:grid-cols-12 gap-12">
+      <nav class="lg:col-span-7 grid grid-cols-2 sm:grid-cols-4 gap-8" aria-label="Footer">
+        <div>
+          <h2 class="font-label font-bold uppercase tracking-wider">Shop</h2>
+          <ul class="mt-3 space-y-2">
+            <li><a href="menu.html#menu" class="hover:text-banga hover:underline underline-offset-4">Coffee</a></li>
+            <li><a href="#" class="hover:text-banga hover:underline underline-offset-4">Tea</a></li>
+            <li><a href="#" class="hover:text-banga hover:underline underline-offset-4">Syrup</a></li>
+            <li><a href="#" class="hover:text-banga hover:underline underline-offset-4">Equipment</a></li>
+            <li><a href="#" class="hover:text-banga hover:underline underline-offset-4">Merch</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2 class="font-label font-bold uppercase tracking-wider">Subscribe</h2>
+          <ul class="mt-3 space-y-2">
+            <li><a href="index.html" class="hover:text-banga hover:underline underline-offset-4">The Fix</a></li>
+            <li><a href="index.html#get-your-fix" class="hover:text-banga hover:underline underline-offset-4">Subscriptions</a></li>
+            <li><a href="#" class="hover:text-banga hover:underline underline-offset-4">Account</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2 class="font-label font-bold uppercase tracking-wider">Company</h2>
+          <ul class="mt-3 space-y-2">
+            <li><a href="menu.html#about" class="hover:text-banga hover:underline underline-offset-4">About Us</a></li>
+            <li><a href="index.html#visit" class="hover:text-banga hover:underline underline-offset-4">Wholesale</a></li>
+            <li><a href="#" class="hover:text-banga hover:underline underline-offset-4">Giving Back</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2 class="font-label font-bold uppercase tracking-wider">More Info</h2>
+          <ul class="mt-3 space-y-2">
+            <li><a href="index.html#archive" class="hover:text-banga hover:underline underline-offset-4">Coffee Archive</a></li>
+            <li><a href="#" class="hover:text-banga hover:underline underline-offset-4">Tours</a></li>
+            <li><a href="#" class="hover:text-banga hover:underline underline-offset-4">FAQs</a></li>
+          </ul>
+        </div>
+      </nav>
+
+      <section class="lg:col-span-5 bg-gata border-2 border-tinta rounded-3xl p-6 sm:p-8 shadow-ube" aria-labelledby="visit-title">
+        <h2 id="visit-title" class="font-display uppercase text-banga text-2xl">Visit us</h2>
+        <div class="grid sm:grid-cols-2 gap-6 mt-4">
+          <div>
+            <h3 class="font-label font-bold uppercase tracking-wider text-sm">Café</h3>
+            <address class="not-italic mt-2 leading-relaxed">Padre Faura St., Ermita,<br>Manila, 1000 Metro Manila,<br>Philippines</address>
+          </div>
+          <div>
+            <h3 class="font-label font-bold uppercase tracking-wider text-sm">Hours</h3>
+            <dl class="mt-2 grid grid-cols-[auto_1fr] gap-x-3 gap-y-1">
+              <dt class="whitespace-nowrap">Mon–Fri</dt><dd class="whitespace-nowrap">6AM – 10PM</dd>
+              <dt class="whitespace-nowrap">Sat–Sun</dt><dd class="whitespace-nowrap">7AM – 10PM</dd>
+            </dl>
+          </div>
+          <div class="sm:col-span-2">
+            <h3 class="font-label font-bold uppercase tracking-wider text-sm">Contact &amp; wholesale</h3>
+            <p class="mt-2"><a href="mailto:kasalokape@gmail.com" class="underline underline-offset-4 hover:text-banga">kasalokape@gmail.com</a></p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 pb-12 grid lg:grid-cols-3 gap-8 items-center">
+      <ul class="flex flex-wrap gap-x-6 gap-y-3" aria-label="Social media">
+        <li><a href="https://www.facebook.com/kasalokape" target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-banga font-bold hover:underline underline-offset-4">
+          <img src="icons/fb%20logo.png" alt="" class="w-6 h-6 object-contain brightness-0">Facebook</a></li>
+        <li><a href="https://www.instagram.com/kasalokape/" target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-banga font-bold hover:underline underline-offset-4">
+          <img src="icons/ig%20logo.png" alt="" class="w-6 h-6 object-contain brightness-0">@kasalokape</a></li>
+        <li><a href="#" class="inline-flex items-center gap-2 text-banga font-bold hover:underline underline-offset-4">
+          <svg class="w-6 h-6" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="4" fill="#141414"/><path d="M10 9l5 3-5 3z" fill="#FFFFFF"/></svg>YouTube</a></li>
+      </ul>
+
+      <form class="newsletter" aria-label="Newsletter">
+        <label for="news-email" class="font-label font-bold uppercase tracking-wider text-sm">Get new drops by email</label>
+        <div class="mt-2 flex gap-2">
+          <input id="news-email" type="email" required autocomplete="email" placeholder="you@email.com" class="flex-1 min-w-0 bg-papel border-2 border-tinta rounded-full px-4 py-2.5 placeholder:text-tinta/60">
+          <button type="submit" class="bg-banga text-papel font-label font-bold uppercase tracking-wider px-5 py-2.5 rounded-full border-2 border-tinta hover:shadow-ube-sm transition">Join</button>
+        </div>
+        <p class="news-msg mt-2 text-sm min-h-[1.25rem]" aria-live="polite"></p>
+      </form>
+
+      <p class="inline-flex items-center gap-3 justify-self-start lg:justify-self-end bg-kalamansi border-2 border-tinta rounded-full pl-3 pr-5 py-2 shadow-ube-sm">
+        <svg class="w-7 h-7 shrink-0" viewBox="0 0 24 24" fill="none" stroke="#141414" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l5 7h-3l4 6h-5v7h-2v-7H6l4-6H7z"/></svg>
+        <span class="font-label font-bold uppercase tracking-wider text-sm">1,248 trees planted since 2024</span>
+      </p>
+    </div>
+
+    <div class="border-t-2 border-tinta">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 py-5 flex flex-col md:flex-row md:items-center md:justify-between gap-3 text-sm">
+        <p>© 2026 Kasalo Kape. Made to be shared.</p>
+        <ul class="flex flex-wrap gap-x-5 gap-y-2">
+          <li><a href="#" class="hover:text-banga hover:underline underline-offset-4">Privacy Policy</a></li>
+          <li><a href="#" class="hover:text-banga hover:underline underline-offset-4">Terms of Service</a></li>
+          <li><a href="#" class="hover:text-banga hover:underline underline-offset-4">Accessibility</a></li>
+        </ul>
+        <p>Site by the Kasalo Kape team</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="cart.js"></script>
+  <script src="products.js"></script>
+  <script>
+    const { CATS, DOT, GALLERY, PRODUCTS, optionsFor, find, peso } = KASALO;
+    const params = new URLSearchParams(location.search);
+    const p = find(params.get('id'));
+    const root = document.getElementById('pdp-root');
+
+    const comingSoon = `
+      <div class="absolute inset-0 grid place-items-center">
+        <img src="cup%20logo%202.png" alt="" class="w-1/2 opacity-25 mix-blend-multiply">
+        <p class="absolute -inset-x-6 top-1/2 -translate-y-1/2 -rotate-6 bg-tinta text-kalamansi text-center py-2.5 border-y-2 border-ube font-accent uppercase tracking-wider text-sm sm:text-lg">Catalog photo coming soon</p>
+      </div>`;
+
+    if (!p) {
+      document.title = 'Item not found · Kasalo Kape';
+      root.innerHTML = `
+        <section class="mx-auto max-w-xl px-4 py-28 text-center">
+          <p class="font-label uppercase tracking-[0.2em] text-sm">Hmm</p>
+          <h1 class="font-display uppercase text-banga text-4xl sm:text-5xl mt-2">We couldn't find that item</h1>
+          <p class="font-serif text-lg mt-4">It may have left the menu. Everything we're serving today is on the shop page.</p>
+          <a href="menu.html#menu" class="inline-block mt-8 bg-banga text-papel font-label uppercase tracking-wider px-7 py-3.5 rounded-full border-2 border-tinta shadow-ube hover:-translate-y-0.5 transition">Back to the menu</a>
+        </section>`;
+    } else {
+      document.title = `${p.name} · Kasalo Kape`;
+      const groups = optionsFor(p);
+      const flag = ['Best Seller', 'Seasonal'].find(t => p.tags.includes(t));
+      const startFlavor = p.variants ? Math.min(Number(params.get('v')) || 0, p.variants.length - 1) : 0;
+      const gallery = [{ product: true }, ...GALLERY[p.cat].map(([src, alt]) => ({ src, alt }))];
+
+      const pill = t => `<li class="inline-flex items-center gap-1.5 font-label uppercase tracking-wider text-xs px-3 py-1.5 rounded-full border-2 border-tinta bg-papel">${
+        t === 'Best Seller' ? '<span class="w-2 h-2 rounded-full bg-sili" aria-hidden="true"></span>' : t === 'Seasonal' ? '<span class="w-2 h-2 rounded-full bg-jeepney" aria-hidden="true"></span>' : ''}${t}</li>`;
+
+      const group = g => `
+        <div role="radiogroup" aria-labelledby="lbl-${g.key}" class="grid grid-cols-[6.5rem_1fr] sm:grid-cols-[8rem_1fr] items-center gap-x-4 border-t-2 border-tinta py-4">
+          <span id="lbl-${g.key}" class="font-label uppercase tracking-wider text-sm">${g.label}</span>
+          <div class="flex flex-wrap gap-2">${g.choices.map((c, i) => `
+            <label class="cursor-pointer">
+              <input type="radio" name="${g.key}" value="${i}" ${i === (g.key === 'flavor' ? startFlavor : 0) ? 'checked' : ''} class="peer sr-only">
+              <span class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border-2 border-tinta bg-papel text-sm font-bold transition hover:shadow-ube-sm peer-checked:bg-tinta peer-checked:text-gata peer-focus-visible:outline peer-focus-visible:outline-[3px] peer-focus-visible:outline-dashed peer-focus-visible:outline-offset-2">${c.label}${c.add ? `<span class="font-normal opacity-80">+${peso(c.add)}</span>` : ''}</span>
+            </label>`).join('')}
+          </div>
+        </div>`;
+
+      root.innerHTML = `
+        <section class="grid lg:grid-cols-2 border-b-2 border-tinta">
+          <div class="bg-papel lg:border-r-2 border-tinta lg:sticky lg:top-[66px] lg:h-[calc(100vh-66px)] flex flex-col">
+            <div class="relative aspect-square lg:aspect-auto lg:flex-1">
+              <div id="viewer" class="absolute inset-0 overflow-hidden"></div>
+              ${flag ? `
+              <div class="absolute top-4 left-4 sm:top-8 sm:left-8 w-24 sm:w-28 -rotate-12 pointer-events-none" aria-hidden="true">
+                <svg viewBox="0 0 100 100" class="w-full drop-shadow-[3px_3px_0_#5B3A8C]"><use href="#burst" fill="#F2B732" stroke="#141414" stroke-width="1.5"/></svg>
+                <span class="absolute inset-0 grid place-content-center text-center font-accent uppercase leading-tight text-tinta text-xs sm:text-sm">${flag.replace(' ', '<br>')}</span>
+              </div>` : ''}
+            </div>
+            <div class="flex items-center justify-center gap-2 sm:gap-3 py-5 border-t-2 border-tinta bg-papel">
+              <button type="button" data-step="-1" aria-label="Previous photo" class="w-11 h-11 grid place-items-center rounded-full border-2 border-tinta bg-papel hover:shadow-ube-sm transition">
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+              </button>
+              <ul class="flex gap-2 sm:gap-3" aria-label="Photos">${gallery.map((g, i) => `
+                <li><button type="button" data-thumb="${i}" aria-label="Show photo ${i + 1} of ${gallery.length}" class="w-12 h-12 sm:w-14 sm:h-14 rounded-full overflow-hidden border-2 border-tinta/20 bg-gata-light transition aria-[current=true]:border-tinta aria-[current=true]:shadow-ube-sm">
+                  <img src="${g.product ? (p.src || 'cup%20logo%202.png') : g.src}" alt="" class="w-full h-full ${g.product ? 'object-contain p-1' : 'object-cover'}">
+                </button></li>`).join('')}
+              </ul>
+              <button type="button" data-step="1" aria-label="Next photo" class="w-11 h-11 grid place-items-center rounded-full border-2 border-tinta bg-papel hover:shadow-ube-sm transition">
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="bg-gata-light px-4 sm:px-10 lg:px-16 py-8 sm:py-12 lg:py-16">
+            <div class="max-w-xl">
+              <nav aria-label="Breadcrumb" class="text-sm">
+                <ol class="flex flex-wrap items-center gap-2">
+                  <li><a href="menu.html#menu" class="hover:text-banga hover:underline underline-offset-4">Shop</a></li>
+                  <li aria-hidden="true">/</li>
+                  <li><a href="menu.html?cat=${p.cat}#menu" class="hover:text-banga hover:underline underline-offset-4">${CATS[p.cat]}</a></li>
+                  <li aria-hidden="true">/</li>
+                  <li aria-current="page" class="text-tinta/70">${p.name}</li>
+                </ol>
+              </nav>
+
+              <h1 class="font-serif text-4xl sm:text-5xl leading-[1.05] mt-6">${p.name}</h1>
+              <p class="mt-2 flex items-baseline gap-3"><span id="unit-price" class="font-serif text-3xl"></span><span id="price-note" class="text-sm text-tinta/70"></span></p>
+              <ul class="flex flex-wrap gap-2 mt-5" aria-label="Tags">${[CATS[p.cat], ...p.tags].map(pill).join('')}</ul>
+
+              <p class="font-serif text-lg sm:text-xl leading-relaxed mt-7">${p.desc}</p>
+
+              <form id="buy" class="mt-8">
+                <div class="grid grid-cols-[6.5rem_1fr] sm:grid-cols-[8rem_1fr] gap-x-4 border-t-2 border-tinta py-4">
+                  <span class="font-label uppercase tracking-wider text-sm">${p.cat === 'pastries' ? 'Flavor notes' : 'Tasting notes'}</span>
+                  <ul class="grid gap-1">${p.notes.map(([n, c]) => `<li class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full shrink-0" style="background:${DOT[c]}" aria-hidden="true"></span>${n}</li>`).join('')}</ul>
+                </div>
+
+                ${groups.map(group).join('')}
+
+                <div class="grid grid-cols-[6.5rem_1fr] sm:grid-cols-[8rem_1fr] items-center gap-x-4 border-y-2 border-tinta py-4">
+                  <span id="lbl-qty" class="font-label uppercase tracking-wider text-sm">Quantity</span>
+                  <div class="inline-flex items-center justify-self-start border-2 border-tinta rounded-full bg-papel" role="group" aria-labelledby="lbl-qty">
+                    <button type="button" id="qty-dec" aria-label="Decrease quantity" class="w-10 h-10 grid place-items-center text-xl hover:text-banga">−</button>
+                    <output id="qty" class="w-8 text-center font-bold">1</output>
+                    <button type="button" id="qty-inc" aria-label="Increase quantity" class="w-10 h-10 grid place-items-center text-xl hover:text-banga">+</button>
+                  </div>
+                </div>
+
+                <button type="submit" id="add" class="w-full mt-6 bg-banga text-papel font-label uppercase tracking-wider text-lg py-4 rounded-2xl border-2 border-tinta shadow-ube hover:-translate-y-0.5 transition">
+                  <span id="add-label">Add to Cart</span> · <span id="total"></span>
+                </button>
+                <ul class="mt-5 grid gap-1.5 text-sm">
+                  <li class="flex items-center gap-2"><svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="#5B3A8C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12l5 5L20 6"/></svg>Ready for pickup in about 15 minutes</li>
+                  <li class="flex items-center gap-2"><svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="#5B3A8C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12l5 5L20 6"/></svg>Free pickup at Padre Faura St., Ermita</li>
+                  <li class="flex items-center gap-2"><svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="#5B3A8C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12l5 5L20 6"/></svg>Open Mon–Fri 6AM–10PM, Sat–Sun 7AM–10PM</li>
+                </ul>
+              </form>
+            </div>
+          </div>
+        </section>`;
+
+      // --- Gallery ---
+      let shown = 0;
+      const viewer = document.getElementById('viewer');
+      function show(i) {
+        shown = (i + gallery.length) % gallery.length;
+        const g = gallery[shown];
+        viewer.innerHTML = g.product
+          ? (p.src ? `<img src="${p.src}" alt="${p.name}" class="absolute inset-0 w-full h-full object-contain p-8 sm:p-14">` : comingSoon)
+          : `<img src="${g.src}" alt="${g.alt}" class="absolute inset-0 w-full h-full object-cover">`;
+        document.querySelectorAll('[data-thumb]').forEach(t => t.setAttribute('aria-current', Number(t.dataset.thumb) === shown));
+      }
+      root.addEventListener('click', e => {
+        const t = e.target.closest('[data-thumb]');
+        if (t) show(Number(t.dataset.thumb));
+        const s = e.target.closest('[data-step]');
+        if (s) show(shown + Number(s.dataset.step));
+      });
+      show(0);
+
+      // --- Price, options and quantity ---
+      const form = document.getElementById('buy');
+      let qty = 1;
+      const picked = () => groups.map(g => g.choices[Number(form.elements[g.key].value)]);
+      function price() {
+        const ch = picked();
+        const mult = ch.reduce((m, c) => m * (c.mult || 1), 1);
+        const unit = (p.price + ch.reduce((s, c) => s + (c.add || 0), 0)) * mult;
+        document.getElementById('unit-price').textContent = peso(unit);
+        document.getElementById('price-note').textContent = mult > 1 ? `${mult} pieces` : (p.note || '');
+        document.getElementById('qty').textContent = qty;
+        document.getElementById('total').textContent = peso(unit * qty);
+        return unit;
+      }
+      form.addEventListener('change', price);
+      document.getElementById('qty-dec').addEventListener('click', () => { qty = Math.max(1, qty - 1); price(); });
+      document.getElementById('qty-inc').addEventListener('click', () => { qty = Math.min(20, qty + 1); price(); });
+      form.addEventListener('submit', e => {
+        e.preventDefault();
+        const variant = picked().map(c => c.label).join(' · ');
+        KasaloCart.add({ id: p.id, name: p.name, price: price(), img: p.src, variant }, qty);
+        const label = document.getElementById('add-label');
+        label.textContent = 'Added ✓';
+        setTimeout(() => { label.textContent = 'Add to Cart'; }, 1400);
+      });
+      price();
+
+      // --- Pairs well with ---
+      const pairCat = { coffee: 'pastries', coolers: 'pastries', pastries: 'coffee' }[p.cat];
+      const pairs = [...PRODUCTS.filter(x => x.cat === pairCat && x.src), ...PRODUCTS.filter(x => x.cat === p.cat && x.id !== p.id && x.src)].slice(0, 4);
+      document.getElementById('pairs-list').innerHTML = pairs.map(x => `
+        <li><a href="product.html?id=${x.id}" class="group block">
+          <span class="block aspect-square rounded-2xl overflow-hidden bg-papel transition duration-200 group-hover:shadow-ube group-hover:-translate-y-1">
+            <img src="${x.src}" alt="" loading="lazy" class="w-full h-full object-contain p-2 transition duration-300 group-hover:scale-105">
+          </span>
+          ${x.tags.includes('Best Seller') ? '<span class="block pt-3 text-banga font-bold text-sm">Best Seller</span>' : '<span class="block pt-3"></span>'}
+          <span class="block font-bold leading-snug group-hover:text-banga">${x.name}</span>
+          <span class="block text-sm text-tinta/70">${CATS[x.cat]}</span>
+          <span class="inline-block mt-2 bg-kalamansi font-accent text-sm px-2.5 py-0.5 rounded-md border-2 border-tinta">${peso(x.price)}</span>
+        </a></li>`).join('');
+      document.getElementById('pairs').hidden = false;
+    }
+
+    // Mobile nav
+    const menuBtn = document.getElementById('menu-btn');
+    const mobileNav = document.getElementById('mobile-nav');
+    const setNav = open => {
+      mobileNav.classList.toggle('hidden', !open);
+      menuBtn.setAttribute('aria-expanded', open);
+      menuBtn.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
+    };
+    menuBtn.addEventListener('click', () => setNav(mobileNav.classList.contains('hidden')));
+    mobileNav.addEventListener('click', e => { if (e.target.closest('a')) setNav(false); });
+
+    // shortcut: newsletter has no backend yet, it only confirms in the page; wire to a real endpoint before launch.
+    document.querySelector('.newsletter').addEventListener('submit', e => {
+      e.preventDefault();
+      e.target.querySelector('.news-msg').textContent = "Thanks! You're on the list.";
+      e.target.reset();
+    });
+  </script>
+</body>
+</html>

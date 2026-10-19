@@ -1,0 +1,632 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Shop the Menu · Kasalo Kape</title>
+  <meta name="description" content="Order Filipino coffee, coolers, rice cakes, and pastries from Kasalo Kape on Padre Faura St., Ermita, Manila.">
+  <link rel="icon" href="cup%20logo%202.png">
+
+  <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+  <script src="tailwind.config.js"></script>
+  <link rel="stylesheet" href="brand.css">
+</head>
+
+<body id="top" class="bg-gata text-tinta font-sans antialiased">
+  <!-- Reusable starburst shape -->
+  <svg width="0" height="0" class="absolute" aria-hidden="true">
+    <defs>
+      <polygon id="burst" points="50.0,0.0 57.4,12.7 69.1,3.8 71.1,18.4 85.4,14.6 81.6,28.9 96.2,30.9 87.3,42.6 100.0,50.0 87.3,57.4 96.2,69.1 81.6,71.1 85.4,85.4 71.1,81.6 69.1,96.2 57.4,87.3 50.0,100.0 42.6,87.3 30.9,96.2 28.9,81.6 14.6,85.4 18.4,71.1 3.8,69.1 12.7,57.4 0.0,50.0 12.7,42.6 3.8,30.9 18.4,28.9 14.6,14.6 28.9,18.4 30.9,3.8 42.6,12.7"/>
+    </defs>
+  </svg>
+
+  <a href="#menu" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:bg-kalamansi focus:px-4 focus:py-2 focus:rounded-full font-label font-bold">Skip to menu</a>
+
+  <!-- ===== Utility bar ===== -->
+  <div class="on-dark bg-tinta text-gata font-label font-bold uppercase tracking-wider text-xs">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 h-9 flex items-center justify-between gap-4">
+      <a href="#visit-cafe" class="inline-flex items-center gap-1.5 hover:text-kalamansi">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M12 21s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>
+        <span class="hidden sm:inline">Padre Faura St., Ermita</span><span class="sm:hidden">Find us</span>
+      </a>
+      <ul class="flex items-center gap-4">
+        <li class="hidden sm:block">Open daily until 10PM</li>
+        <li><a href="mailto:kasalokape@gmail.com" class="hover:text-kalamansi">Help</a></li>
+        <li><a href="index.html#get-your-fix" class="hover:text-kalamansi">Join The Fix</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ===== Header ===== -->
+  <header class="sticky top-0 z-40 bg-gata/95 backdrop-blur border-b-2 border-tinta">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+      <a href="index.html" class="shrink-0">
+        <img src="logo1%20bnw%202.png" alt="Kasalo Kape home" class="h-14 w-[126px] object-cover mix-blend-multiply">
+      </a>
+
+      <nav aria-label="Main" class="hidden lg:block">
+        <ul class="flex gap-7 font-label font-bold uppercase tracking-wider text-sm">
+          <li><a href="#menu" aria-current="page" class="py-2 border-b-2 border-ube text-banga">Shop</a></li>
+          <li><a href="index.html#get-your-fix" class="py-2 border-b-2 border-transparent hover:text-banga hover:border-ube transition">Subscribe</a></li>
+          <li><a href="index.html" class="py-2 border-b-2 border-transparent hover:text-banga hover:border-ube transition">The Fix</a></li>
+          <li><a href="#about" class="py-2 border-b-2 border-transparent hover:text-banga hover:border-ube transition">About Us</a></li>
+          <li><a href="index.html#visit" class="py-2 border-b-2 border-transparent hover:text-banga hover:border-ube transition">Wholesale</a></li>
+        </ul>
+      </nav>
+
+      <div class="flex items-center gap-1 sm:gap-2">
+        <a href="#" aria-label="Your account" class="p-2 rounded-full hover:bg-papel transition">
+          <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>
+        </a>
+        <button id="cart-btn" type="button" aria-haspopup="dialog" class="relative inline-flex items-center gap-2 whitespace-nowrap font-label font-bold uppercase tracking-wider text-sm px-3 sm:px-4 py-2 rounded-full border-2 border-tinta bg-papel hover:shadow-ube-sm transition">
+          <span>Cart (<span id="cart-count">0</span>)</span>
+          <span id="cart-dot" class="hidden absolute -top-1 -right-1 w-3 h-3 rounded-full bg-sili border-2 border-gata" aria-hidden="true"></span>
+        </button>
+        <button id="menu-btn" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="mobile-nav" class="lg:hidden p-2 rounded-full hover:bg-papel transition">
+          <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <nav id="mobile-nav" aria-label="Mobile" class="lg:hidden hidden border-t-2 border-tinta bg-gata">
+      <ul class="px-4 py-2 font-label font-bold uppercase tracking-wider">
+        <li><a href="#menu" aria-current="page" class="block py-3 border-b border-tinta/20 text-banga">Shop</a></li>
+        <li><a href="index.html#get-your-fix" class="block py-3 border-b border-tinta/20 hover:text-banga">Subscribe</a></li>
+        <li><a href="index.html" class="block py-3 border-b border-tinta/20 hover:text-banga">The Fix</a></li>
+        <li><a href="#about" class="block py-3 border-b border-tinta/20 hover:text-banga">About Us</a></li>
+        <li><a href="index.html#visit" class="block py-3 hover:text-banga">Wholesale</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- ===== Location marquee ===== -->
+  <section aria-label="Store location" class="bg-kalamansi border-b-2 border-tinta overflow-hidden py-2.5">
+    <div class="marquee-track font-display uppercase text-sm sm:text-base whitespace-nowrap">
+      <p class="flex items-center">
+        <span class="px-6">Visit us at our physical store in Padre Faura St., Ermita, Manila, 1000 Metro Manila, Philippines</span>
+        <svg viewBox="0 0 100 100" class="w-4 h-4 shrink-0" aria-hidden="true"><use href="#burst" fill="#141414"/></svg>
+        <span class="px-6" aria-hidden="true">Visit us at our physical store in Padre Faura St., Ermita, Manila, 1000 Metro Manila, Philippines</span>
+        <svg viewBox="0 0 100 100" class="w-4 h-4 shrink-0" aria-hidden="true"><use href="#burst" fill="#141414"/></svg>
+      </p>
+      <p class="flex items-center" aria-hidden="true">
+        <span class="px-6">Visit us at our physical store in Padre Faura St., Ermita, Manila, 1000 Metro Manila, Philippines</span>
+        <svg viewBox="0 0 100 100" class="w-4 h-4 shrink-0"><use href="#burst" fill="#141414"/></svg>
+        <span class="px-6">Visit us at our physical store in Padre Faura St., Ermita, Manila, 1000 Metro Manila, Philippines</span>
+        <svg viewBox="0 0 100 100" class="w-4 h-4 shrink-0"><use href="#burst" fill="#141414"/></svg>
+      </p>
+    </div>
+  </section>
+
+  <main>
+    <!-- ===== Hero: full-bleed media + centered statement ===== -->
+    <section aria-labelledby="hero-title">
+      <!-- hero-wide.jpg is the cup-holder photo on a widened backdrop, so the whole carrier stays in frame at any width -->
+      <div class="relative aspect-square sm:aspect-[4/3] md:aspect-[20/9] max-h-[820px] w-full overflow-hidden bg-[#cdd0d4]">
+        <img src="img/hero-wide.jpg" alt="Kasalo Kape paper cup holder carrying two starburst-logo coffee cups" class="absolute inset-0 w-full h-full object-cover" fetchpriority="high">
+        <div class="absolute bottom-4 left-4 sm:bottom-8 sm:left-8 w-24 sm:w-32 -rotate-12" aria-hidden="true">
+          <svg viewBox="0 0 100 100" class="w-full drop-shadow-[3px_3px_0_#5B3A8C]"><use href="#burst" fill="#F2B732" stroke="#141414" stroke-width="1.5"/></svg>
+          <span class="absolute inset-0 grid place-items-center text-center font-accent uppercase leading-tight text-tinta text-sm sm:text-lg">From<br>₱49</span>
+        </div>
+      </div>
+      <div class="on-dark bg-banga text-gata text-center px-4 py-14 sm:py-20 border-y-2 border-tinta">
+        <p class="flicker font-neon text-papel text-lg sm:text-2xl tracking-[0.25em]">NOW BREWING</p>
+        <h1 id="hero-title" class="font-display uppercase text-5xl sm:text-7xl lg:text-8xl leading-[0.9] mt-5 [text-shadow:4px_4px_0_#5B3A8C]">Coffee and pastries,<br class="hidden sm:block"> better shared</h1>
+        <p class="font-serif text-lg sm:text-xl max-w-xl mx-auto mt-6">Small-batch Filipino coffee, bright coolers, and rice cakes made for the table you share with your kasalo.</p>
+        <div class="flex flex-wrap justify-center gap-3 mt-8">
+          <a href="#menu" class="bg-kalamansi text-tinta font-label font-bold uppercase tracking-wider px-7 py-3.5 rounded-full border-2 border-tinta shadow-ube hover:-translate-y-0.5 transition">Order Now</a>
+          <a href="#bundles" class="text-gata font-label font-bold uppercase tracking-wider px-7 py-3.5 rounded-full border-2 border-gata hover:bg-gata hover:text-banga transition">See the Bundle</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Moving text (decorative) ===== -->
+    <div class="bg-kalamansi-soft border-b-2 border-tinta overflow-hidden py-4 sm:py-6" aria-hidden="true">
+      <div class="marquee-track slow font-label uppercase text-3xl sm:text-5xl whitespace-nowrap">
+        <p class="flex items-center gap-6 sm:gap-10 pr-6 sm:pr-10">
+          <span>Coffee</span><svg viewBox="0 0 100 100" class="w-7 h-7 sm:w-10 sm:h-10 shrink-0"><use href="#burst" fill="#F2B732" stroke="#141414" stroke-width="4"/></svg>
+          <span class="text-outline">Rice cakes</span><svg viewBox="0 0 100 100" class="w-7 h-7 sm:w-10 sm:h-10 shrink-0"><use href="#burst" fill="#F2B732" stroke="#141414" stroke-width="4"/></svg>
+          <span>Coolers</span><svg viewBox="0 0 100 100" class="w-7 h-7 sm:w-10 sm:h-10 shrink-0"><use href="#burst" fill="#F2B732" stroke="#141414" stroke-width="4"/></svg>
+          <span class="text-outline">Pastries</span><svg viewBox="0 0 100 100" class="w-7 h-7 sm:w-10 sm:h-10 shrink-0"><use href="#burst" fill="#F2B732" stroke="#141414" stroke-width="4"/></svg>
+          <span class="text-banga">Made to be shared</span><svg viewBox="0 0 100 100" class="w-7 h-7 sm:w-10 sm:h-10 shrink-0"><use href="#burst" fill="#F2B732" stroke="#141414" stroke-width="4"/></svg>
+        </p>
+        <p class="flex items-center gap-6 sm:gap-10 pr-6 sm:pr-10">
+          <span>Coffee</span><svg viewBox="0 0 100 100" class="w-7 h-7 sm:w-10 sm:h-10 shrink-0"><use href="#burst" fill="#F2B732" stroke="#141414" stroke-width="4"/></svg>
+          <span class="text-outline">Rice cakes</span><svg viewBox="0 0 100 100" class="w-7 h-7 sm:w-10 sm:h-10 shrink-0"><use href="#burst" fill="#F2B732" stroke="#141414" stroke-width="4"/></svg>
+          <span>Coolers</span><svg viewBox="0 0 100 100" class="w-7 h-7 sm:w-10 sm:h-10 shrink-0"><use href="#burst" fill="#F2B732" stroke="#141414" stroke-width="4"/></svg>
+          <span class="text-outline">Pastries</span><svg viewBox="0 0 100 100" class="w-7 h-7 sm:w-10 sm:h-10 shrink-0"><use href="#burst" fill="#F2B732" stroke="#141414" stroke-width="4"/></svg>
+          <span class="text-banga">Made to be shared</span><svg viewBox="0 0 100 100" class="w-7 h-7 sm:w-10 sm:h-10 shrink-0"><use href="#burst" fill="#F2B732" stroke="#141414" stroke-width="4"/></svg>
+        </p>
+      </div>
+    </div>
+
+    <!-- ===== Featured ===== -->
+    <section class="py-14 sm:py-20" aria-labelledby="featured-title">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6">
+        <h2 id="featured-title" class="font-display uppercase text-banga text-2xl sm:text-3xl">Featured</h2>
+        <div class="grid md:grid-cols-2 gap-4 sm:gap-6 mt-6">
+          <a href="index.html" class="group relative block aspect-[4/5] sm:aspect-[5/4] overflow-hidden rounded-3xl border-2 border-tinta">
+            <img src="img/latte-pour.jpg" alt="" loading="lazy" class="absolute inset-0 w-full h-full object-cover object-[50%_55%] transition duration-500 group-hover:scale-105">
+            <div class="absolute inset-0 bg-gradient-to-t from-tinta/90 via-tinta/30 to-transparent" aria-hidden="true"></div>
+            <div class="absolute left-6 right-6 bottom-6 sm:left-10 sm:bottom-10 text-papel">
+              <p class="font-label font-bold uppercase tracking-[0.2em] text-xs text-kalamansi">Monthly subscription</p>
+              <h3 class="font-display uppercase text-3xl sm:text-5xl mt-2">The Fix</h3>
+              <p class="mt-2 max-w-sm">One rare Philippine micro-lot a month, from ₱565/mo.</p>
+              <span class="inline-block mt-5 bg-papel text-tinta font-label font-bold uppercase tracking-wider text-sm px-6 py-3 rounded-full group-hover:bg-kalamansi transition">Subscribe</span>
+            </div>
+          </a>
+          <a href="#bundles" class="group relative block aspect-[4/5] sm:aspect-[5/4] overflow-hidden rounded-3xl border-2 border-tinta">
+            <img src="img/cup-holder-1.jpg" alt="" loading="lazy" class="absolute inset-0 w-full h-full object-cover transition duration-500 group-hover:scale-105">
+            <div class="absolute inset-0 bg-gradient-to-t from-tinta/90 via-tinta/30 to-transparent" aria-hidden="true"></div>
+            <div class="absolute left-6 right-6 bottom-6 sm:left-10 sm:bottom-10 text-papel">
+              <p class="font-label font-bold uppercase tracking-[0.2em] text-xs text-kalamansi">Made for two</p>
+              <h3 class="font-display uppercase text-3xl sm:text-5xl mt-2">Kasalo Bundle</h3>
+              <p class="mt-2 max-w-sm">Any coffee plus any pastry, and you save ₱20.</p>
+              <span class="inline-block mt-5 bg-papel text-tinta font-label font-bold uppercase tracking-wider text-sm px-6 py-3 rounded-full group-hover:bg-kalamansi transition">Build a bundle</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Shop by category carousel ===== -->
+    <section class="py-14 sm:py-20 bg-banga-soft border-t-2 border-tinta" aria-labelledby="cats-title">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6">
+        <div class="flex items-end justify-between gap-4">
+          <h2 id="cats-title" class="font-display uppercase text-banga text-2xl sm:text-3xl">Shop by Category</h2>
+          <div class="hidden sm:flex gap-2">
+            <button type="button" data-scroll="-1" aria-label="Scroll categories left" class="w-12 h-12 grid place-items-center rounded-full bg-papel border-2 border-tinta hover:shadow-ube-sm transition">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+            </button>
+            <button type="button" data-scroll="1" aria-label="Scroll categories right" class="w-12 h-12 grid place-items-center rounded-full bg-papel border-2 border-tinta hover:shadow-ube-sm transition">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+            </button>
+          </div>
+        </div>
+        <ul id="cat-track" class="no-scrollbar mt-6 -mx-4 px-4 sm:mx-0 sm:px-0 pb-3 flex gap-4 sm:gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth"></ul>
+      </div>
+    </section>
+
+    <!-- ===== Catalog (product listing) ===== -->
+    <section id="menu" class="scroll-mt-16 border-t-2 border-tinta" aria-labelledby="menu-title">
+      <div class="sticky top-[66px] z-30 bg-gata/95 backdrop-blur border-b border-tinta/15">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
+          <h2 id="menu-title" class="font-display uppercase text-lg sm:text-2xl whitespace-nowrap">Menu <span id="result-count" class="font-sans normal-case text-base text-tinta/70"></span></h2>
+          <div class="flex items-center gap-1 sm:gap-6">
+            <button id="filter-toggle" type="button" aria-controls="filters" aria-expanded="true" class="inline-flex items-center gap-2 font-bold whitespace-nowrap px-2 sm:px-3 py-2 rounded-full hover:bg-papel transition">
+              <span id="filter-label">Hide Filters</span>
+              <svg class="hidden sm:block w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>
+            </button>
+            <label class="inline-flex items-center gap-1 font-bold">
+              <span class="hidden sm:inline whitespace-nowrap">Sort by</span><span class="sr-only sm:hidden">Sort by</span>
+              <select id="sort" class="bg-transparent font-bold py-2 pr-1 rounded-lg cursor-pointer max-w-[8rem] sm:max-w-none">
+                <option value="featured">Featured</option>
+                <option value="price-asc">Price: Low–High</option>
+                <option value="price-desc">Price: High–Low</option>
+                <option value="name">Name: A–Z</option>
+              </select>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 py-8 lg:flex lg:gap-10">
+        <aside id="filters" aria-label="Filters" class="lg:w-60 shrink-0 self-start lg:sticky lg:top-[146px] lg:max-h-[calc(100vh-10rem)] overflow-y-auto no-scrollbar mb-8 lg:mb-0 pb-6 lg:pb-0 border-b-2 lg:border-0 border-tinta">
+          <label for="search" class="sr-only">Search the menu</label>
+          <div class="relative">
+            <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+            <input id="search" type="search" placeholder="Search the menu" autocomplete="off" class="w-full bg-papel border-2 border-tinta rounded-full pl-11 pr-4 py-2.5 placeholder:text-tinta/60">
+          </div>
+
+          <ul id="cat-list" class="mt-6 space-y-1 font-bold text-lg" aria-label="Category"></ul>
+
+          <fieldset class="mt-6 pt-5 border-t border-tinta/20">
+            <legend class="font-label font-bold uppercase tracking-wider text-sm">Tags</legend>
+            <div id="tag-list" class="mt-3 space-y-2.5"></div>
+          </fieldset>
+
+          <fieldset class="mt-6 pt-5 border-t border-tinta/20">
+            <legend class="font-label font-bold uppercase tracking-wider text-sm">Price</legend>
+            <div id="price-list" class="mt-3 space-y-2.5"></div>
+          </fieldset>
+
+          <button id="clear-filters" type="button" class="mt-6 font-bold underline underline-offset-4 hover:text-banga">Clear all filters</button>
+        </aside>
+
+        <div class="flex-1 min-w-0">
+          <ul id="grid" class="grid gap-x-4 gap-y-10 sm:gap-x-6"></ul>
+          <div id="empty" hidden class="text-center py-20">
+            <p class="font-display uppercase text-2xl">No matches</p>
+            <p class="font-serif text-lg mt-2">Try another search or clear the filters.</p>
+            <button type="button" data-clear class="mt-6 bg-banga text-papel font-label font-bold uppercase tracking-wider px-6 py-3 rounded-full border-2 border-tinta hover:shadow-ube-sm transition">Clear all filters</button>
+          </div>
+          <p id="grid-status" class="sr-only" aria-live="polite"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Kasalo Bundle promo ===== -->
+    <section id="bundles" class="scroll-mt-24 px-4 sm:px-6 py-16 md:py-24 bg-kalamansi-soft border-t-2 border-tinta" aria-labelledby="bundle-title">
+      <div class="relative mx-auto max-w-7xl bg-papel border-2 border-tinta rounded-3xl overflow-hidden px-6 py-12 sm:p-12 md:p-16 grid md:grid-cols-[auto_1fr] gap-10 items-center">
+        <span class="absolute inset-x-0 top-3 border-t-2 border-dashed border-ube" aria-hidden="true"></span>
+        <span class="absolute inset-x-0 bottom-3 border-t-2 border-dashed border-ube" aria-hidden="true"></span>
+
+        <div class="relative w-44 sm:w-56 mx-auto -rotate-6" aria-hidden="true">
+          <svg viewBox="0 0 100 100" class="w-full"><use href="#burst" fill="#F2B732" stroke="#141414" stroke-width="1.2"/></svg>
+          <span class="absolute inset-0 grid place-content-center text-center font-accent uppercase leading-none">
+            <span class="text-tinta text-lg sm:text-xl">Save</span>
+            <span class="text-banga text-5xl sm:text-6xl [text-shadow:3px_3px_0_#5B3A8C]">₱20</span>
+          </span>
+        </div>
+
+        <div>
+          <p class="font-label font-bold uppercase tracking-[0.2em] text-sm">The Kasalo Bundle</p>
+          <h2 id="bundle-title" class="font-display uppercase text-banga text-3xl sm:text-5xl mt-2">Coffee + pastry, made for two</h2>
+          <p class="font-serif text-lg sm:text-xl max-w-xl mt-4">Pair any drink from the counter with any pastry or rice cake and save ₱20. Bring a friend, or don't. We won't tell.</p>
+          <a href="#menu" class="inline-block mt-8 bg-kalamansi text-tinta font-label font-bold uppercase tracking-wider px-7 py-3.5 rounded-full border-2 border-tinta shadow-ube hover:-translate-y-0.5 transition">Build your bundle</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== From farm to cup ===== -->
+    <section class="bg-gata-light border-t-2 border-tinta" aria-labelledby="farm-title">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 py-14 sm:py-20 grid lg:grid-cols-2 gap-6 lg:gap-16 items-end">
+        <div>
+          <p class="font-label uppercase tracking-[0.2em] text-sm">From farm to cup</p>
+          <h2 id="farm-title" class="font-display uppercase text-banga text-3xl sm:text-5xl mt-2 leading-[1.05]">Grown by hands we know by name</h2>
+        </div>
+        <div>
+          <p class="font-serif text-lg sm:text-xl">Every bean we brew comes from smallholder farms in the Cordillera and Mindanao that we buy from year after year, at a fair price, harvest after harvest.</p>
+          <a href="index.html#sourcing" class="inline-block mt-6 bg-tinta text-papel font-label uppercase tracking-wider text-sm px-6 py-3 rounded-full border-2 border-tinta shadow-ube-sm hover:bg-banga transition">Meet our farmers</a>
+        </div>
+      </div>
+      <img src="img/farmers.jpg" alt="Coffee farmers picking ripe red coffee cherries under the shade canopy" loading="lazy" class="w-full h-[280px] sm:h-[420px] lg:h-[520px] object-cover object-[65%_center] border-t-2 border-tinta">
+    </section>
+
+    <!-- ===== Visit the café ===== -->
+    <section id="visit-cafe" class="scroll-mt-16 bg-jeepney-soft border-t-2 border-tinta" aria-labelledby="cafe-title">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 py-16 md:py-24 grid lg:grid-cols-[3fr_2fr] gap-12 lg:gap-14 items-center">
+        <div class="relative">
+          <img src="img/cafe.jpg" alt="Inside the Kasalo Kape café: a sculpted sand-colored wall, velvet chairs, and the Kasalo Kape counter" loading="lazy" class="w-full aspect-[4/3] object-cover rounded-3xl border-2 border-tinta shadow-ube-lg">
+          <div class="absolute -top-8 right-2 sm:-right-6 w-24 sm:w-28 rotate-12" aria-hidden="true">
+            <svg viewBox="0 0 100 100" class="w-full"><use href="#burst" fill="#F2B732" stroke="#141414" stroke-width="1.5"/></svg>
+            <span class="absolute inset-0 grid place-content-center text-center font-accent uppercase leading-tight text-tinta text-xs sm:text-sm">Open<br>daily</span>
+          </div>
+        </div>
+        <div>
+          <p class="font-label uppercase tracking-[0.2em] text-sm">Visit the café</p>
+          <h2 id="cafe-title" class="font-display uppercase text-banga text-3xl sm:text-5xl mt-2 leading-[1.05]">Pull up a chair on Padre Faura</h2>
+          <p class="font-serif text-lg sm:text-xl mt-4">Order ahead for pickup, or stay a while. There's always room at the table for one more kasalo.</p>
+          <dl class="mt-6 grid grid-cols-[auto_1fr] gap-x-6 gap-y-2.5 bg-papel border-2 border-tinta rounded-2xl p-5 shadow-ube-sm">
+            <dt class="font-label uppercase tracking-wider text-sm pt-0.5">Address</dt><dd>Padre Faura St., Ermita, Manila, 1000 Metro Manila</dd>
+            <dt class="font-label uppercase tracking-wider text-sm pt-0.5">Mon–Fri</dt><dd>6AM – 10PM</dd>
+            <dt class="font-label uppercase tracking-wider text-sm pt-0.5">Sat–Sun</dt><dd>7AM – 10PM</dd>
+            <dt class="font-label uppercase tracking-wider text-sm pt-0.5">Email</dt><dd><a href="mailto:kasalokape@gmail.com" class="underline underline-offset-4 hover:text-banga break-all">kasalokape@gmail.com</a></dd>
+          </dl>
+          <a href="https://www.google.com/maps/search/?api=1&amp;query=Padre+Faura+St%2C+Ermita%2C+Manila" target="_blank" rel="noopener" class="inline-block mt-6 bg-banga text-papel font-label uppercase tracking-wider px-7 py-3.5 rounded-full border-2 border-tinta shadow-ube hover:-translate-y-0.5 transition">Get directions</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Moving text (hours) ===== -->
+    <div class="bg-kalamansi border-t-2 border-tinta overflow-hidden py-3" aria-hidden="true">
+      <div class="marquee-track reverse font-label uppercase text-base sm:text-lg whitespace-nowrap">
+        <p class="flex items-center gap-6 pr-6">
+          <span>Open daily</span><span>✸</span><span>Mon–Fri 6AM – 10PM</span><span>✸</span><span>Sat–Sun 7AM – 10PM</span><span>✸</span><span>Padre Faura St., Ermita</span><span>✸</span><span>Pickup is always free</span><span>✸</span>
+          <span>Open daily</span><span>✸</span><span>Mon–Fri 6AM – 10PM</span><span>✸</span><span>Sat–Sun 7AM – 10PM</span><span>✸</span><span>Padre Faura St., Ermita</span><span>✸</span><span>Pickup is always free</span><span>✸</span>
+        </p>
+        <p class="flex items-center gap-6 pr-6">
+          <span>Open daily</span><span>✸</span><span>Mon–Fri 6AM – 10PM</span><span>✸</span><span>Sat–Sun 7AM – 10PM</span><span>✸</span><span>Padre Faura St., Ermita</span><span>✸</span><span>Pickup is always free</span><span>✸</span>
+          <span>Open daily</span><span>✸</span><span>Mon–Fri 6AM – 10PM</span><span>✸</span><span>Sat–Sun 7AM – 10PM</span><span>✸</span><span>Padre Faura St., Ermita</span><span>✸</span><span>Pickup is always free</span><span>✸</span>
+        </p>
+      </div>
+    </div>
+
+    <!-- ===== About ===== -->
+    <section id="about" class="scroll-mt-16 border-t-2 border-tinta bg-papel" aria-labelledby="about-title">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 py-16 md:py-24 grid md:grid-cols-2 gap-10 lg:gap-16 items-center">
+        <img src="img/cup-holder-4.jpg" alt="Kasalo Kape cup holder seen from above, printed with the meaning of kasalo" loading="lazy" class="w-full aspect-[4/3] object-cover rounded-3xl border-2 border-tinta shadow-ube">
+        <div>
+          <p class="font-label font-bold uppercase tracking-[0.2em] text-sm">About Us</p>
+          <h2 id="about-title" class="font-display uppercase text-banga text-3xl sm:text-5xl mt-2">What's a kasalo?</h2>
+          <p class="font-serif text-xl sm:text-2xl mt-6 border-l-4 border-ube pl-5">
+            <b>ka-</b> (companion) + <b>salo</b> (to share a meal). A <b>kasalo</b> is the person you share a table with, someone who eats from the same plate.
+          </p>
+          <p class="mt-6 max-w-lg leading-relaxed">Kasalo Kape is our little table on Padre Faura: Filipino coffee, coolers, and rice cakes, priced for every day and made to be shared.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== Footer ===== -->
+  <footer class="bg-papel border-t-2 border-tinta">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 py-14 grid lg:grid-cols-12 gap-12">
+      <nav class="lg:col-span-7 grid grid-cols-2 sm:grid-cols-4 gap-8" aria-label="Footer">
+        <div>
+          <h2 class="font-label font-bold uppercase tracking-wider">Shop</h2>
+          <ul class="mt-3 space-y-2">
+            <li><a href="menu.html#menu" class="hover:text-banga hover:underline underline-offset-4">Coffee</a></li>
+            <li><a href="#" class="hover:text-banga hover:underline underline-offset-4">Tea</a></li>
+            <li><a href="#" class="hover:text-banga hover:underline underline-offset-4">Syrup</a></li>
+            <li><a href="#" class="hover:text-banga hover:underline underline-offset-4">Equipment</a></li>
+            <li><a href="#" class="hover:text-banga hover:underline underline-offset-4">Merch</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2 class="font-label font-bold uppercase tracking-wider">Subscribe</h2>
+          <ul class="mt-3 space-y-2">
+            <li><a href="index.html" class="hover:text-banga hover:underline underline-offset-4">The Fix</a></li>
+            <li><a href="index.html#get-your-fix" class="hover:text-banga hover:underline underline-offset-4">Subscriptions</a></li>
+            <li><a href="#" class="hover:text-banga hover:underline underline-offset-4">Account</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2 class="font-label font-bold uppercase tracking-wider">Company</h2>
+          <ul class="mt-3 space-y-2">
+            <li><a href="menu.html#about" class="hover:text-banga hover:underline underline-offset-4">About Us</a></li>
+            <li><a href="index.html#visit" class="hover:text-banga hover:underline underline-offset-4">Wholesale</a></li>
+            <li><a href="#" class="hover:text-banga hover:underline underline-offset-4">Giving Back</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2 class="font-label font-bold uppercase tracking-wider">More Info</h2>
+          <ul class="mt-3 space-y-2">
+            <li><a href="index.html#archive" class="hover:text-banga hover:underline underline-offset-4">Coffee Archive</a></li>
+            <li><a href="#" class="hover:text-banga hover:underline underline-offset-4">Tours</a></li>
+            <li><a href="#" class="hover:text-banga hover:underline underline-offset-4">FAQs</a></li>
+          </ul>
+        </div>
+      </nav>
+
+      <section class="lg:col-span-5 bg-gata border-2 border-tinta rounded-3xl p-6 sm:p-8 shadow-ube" aria-labelledby="visit-title">
+        <h2 id="visit-title" class="font-display uppercase text-banga text-2xl">Visit us</h2>
+        <div class="grid sm:grid-cols-2 gap-6 mt-4">
+          <div>
+            <h3 class="font-label font-bold uppercase tracking-wider text-sm">Café</h3>
+            <address class="not-italic mt-2 leading-relaxed">Padre Faura St., Ermita,<br>Manila, 1000 Metro Manila,<br>Philippines</address>
+          </div>
+          <div>
+            <h3 class="font-label font-bold uppercase tracking-wider text-sm">Hours</h3>
+            <dl class="mt-2 grid grid-cols-[auto_1fr] gap-x-3 gap-y-1">
+              <dt class="whitespace-nowrap">Mon–Fri</dt><dd class="whitespace-nowrap">6AM – 10PM</dd>
+              <dt class="whitespace-nowrap">Sat–Sun</dt><dd class="whitespace-nowrap">7AM – 10PM</dd>
+            </dl>
+          </div>
+          <div class="sm:col-span-2">
+            <h3 class="font-label font-bold uppercase tracking-wider text-sm">Contact &amp; wholesale</h3>
+            <p class="mt-2"><a href="mailto:kasalokape@gmail.com" class="underline underline-offset-4 hover:text-banga">kasalokape@gmail.com</a></p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 pb-12 grid lg:grid-cols-3 gap-8 items-center">
+      <ul class="flex flex-wrap gap-x-6 gap-y-3" aria-label="Social media">
+        <li><a href="https://www.facebook.com/kasalokape" target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-banga font-bold hover:underline underline-offset-4">
+          <img src="icons/fb%20logo.png" alt="" class="w-6 h-6 object-contain brightness-0">Facebook</a></li>
+        <li><a href="https://www.instagram.com/kasalokape/" target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-banga font-bold hover:underline underline-offset-4">
+          <img src="icons/ig%20logo.png" alt="" class="w-6 h-6 object-contain brightness-0">@kasalokape</a></li>
+        <li><a href="#" class="inline-flex items-center gap-2 text-banga font-bold hover:underline underline-offset-4">
+          <svg class="w-6 h-6" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="4" fill="#141414"/><path d="M10 9l5 3-5 3z" fill="#FFFFFF"/></svg>YouTube</a></li>
+      </ul>
+
+      <form class="newsletter" aria-label="Newsletter">
+        <label for="news-email" class="font-label font-bold uppercase tracking-wider text-sm">Get new drops by email</label>
+        <div class="mt-2 flex gap-2">
+          <input id="news-email" type="email" required autocomplete="email" placeholder="you@email.com" class="flex-1 min-w-0 bg-papel border-2 border-tinta rounded-full px-4 py-2.5 placeholder:text-tinta/60">
+          <button type="submit" class="bg-banga text-papel font-label font-bold uppercase tracking-wider px-5 py-2.5 rounded-full border-2 border-tinta hover:shadow-ube-sm transition">Join</button>
+        </div>
+        <p class="news-msg mt-2 text-sm min-h-[1.25rem]" aria-live="polite"></p>
+      </form>
+
+      <p class="inline-flex items-center gap-3 justify-self-start lg:justify-self-end bg-kalamansi border-2 border-tinta rounded-full pl-3 pr-5 py-2 shadow-ube-sm">
+        <svg class="w-7 h-7 shrink-0" viewBox="0 0 24 24" fill="none" stroke="#141414" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l5 7h-3l4 6h-5v7h-2v-7H6l4-6H7z"/></svg>
+        <span class="font-label font-bold uppercase tracking-wider text-sm">1,248 trees planted since 2024</span>
+      </p>
+    </div>
+
+    <div class="border-t-2 border-tinta">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 py-5 flex flex-col md:flex-row md:items-center md:justify-between gap-3 text-sm">
+        <p>© 2026 Kasalo Kape. Made to be shared.</p>
+        <ul class="flex flex-wrap gap-x-5 gap-y-2">
+          <li><a href="#" class="hover:text-banga hover:underline underline-offset-4">Privacy Policy</a></li>
+          <li><a href="#" class="hover:text-banga hover:underline underline-offset-4">Terms of Service</a></li>
+          <li><a href="#" class="hover:text-banga hover:underline underline-offset-4">Accessibility</a></li>
+        </ul>
+        <p>Site by the Kasalo Kape team</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="cart.js"></script>
+  <script src="products.js"></script>
+  <script>
+    const { CATS, PRODUCTS } = KASALO;
+    const TAGS = ['Hot', 'Iced', 'Best Seller', 'Seasonal', 'Pastry', 'Rice Cake'];
+    const PRICES = [
+      { id: 'under-60', label: 'Under ₱60', test: p => p < 60 },
+      { id: '60-100', label: '₱60 – ₱100', test: p => p >= 60 && p <= 100 },
+      { id: 'over-100', label: 'Over ₱100', test: p => p > 100 },
+    ];
+
+    const TILES = [
+      { label: 'Coffee', cat: 'coffee', img: 'ube-latte.jpg' },
+      { label: 'Coolers', cat: 'coolers', img: 'kalamansi-fizz.jpg' },
+      { label: 'Rice Cakes & Pastries', cat: 'pastries', img: 'ensaymada.jpg' },
+      { label: 'Best Sellers', tag: 'Best Seller', img: 'bibingka-basque.jpg' },
+      { label: 'Seasonal', tag: 'Seasonal', img: 'pandan-smoothie.jpg' },
+    ];
+
+    const state = { cat: 'all', tags: new Set(), prices: new Set(), sort: 'featured', q: '', variant: {} };
+    const peso = n => '₱' + n.toLocaleString('en-PH');
+    const $ = s => document.querySelector(s);
+    const priceOf = p => p.variants ? p.variants[state.variant[p.id] || 0].price : p.price;
+
+    // --- Category carousel ---
+    $('#cat-track').innerHTML = TILES.map(t => {
+      const n = PRODUCTS.filter(p => t.cat ? p.cat === t.cat : p.tags.includes(t.tag)).length;
+      return `<li class="shrink-0 snap-start w-[64%] sm:w-[40%] lg:w-[calc((100%-4.5rem)/4)]">
+        <button type="button" class="group w-full text-left" data-tile-cat="${t.cat || ''}" data-tile-tag="${t.tag || ''}">
+          <span class="block aspect-[4/5] rounded-3xl overflow-hidden bg-papel border-2 border-tinta transition group-hover:shadow-ube group-hover:-translate-y-1">
+            <img src="img/products/${t.img}" alt="" loading="lazy" class="w-full h-full object-cover transition duration-500 group-hover:scale-105">
+          </span>
+          <span class="block mt-3 font-bold text-lg">${t.label}</span>
+          <span class="block text-sm text-tinta/70">${n} items</span>
+        </button>
+      </li>`;
+    }).join('');
+    document.querySelectorAll('[data-scroll]').forEach(b => b.addEventListener('click', () => {
+      const track = $('#cat-track');
+      track.scrollBy({ left: track.clientWidth * 0.8 * Number(b.dataset.scroll), behavior: 'smooth' });
+    }));
+    $('#cat-track').addEventListener('click', e => {
+      const b = e.target.closest('button');
+      if (!b) return;
+      clearFilters(false);
+      if (b.dataset.tileCat) state.cat = b.dataset.tileCat;
+      if (b.dataset.tileTag) state.tags.add(b.dataset.tileTag);
+      syncControls(); render();
+      $('#menu').scrollIntoView();
+    });
+
+    // --- Filter controls ---
+    $('#cat-list').innerHTML = [['all', 'All'], ...Object.entries(CATS)].map(([id, label]) => {
+      const n = id === 'all' ? PRODUCTS.length : PRODUCTS.filter(p => p.cat === id).length;
+      return `<li><button type="button" data-cat="${id}" class="w-full flex items-center justify-between gap-3 py-1.5 pl-3 border-l-4 border-transparent text-left hover:text-banga aria-pressed:border-ube aria-pressed:text-banga">
+        <span>${label}</span><span class="font-sans font-normal text-sm text-tinta/70 tabular-nums">${n}</span></button></li>`;
+    }).join('');
+    const checkbox = (group, id, label, n) => `
+      <label class="group flex items-center gap-3 py-1 cursor-pointer">
+        <input type="checkbox" data-${group}="${id}" class="kk-check">
+        <span class="flex-1 group-hover:text-banga">${label}</span>
+        <span class="text-sm text-tinta/70 tabular-nums">${n}</span>
+      </label>`;
+    $('#tag-list').innerHTML = TAGS.map(t => checkbox('tag', t, t, PRODUCTS.filter(p => p.tags.includes(t)).length)).join('');
+    $('#price-list').innerHTML = PRICES.map(r => checkbox('price', r.id, r.label, PRODUCTS.filter(p => r.test(p.price)).length)).join('');
+
+    function syncControls() {
+      document.querySelectorAll('[data-cat]').forEach(b => b.setAttribute('aria-pressed', b.dataset.cat === state.cat));
+      document.querySelectorAll('[data-tag]').forEach(c => { c.checked = state.tags.has(c.dataset.tag); });
+      document.querySelectorAll('[data-price]').forEach(c => { c.checked = state.prices.has(c.dataset.price); });
+      $('#search').value = state.q;
+      $('#sort').value = state.sort;
+    }
+    function clearFilters(rerender = true) {
+      Object.assign(state, { cat: 'all', tags: new Set(), prices: new Set(), q: '' });
+      if (rerender) { syncControls(); render(); }
+    }
+
+    $('#filters').addEventListener('click', e => {
+      const b = e.target.closest('[data-cat]');
+      if (b) { state.cat = b.dataset.cat; syncControls(); render(); }
+    });
+    $('#filters').addEventListener('change', e => {
+      const t = e.target;
+      if (t.dataset.tag) state.tags[t.checked ? 'add' : 'delete'](t.dataset.tag);
+      if (t.dataset.price) state.prices[t.checked ? 'add' : 'delete'](t.dataset.price);
+      render();
+    });
+    $('#search').addEventListener('input', e => { state.q = e.target.value.trim().toLowerCase(); render(); });
+    $('#sort').addEventListener('change', e => { state.sort = e.target.value; render(); });
+    $('#clear-filters').addEventListener('click', () => clearFilters());
+    document.querySelector('[data-clear]').addEventListener('click', () => clearFilters());
+
+    // --- Show / hide filters (open by default on desktop, closed on phones) ---
+    const wide = matchMedia('(min-width: 1024px)');
+    function setFilters(open) {
+      $('#filters').classList.toggle('hidden', !open);
+      $('#filter-toggle').setAttribute('aria-expanded', open);
+      $('#filter-label').textContent = open ? 'Hide Filters' : (wide.matches ? 'Show Filters' : 'Filters');
+      $('#grid').className = 'grid gap-x-4 gap-y-10 sm:gap-x-6 grid-cols-2 ' + (open ? 'xl:grid-cols-3' : 'md:grid-cols-3 xl:grid-cols-4');
+    }
+    $('#filter-toggle').addEventListener('click', () => setFilters($('#filters').classList.contains('hidden')));
+    setFilters(wide.matches);
+
+    // --- Product grid ---
+    const photo = p => p.src
+      ? `<img src="${p.src}" alt="${p.name}" loading="lazy" class="w-full h-full object-contain p-2 transition duration-300 group-hover:scale-105">`
+      : `<div class="w-full h-full grid place-items-center bg-papel">
+           <img src="cup%20logo%202.png" alt="" class="w-3/5 opacity-25 mix-blend-multiply">
+           <p class="absolute -inset-x-6 top-1/2 -translate-y-1/2 -rotate-6 bg-tinta text-kalamansi text-center py-1.5 sm:py-2 border-y-2 border-ube font-accent uppercase tracking-wider text-xs sm:text-sm"><span class="sm:hidden">Coming soon</span><span class="hidden sm:inline">Catalog photo coming soon</span></p>
+         </div>`;
+
+    const card = p => {
+      const flag = ['Best Seller', 'Seasonal'].find(t => p.tags.includes(t));
+      const sub = [CATS[p.cat], p.tags.find(t => t === 'Hot' || t === 'Iced'), p.note].filter(Boolean).join(' · ');
+      const sel = state.variant[p.id] || 0;
+      const href = `product.html?id=${p.id}${p.variants ? '&v=' + sel : ''}`;
+      return `
+      <li><article class="group">
+        <div class="relative transition duration-200 group-hover:-translate-y-1">
+          <a href="${href}" tabindex="-1" aria-hidden="true" class="relative block aspect-square rounded-2xl overflow-hidden bg-papel transition duration-200 group-hover:shadow-ube">${photo(p)}</a>
+          <button type="button" data-add="${p.id}" aria-label="Add ${p.name}${p.variants ? ', ' + p.variants[sel].label : ''} to bag"
+            class="absolute bottom-2.5 right-2.5 w-11 h-11 rounded-full bg-kalamansi border-2 border-tinta grid place-items-center shadow-ube-sm hover:scale-110 transition">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+          </button>
+        </div>
+        <div class="pt-3">
+          ${flag ? `<p class="text-banga font-bold text-sm">${flag}</p>` : ''}
+          <h3 class="font-bold leading-snug"><a href="${href}" class="hover:text-banga hover:underline underline-offset-4">${p.name}</a></h3>
+          <p class="text-sm text-tinta/70">${sub}</p>
+          ${p.variants ? `<div class="mt-2 flex flex-wrap gap-1.5" role="group" aria-label="${p.name} flavor">${p.variants.map((v, i) =>
+            `<button type="button" data-variant="${p.id}" data-index="${i}" aria-pressed="${i === sel}" class="text-xs font-bold px-2.5 py-1 rounded-full border-2 border-tinta aria-pressed:bg-tinta aria-pressed:text-gata hover:border-banga">${v.label}</button>`).join('')}</div>` : ''}
+          <p class="mt-2"><span class="inline-block bg-kalamansi font-accent text-sm px-2.5 py-0.5 rounded-md border-2 border-tinta">${peso(priceOf(p))}</span></p>
+        </div>
+      </article></li>`;
+    };
+
+    function render() {
+      const sorters = {
+        featured: (a, b) => a.order - b.order,
+        'price-asc': (a, b) => priceOf(a) - priceOf(b) || a.order - b.order,
+        'price-desc': (a, b) => priceOf(b) - priceOf(a) || a.order - b.order,
+        name: (a, b) => a.name.localeCompare(b.name),
+      };
+      const shown = PRODUCTS.filter(p =>
+        (state.cat === 'all' || p.cat === state.cat) &&
+        (!state.tags.size || p.tags.some(t => state.tags.has(t))) &&
+        (!state.prices.size || PRICES.some(r => state.prices.has(r.id) && r.test(priceOf(p)))) &&
+        (!state.q || p.name.toLowerCase().includes(state.q))
+      ).sort(sorters[state.sort]);
+
+      $('#grid').innerHTML = shown.map(card).join('');
+      $('#empty').hidden = shown.length > 0;
+      $('#result-count').textContent = `(${shown.length})`;
+      $('#grid-status').textContent = `${shown.length} item${shown.length === 1 ? '' : 's'} shown.`;
+    }
+
+    $('#grid').addEventListener('click', e => {
+      const v = e.target.closest('[data-variant]');
+      if (v) { state.variant[v.dataset.variant] = Number(v.dataset.index); return render(); }
+      const add = e.target.closest('[data-add]');
+      if (!add) return;
+      const p = PRODUCTS.find(x => x.id === add.dataset.add);
+      const variant = p.variants?.[state.variant[p.id] || 0];
+      KasaloCart.add({ id: p.id, name: p.name, price: priceOf(p), img: p.src, variant: variant?.label });
+    });
+
+    // ?cat=coffee (from product-page breadcrumbs) opens the catalog on that category
+    const startCat = new URLSearchParams(location.search).get('cat');
+    if (CATS[startCat]) state.cat = startCat;
+    syncControls();
+    render();
+
+    // Mobile nav
+    const menuBtn = $('#menu-btn');
+    const mobileNav = $('#mobile-nav');
+    const setNav = open => {
+      mobileNav.classList.toggle('hidden', !open);
+      menuBtn.setAttribute('aria-expanded', open);
+      menuBtn.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
+    };
+    menuBtn.addEventListener('click', () => setNav(mobileNav.classList.contains('hidden')));
+    mobileNav.addEventListener('click', e => { if (e.target.closest('a')) setNav(false); });
+
+    // shortcut: newsletter has no backend yet, it only confirms in the page; wire to a real endpoint before launch.
+    document.querySelector('.newsletter').addEventListener('submit', e => {
+      e.preventDefault();
+      e.target.querySelector('.news-msg').textContent = "Thanks! You're on the list.";
+      e.target.reset();
+    });
+  </script>
+</body>
+</html>

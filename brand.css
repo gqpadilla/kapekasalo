@@ -1,0 +1,63 @@
+/* Shared brand styles for every page. */
+
+/* ---- Brand fonts (files in /fonts) ---- */
+@font-face { font-family: 'Provicali'; src: url('fonts/Provicali.otf') format('opentype'); font-display: swap; }
+@font-face { font-family: 'Quiapo'; src: url('fonts/Quiapo.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'Apple Garamond'; src: url('fonts/AppleGaramond.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'Apple Garamond'; src: url('fonts/AppleGaramond-Italic.ttf') format('truetype'); font-style: italic; font-display: swap; }
+@font-face { font-family: 'MADE Sunflower'; src: url('fonts/MADESunflower.otf') format('opentype'); font-display: swap; }
+@font-face { font-family: 'The 2K12'; src: url('fonts/The2K12-web.ttf') format('truetype'); font-display: swap; }
+
+/* Single-weight display fonts: never let the browser fake a bold version. */
+.font-display, .font-accent, .font-label, .font-neon { font-synthesis: none; }
+
+html { scroll-behavior: smooth; overflow-x: clip; }
+:focus-visible { outline: 3px dashed #141414; outline-offset: 3px; }
+.on-dark :focus-visible { outline-color: #F2B732; }
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.text-outline { color: transparent; -webkit-text-stroke: 1.5px #141414; }
+
+/* ---- Neon-sign flicker ---- */
+.flicker { animation: flicker 4s infinite; text-shadow: 0 0 4px #FFFFFF, 0 0 14px #F2B732, 0 0 28px #F2B732; }
+@keyframes flicker {
+  0%, 18%, 22%, 25%, 53%, 57%, 100% { opacity: 1; }
+  20%, 24%, 55% { opacity: .25; text-shadow: none; }
+}
+
+/* ---- Moving text: two identical halves, slide by -50% for a seamless loop ---- */
+.marquee-track { display: flex; width: max-content; animation: marquee 40s linear infinite; }
+.marquee-track.slow { animation-duration: 70s; }
+.marquee-track.reverse { animation-direction: reverse; }
+.marquee-track:hover { animation-play-state: paused; }
+@keyframes marquee { to { transform: translateX(-50%); } }
+
+/* ---- Retro stacked shadow for big titles ---- */
+.retro { text-shadow: 4px 4px 0 #A84A2A, 8px 8px 0 #F2B732, 12px 12px 0 #141414; }
+@media (min-width: 1024px) { .retro { text-shadow: 6px 6px 0 #A84A2A, 12px 12px 0 #F2B732; } }
+
+.live-dot { animation: pulse 1.8s ease-in-out infinite; }
+@keyframes pulse { 50% { opacity: .3; } }
+
+/* ---- Brand checkbox ---- */
+.kk-check {
+  appearance: none; -webkit-appearance: none; flex-shrink: 0; margin: 0;
+  width: 1.25rem; height: 1.25rem; border: 2px solid #141414; border-radius: .375rem; background: #FFFFFF;
+  display: inline-grid; place-content: center; cursor: pointer;
+  transition: background-color .15s, border-color .15s, box-shadow .15s;
+}
+.kk-check::after {
+  content: ''; width: .7rem; height: .7rem; background: #FFFFFF; transform: scale(0); transition: transform .12s ease-out;
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+}
+.kk-check:hover { box-shadow: 2px 2px 0 #5B3A8C; }
+.kk-check:checked { background: #A84A2A; border-color: #141414; box-shadow: 2px 2px 0 #5B3A8C; }
+.kk-check:checked::after { transform: scale(1); }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .flicker, .marquee-track, .live-dot { animation: none; }
+  .marquee-track { width: auto; flex-wrap: wrap; justify-content: center; }
+  .marquee-track > :not(:first-child), .marquee-track [aria-hidden] { display: none; }
+  * { transition: none !important; }
+}
