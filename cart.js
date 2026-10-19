@@ -1,4 +1,4 @@
-// Mock cart shared by index.html and menu.html.
+// Mock cart shared by the-fix.html and index.html.
 // shortcut: front-end only, saved in this browser's localStorage; checkout is a demo with no payment or backend.
 (() => {
   const KEY = 'kasalo-cart';
@@ -57,7 +57,7 @@
           <p class="font-display uppercase text-2xl">Your bag is empty</p>
           <p class="font-serif text-lg">Pick a drink, grab a pastry, bring a kasalo.</p>
         </div>`;
-      foot.innerHTML = `<a href="menu.html#menu" data-cart-close class="block text-center bg-banga text-papel font-label font-bold uppercase tracking-wider py-4 rounded-full border-2 border-tinta hover:shadow-ube-sm transition">Shop the menu</a>`;
+      foot.innerHTML = `<a href="index.html#menu" data-cart-close class="block text-center bg-banga text-papel font-label font-bold uppercase tracking-wider py-4 rounded-full border-2 border-tinta hover:shadow-ube-sm transition">Shop the menu</a>`;
       return;
     }
 

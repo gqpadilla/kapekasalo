@@ -1,4 +1,4 @@
-// Shared mock catalog for menu.html and product.html.
+// Shared mock catalog for index.html and product.html.
 // img: file in img/products/ (white-background copies of PRODUCTS/), or null for the "coming soon" placeholder.
 // notes: [label, dot color]; dot colors come from the brand palette.
 window.KASALO = (() => {

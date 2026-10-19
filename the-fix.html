@@ -1,0 +1,554 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Fix · Kasalo Kape Micro-Lot Subscription</title>
+  <meta name="description" content="The Fix by Kasalo Kape: one exceptional Philippine micro-lot, roasted in Ermita and delivered every month.">
+  <link rel="icon" href="cup%20logo%202.png">
+
+  <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+  <script src="tailwind.config.js"></script>
+  <link rel="stylesheet" href="brand.css">
+</head>
+
+<body id="top" class="bg-gata text-tinta font-sans antialiased">
+  <!-- Reusable shapes -->
+  <svg width="0" height="0" class="absolute" aria-hidden="true">
+    <defs>
+      <polygon id="burst" points="50.0,0.0 57.4,12.7 69.1,3.8 71.1,18.4 85.4,14.6 81.6,28.9 96.2,30.9 87.3,42.6 100.0,50.0 87.3,57.4 96.2,69.1 81.6,71.1 85.4,85.4 71.1,81.6 69.1,96.2 57.4,87.3 50.0,100.0 42.6,87.3 30.9,96.2 28.9,81.6 14.6,85.4 18.4,71.1 3.8,69.1 12.7,57.4 0.0,50.0 12.7,42.6 3.8,30.9 18.4,28.9 14.6,14.6 28.9,18.4 30.9,3.8 42.6,12.7"/>
+      <symbol id="peaks" viewBox="0 0 200 100">
+        <circle cx="152" cy="30" r="14" fill="#F2B732" stroke="#141414" stroke-width="2"/>
+        <path d="M0 96 L55 30 L85 62 L115 20 L200 96 Z" fill="#FFFFFF" stroke="#141414" stroke-width="2.5" stroke-linejoin="round"/>
+        <path d="M44 43 L55 30 L66 44 M103 36 L115 20 L127 37" fill="none" stroke="#141414" stroke-width="2.5" stroke-linejoin="round"/>
+        <path d="M8 92 C50 80 90 98 130 86 S185 82 198 88" fill="none" stroke="#2456C8" stroke-width="3" stroke-linecap="round"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <a href="#get-your-fix" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:bg-kalamansi focus:px-4 focus:py-2 focus:rounded-full font-label font-bold">Skip to plans</a>
+
+  <!-- ===== Utility bar ===== -->
+  <div class="on-dark bg-tinta text-gata font-label font-bold uppercase tracking-wider text-xs">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 h-9 flex items-center justify-between gap-4">
+      <a href="#visit" class="inline-flex items-center gap-1.5 hover:text-kalamansi">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M12 21s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>
+        <span class="hidden sm:inline">Padre Faura St., Ermita</span><span class="sm:hidden">Find us</span>
+      </a>
+      <ul class="flex items-center gap-4">
+        <li class="hidden sm:block">Open daily until 10PM</li>
+        <li><a href="mailto:kasalokape@gmail.com" class="hover:text-kalamansi">Help</a></li>
+        <li><a href="#get-your-fix" class="hover:text-kalamansi">Join The Fix</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ===== Header ===== -->
+  <header class="sticky top-0 z-40 bg-gata/95 backdrop-blur border-b-2 border-tinta">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+      <a href="index.html" class="shrink-0">
+        <img src="logo1%20bnw%202.png" alt="Kasalo Kape home" class="h-14 w-[126px] object-cover mix-blend-multiply">
+      </a>
+
+      <nav aria-label="Main" class="hidden lg:block">
+        <ul class="flex gap-7 font-label font-bold uppercase tracking-wider text-sm">
+          <li><a href="index.html#menu" class="py-2 border-b-2 border-transparent hover:text-banga hover:border-ube transition">Shop</a></li>
+          <li><a href="#get-your-fix" class="py-2 border-b-2 border-transparent hover:text-banga hover:border-ube transition">Subscribe</a></li>
+          <li><a href="#top" aria-current="page" class="py-2 border-b-2 border-ube text-banga">The Fix</a></li>
+          <li><a href="index.html#about" class="py-2 border-b-2 border-transparent hover:text-banga hover:border-ube transition">About Us</a></li>
+          <li><a href="#visit" class="py-2 border-b-2 border-transparent hover:text-banga hover:border-ube transition">Wholesale</a></li>
+        </ul>
+      </nav>
+
+      <div class="flex items-center gap-1 sm:gap-2">
+        <a href="#" aria-label="Your account" class="p-2 rounded-full hover:bg-papel transition">
+          <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>
+        </a>
+        <button id="cart-btn" type="button" aria-haspopup="dialog" class="relative inline-flex items-center gap-2 whitespace-nowrap font-label font-bold uppercase tracking-wider text-sm px-3 sm:px-4 py-2 rounded-full border-2 border-tinta bg-papel hover:shadow-ube-sm transition">
+          <span>Cart (<span id="cart-count">0</span>)</span>
+          <span id="cart-dot" class="hidden absolute -top-1 -right-1 w-3 h-3 rounded-full bg-sili border-2 border-gata" aria-hidden="true"></span>
+        </button>
+        <button id="menu-btn" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="mobile-nav" class="lg:hidden p-2 rounded-full hover:bg-papel transition">
+          <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <nav id="mobile-nav" aria-label="Mobile" class="lg:hidden hidden border-t-2 border-tinta bg-gata">
+      <ul class="px-4 py-2 font-label font-bold uppercase tracking-wider">
+        <li><a href="index.html#menu" class="block py-3 border-b border-tinta/20 hover:text-banga">Shop</a></li>
+        <li><a href="#get-your-fix" class="block py-3 border-b border-tinta/20 hover:text-banga">Subscribe</a></li>
+        <li><a href="#top" aria-current="page" class="block py-3 border-b border-tinta/20 text-banga">The Fix</a></li>
+        <li><a href="index.html#about" class="block py-3 border-b border-tinta/20 hover:text-banga">About Us</a></li>
+        <li><a href="#visit" class="block py-3 hover:text-banga">Wholesale</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <!-- ===== Hero ===== -->
+    <section class="grid lg:grid-cols-2 border-b-2 border-tinta bg-tinta" aria-labelledby="hero-title">
+      <div class="on-dark relative text-gata px-4 sm:px-10 lg:px-16 py-16 lg:py-24 flex flex-col justify-center">
+        <p class="font-label font-bold uppercase tracking-[0.25em] text-kalamansi text-sm">Monthly micro-lot subscription</p>
+        <h1 id="hero-title" class="retro font-accent uppercase leading-[0.85] text-[5.5rem] sm:text-[8rem] lg:text-[10rem] xl:text-[11.5rem] mt-4 mb-6">The Fix</h1>
+        <p class="font-display uppercase text-lg sm:text-2xl leading-snug max-w-lg">Every cup we pour is good. These lots are exceptional.</p>
+        <p class="font-serif text-lg sm:text-xl max-w-md mt-5 text-gata/90">One rare Philippine micro-lot, roasted in small batches in Ermita and delivered to your door every month, brew card included.</p>
+        <div class="flex flex-wrap items-center gap-x-6 gap-y-4 mt-9">
+          <a href="#get-your-fix" class="inline-block bg-banga text-papel font-label font-bold uppercase tracking-wider px-7 py-4 rounded-full border-2 border-gata shadow-kal hover:-translate-y-0.5 hover:shadow-[8px_8px_0_#F2B732] transition">Subscribe to The Fix</a>
+          <a href="#archive" class="font-label font-bold uppercase tracking-wider text-sm underline underline-offset-8 decoration-kalamansi decoration-2 hover:text-kalamansi">See past coffees</a>
+        </div>
+      </div>
+
+      <div class="relative min-h-[380px] sm:min-h-[460px] lg:min-h-[640px] overflow-hidden">
+        <img src="img/latte-pour.jpg" alt="Steamed milk poured into an espresso, forming latte art in a dark ceramic cup" class="absolute inset-0 w-full h-full object-cover object-[50%_60%]" fetchpriority="high">
+        <!-- blends the photo into the Ink panel -->
+        <div class="absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-tinta to-transparent hidden lg:block" aria-hidden="true"></div>
+        <div class="absolute inset-x-0 top-0 h-1/4 bg-gradient-to-b from-tinta to-transparent lg:hidden" aria-hidden="true"></div>
+
+        <div class="absolute right-4 top-6 sm:right-8 w-28 sm:w-36 rotate-12" aria-hidden="true">
+          <svg viewBox="0 0 100 100" class="w-full"><use href="#burst" fill="#F2B732" stroke="#141414" stroke-width="1.5"/></svg>
+          <span class="absolute inset-0 grid place-content-center text-center font-accent uppercase leading-tight text-tinta text-xs sm:text-sm">New lot<br>every<br>month</span>
+        </div>
+
+        <aside class="absolute left-4 right-4 bottom-4 sm:left-auto sm:right-8 sm:bottom-8 sm:w-80 bg-papel border-2 border-tinta rounded-2xl p-4 shadow-ube" aria-label="This month's coffee">
+          <p class="flex items-center gap-2 font-label font-bold uppercase tracking-wider text-xs">
+            <span class="live-dot w-2 h-2 rounded-full bg-sili" aria-hidden="true"></span> Now shipping · October
+          </p>
+          <p class="font-serif text-xl font-semibold mt-1">Kalinga Tinglayan Natural</p>
+          <p class="text-sm mt-1">Blueberry · Rose · Dark cherry · 1,400 masl</p>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ===== Moving text (decorative) ===== -->
+    <div class="bg-kalamansi border-b-2 border-tinta overflow-hidden py-3" aria-hidden="true">
+      <div class="marquee-track font-label uppercase text-base sm:text-lg whitespace-nowrap">
+        <p class="flex items-center gap-6 pr-6"><span>New lot every month</span><svg viewBox="0 0 100 100" class="w-5 h-5 shrink-0"><use href="#burst" fill="#141414"/></svg><span>Roasted in Ermita</span><svg viewBox="0 0 100 100" class="w-5 h-5 shrink-0"><use href="#burst" fill="#141414"/></svg><span>Shipped within 48 hours</span><svg viewBox="0 0 100 100" class="w-5 h-5 shrink-0"><use href="#burst" fill="#141414"/></svg><span>Free gear on annual plans</span><svg viewBox="0 0 100 100" class="w-5 h-5 shrink-0"><use href="#burst" fill="#141414"/></svg><span>Pause or cancel anytime</span><svg viewBox="0 0 100 100" class="w-5 h-5 shrink-0"><use href="#burst" fill="#141414"/></svg><span>New lot every month</span><svg viewBox="0 0 100 100" class="w-5 h-5 shrink-0"><use href="#burst" fill="#141414"/></svg><span>Roasted in Ermita</span><svg viewBox="0 0 100 100" class="w-5 h-5 shrink-0"><use href="#burst" fill="#141414"/></svg><span>Shipped within 48 hours</span><svg viewBox="0 0 100 100" class="w-5 h-5 shrink-0"><use href="#burst" fill="#141414"/></svg><span>Free gear on annual plans</span><svg viewBox="0 0 100 100" class="w-5 h-5 shrink-0"><use href="#burst" fill="#141414"/></svg><span>Pause or cancel anytime</span><svg viewBox="0 0 100 100" class="w-5 h-5 shrink-0"><use href="#burst" fill="#141414"/></svg></p>
+        <p class="flex items-center gap-6 pr-6"><span>New lot every month</span><svg viewBox="0 0 100 100" class="w-5 h-5 shrink-0"><use href="#burst" fill="#141414"/></svg><span>Roasted in Ermita</span><svg viewBox="0 0 100 100" class="w-5 h-5 shrink-0"><use href="#burst" fill="#141414"/></svg><span>Shipped within 48 hours</span><svg viewBox="0 0 100 100" class="w-5 h-5 shrink-0"><use href="#burst" fill="#141414"/></svg><span>Free gear on annual plans</span><svg viewBox="0 0 100 100" class="w-5 h-5 shrink-0"><use href="#burst" fill="#141414"/></svg><span>Pause or cancel anytime</span><svg viewBox="0 0 100 100" class="w-5 h-5 shrink-0"><use href="#burst" fill="#141414"/></svg><span>New lot every month</span><svg viewBox="0 0 100 100" class="w-5 h-5 shrink-0"><use href="#burst" fill="#141414"/></svg><span>Roasted in Ermita</span><svg viewBox="0 0 100 100" class="w-5 h-5 shrink-0"><use href="#burst" fill="#141414"/></svg><span>Shipped within 48 hours</span><svg viewBox="0 0 100 100" class="w-5 h-5 shrink-0"><use href="#burst" fill="#141414"/></svg><span>Free gear on annual plans</span><svg viewBox="0 0 100 100" class="w-5 h-5 shrink-0"><use href="#burst" fill="#141414"/></svg><span>Pause or cancel anytime</span><svg viewBox="0 0 100 100" class="w-5 h-5 shrink-0"><use href="#burst" fill="#141414"/></svg></p>
+      </div>
+    </div>
+
+    <!-- ===== Value proposition + free gear ===== -->
+    <section class="py-16 md:py-24" aria-labelledby="value-title">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        <div>
+          <p class="font-label font-bold uppercase tracking-[0.2em] text-sm">Why The Fix</p>
+          <h2 id="value-title" class="font-display uppercase text-banga text-3xl sm:text-5xl leading-[1.05] mt-2">Rare micro-lots from the Cordillera to Mindanao</h2>
+          <p class="font-serif text-lg sm:text-xl mt-5 max-w-xl">Each month we cup dozens of samples from smallholder farms across Luzon and Mindanao and choose the one lot that stopped us mid-sip. Most are smaller than 300 kg. Once they're gone, they're gone.</p>
+          <ul class="mt-8 space-y-4">
+            <li class="flex gap-3">
+              <svg class="w-6 h-6 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="#5B3A8C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12l5 5L20 6"/></svg>
+              <span><b>One exceptional lot a month.</b> A 250 g bag, whole bean or ground for your brewer.</span>
+            </li>
+            <li class="flex gap-3">
+              <svg class="w-6 h-6 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="#5B3A8C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12l5 5L20 6"/></svg>
+              <span><b>Roasted to order.</b> Small batches on Padre Faura, shipped within 48 hours of roasting.</span>
+            </li>
+            <li class="flex gap-3">
+              <svg class="w-6 h-6 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="#5B3A8C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12l5 5L20 6"/></svg>
+              <span><b>The story in every box.</b> An origin card with the farm, tasting notes, and a tested brew recipe.</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="relative pb-28 sm:pb-20">
+          <img src="img/beans.jpg" alt="A palmful of freshly roasted Filipino coffee beans" loading="lazy" class="w-full aspect-[4/3] object-cover rounded-3xl border-2 border-tinta shadow-ube-lg">
+          <div class="absolute left-4 right-4 -bottom-2 sm:left-auto sm:-right-2 sm:w-80 bg-papel border-2 border-tinta rounded-2xl p-5 pt-6 shadow-ube">
+            <div class="absolute -top-10 -left-3 w-24 -rotate-12" aria-hidden="true">
+              <svg viewBox="0 0 100 100" class="w-full"><use href="#burst" fill="#F2B732" stroke="#141414" stroke-width="1.5"/></svg>
+              <span class="absolute inset-0 grid place-content-center text-center font-accent uppercase leading-none text-tinta text-sm">Free<br>gear</span>
+            </div>
+            <h3 class="font-display uppercase text-banga text-xl pl-14">Free brewing gear</h3>
+            <p class="mt-2 text-sm leading-relaxed">Prepay a year or two and we send gear on the house: a ceramic pour-over dripper, a Kasalo tumbler, and a hand grinder on the 2-year plan.</p>
+            <a href="#get-your-fix" class="inline-block mt-3 font-label font-bold uppercase tracking-wider text-sm text-banga underline underline-offset-4">See plan gifts</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Impact ===== -->
+    <section id="sourcing" class="scroll-mt-16 bg-papel border-y-2 border-tinta py-16 md:py-24" aria-labelledby="impact-title">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6">
+        <div class="max-w-3xl">
+          <p class="font-label font-bold uppercase tracking-[0.2em] text-sm">Sourcing</p>
+          <h2 id="impact-title" class="font-display uppercase text-banga text-3xl sm:text-5xl leading-[1.05] mt-2">Making an impact at origin and at home</h2>
+          <p class="font-serif text-lg sm:text-xl mt-5">We buy directly from the same farms year after year, pay above the farm-gate price, and put part of every subscription back into the places that grow it.</p>
+        </div>
+
+        <figure class="mt-12 relative rounded-3xl overflow-hidden border-2 border-tinta shadow-ube-lg">
+          <img src="img/farmers.jpg" alt="Coffee farmers picking ripe red coffee cherries under the shade canopy" loading="lazy" class="w-full h-[260px] sm:h-[380px] lg:h-[440px] object-cover object-[65%_center]">
+          <figcaption class="absolute left-4 bottom-4 sm:left-6 sm:bottom-6 bg-papel border-2 border-tinta rounded-full px-4 py-2 font-label uppercase tracking-wider text-xs sm:text-sm shadow-ube-sm">Harvest season with our growers</figcaption>
+        </figure>
+
+        <ul class="grid md:grid-cols-3 gap-6 mt-12">
+          <li class="flex flex-col bg-gata border-2 border-tinta rounded-3xl overflow-hidden">
+            <div class="relative border-b-2 border-tinta">
+              <svg class="w-full h-36 bg-gata" preserveAspectRatio="xMidYMax slice" aria-hidden="true"><use href="#peaks"/></svg>
+              <span class="absolute top-3 left-3 -rotate-3 bg-kalamansi font-accent uppercase text-sm px-3 py-1 rounded-md border-2 border-tinta shadow-ube-sm">1,600 masl</span>
+            </div>
+            <div class="p-6 flex flex-col gap-3 flex-1">
+              <p class="font-label font-bold uppercase tracking-wider text-xs">Atok, Benguet</p>
+              <h3 class="font-serif text-2xl font-semibold leading-tight">Highland smallholders of Atok</h3>
+              <p class="leading-relaxed">Family plots tucked between vegetable terraces. We pre-finance each harvest so growers aren't forced to sell cherry early at a loss.</p>
+              <p class="mt-auto pt-3 border-t-2 border-dashed border-ube font-label font-bold uppercase tracking-wider text-sm">Harvest pre-financing</p>
+            </div>
+          </li>
+          <li class="flex flex-col bg-gata border-2 border-tinta rounded-3xl overflow-hidden">
+            <div class="relative border-b-2 border-tinta">
+              <svg class="w-full h-36 bg-gata" preserveAspectRatio="xMinYMax slice" aria-hidden="true"><use href="#peaks"/></svg>
+              <span class="absolute top-3 left-3 -rotate-3 bg-kalamansi font-accent uppercase text-sm px-3 py-1 rounded-md border-2 border-tinta shadow-ube-sm">1,500 masl</span>
+            </div>
+            <div class="p-6 flex flex-col gap-3 flex-1">
+              <p class="font-label font-bold uppercase tracking-wider text-xs">Sagada, Mountain Province</p>
+              <h3 class="font-serif text-2xl font-semibold leading-tight">Shade growers of Sagada</h3>
+              <p class="leading-relaxed">Arabica grown under pine and alnus trees. Part of every bag funds raised drying beds that cut mold losses in the rainy harvest months.</p>
+              <p class="mt-auto pt-3 border-t-2 border-dashed border-ube font-label font-bold uppercase tracking-wider text-sm">Drying-bed fund</p>
+            </div>
+          </li>
+          <li class="flex flex-col bg-gata border-2 border-tinta rounded-3xl overflow-hidden">
+            <div class="relative border-b-2 border-tinta">
+              <svg class="w-full h-36 bg-gata" preserveAspectRatio="xMaxYMax slice" aria-hidden="true"><use href="#peaks"/></svg>
+              <span class="absolute top-3 left-3 -rotate-3 bg-kalamansi font-accent uppercase text-sm px-3 py-1 rounded-md border-2 border-tinta shadow-ube-sm">1,350 masl</span>
+            </div>
+            <div class="p-6 flex flex-col gap-3 flex-1">
+              <p class="font-label font-bold uppercase tracking-wider text-xs">Kapatagan, Davao del Sur</p>
+              <h3 class="font-serif text-2xl font-semibold leading-tight">Women-led processors of Mt. Apo</h3>
+              <p class="leading-relaxed">A processing group on the slopes of Mt. Apo known for careful honey lots. We commit to buying their full honey lot every season.</p>
+              <p class="mt-auto pt-3 border-t-2 border-dashed border-ube font-label font-bold uppercase tracking-wider text-sm">Multi-year buying commitment</p>
+            </div>
+          </li>
+        </ul>
+
+        <div class="mt-6 grid md:grid-cols-2 bg-gata border-2 border-tinta rounded-3xl overflow-hidden">
+          <img src="img/cafe.jpg" alt="Inside the Kasalo Kape café on Padre Faura: a sculpted sand-colored wall, velvet chairs, and the Kasalo Kape counter" loading="lazy" class="w-full h-64 md:h-full object-cover border-b-2 md:border-b-0 md:border-r-2 border-tinta">
+          <div class="p-6 sm:p-10">
+            <p class="font-label font-bold uppercase tracking-wider text-xs">At home in Ermita</p>
+            <h3 class="font-serif text-2xl sm:text-3xl font-semibold leading-tight mt-1">Good for the block, too</h3>
+            <ul class="mt-4 space-y-3 leading-relaxed">
+              <li class="flex gap-3"><span class="w-2 h-2 mt-2.5 shrink-0 rounded-full bg-jeepney" aria-hidden="true"></span>Spent grounds go to community gardens around Manila every week.</li>
+              <li class="flex gap-3"><span class="w-2 h-2 mt-2.5 shrink-0 rounded-full bg-jeepney" aria-hidden="true"></span>Subscription boxes and cup carriers are recyclable paper, no plastic tape.</li>
+              <li class="flex gap-3"><span class="w-2 h-2 mt-2.5 shrink-0 rounded-full bg-jeepney" aria-hidden="true"></span>Every active subscription plants one tree a month with reforestation partners in the Cordillera.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Testimonials ===== -->
+    <section class="py-16 md:py-24 bg-sili-soft" aria-labelledby="reviews-title">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6">
+        <p class="font-label font-bold uppercase tracking-[0.2em] text-sm">Reviews</p>
+        <h2 id="reviews-title" class="font-display uppercase text-banga text-3xl sm:text-5xl mt-2">What our kasalos are saying</h2>
+
+        <ul class="mt-10 -mx-4 px-4 sm:mx-0 sm:px-0 pb-4 flex gap-6 overflow-x-auto snap-x snap-mandatory lg:grid lg:grid-cols-4 lg:overflow-visible" aria-label="Customer reviews">
+          <li class="snap-start shrink-0 w-[85%] sm:w-[45%] lg:w-auto">
+            <figure class="h-full flex flex-col bg-papel border-2 border-tinta rounded-2xl p-6 shadow-ube">
+              <p class="text-kalamansi text-xl tracking-widest [-webkit-text-stroke:1px_#141414]" aria-label="5 out of 5 stars">★★★★★</p>
+              <blockquote class="font-serif text-lg leading-snug mt-3 flex-1">"The Sagada washed from March tasted like orange peel and black tea. My partner asked if I'd switched to some imported bean."</blockquote>
+              <figcaption class="mt-5 pt-4 border-t-2 border-dashed border-ube text-sm">
+                <b>Marites D.</b>, Pasig<br><span class="font-label uppercase tracking-wider text-xs">On the March drop</span>
+              </figcaption>
+            </figure>
+          </li>
+          <li class="snap-start shrink-0 w-[85%] sm:w-[45%] lg:w-auto">
+            <figure class="h-full flex flex-col bg-papel border-2 border-tinta rounded-2xl p-6 shadow-ube">
+              <p class="text-kalamansi text-xl tracking-widest [-webkit-text-stroke:1px_#141414]" aria-label="5 out of 5 stars">★★★★★</p>
+              <blockquote class="font-serif text-lg leading-snug mt-3 flex-1">"I never thought a barako could taste like jackfruit. The Lipa natural is the reason I switched to the 2-year plan."</blockquote>
+              <figcaption class="mt-5 pt-4 border-t-2 border-dashed border-ube text-sm">
+                <b>Paolo R.</b>, Quezon City<br><span class="font-label uppercase tracking-wider text-xs">On the July drop</span>
+              </figcaption>
+            </figure>
+          </li>
+          <li class="snap-start shrink-0 w-[85%] sm:w-[45%] lg:w-auto">
+            <figure class="h-full flex flex-col bg-papel border-2 border-tinta rounded-2xl p-6 shadow-ube">
+              <p class="text-kalamansi text-xl tracking-widest [-webkit-text-stroke:1px_#141414]" aria-label="5 out of 5 stars">★★★★★</p>
+              <blockquote class="font-serif text-lg leading-snug mt-3 flex-1">"The brew card alone taught me more than three coffee channels. The Kalinga lot was pure blueberry from the first sip."</blockquote>
+              <figcaption class="mt-5 pt-4 border-t-2 border-dashed border-ube text-sm">
+                <b>Janine S.</b>, Cebu City<br><span class="font-label uppercase tracking-wider text-xs">On the October drop</span>
+              </figcaption>
+            </figure>
+          </li>
+          <li class="snap-start shrink-0 w-[85%] sm:w-[45%] lg:w-auto">
+            <figure class="h-full flex flex-col bg-papel border-2 border-tinta rounded-2xl p-6 shadow-ube">
+              <p class="text-kalamansi text-xl tracking-widest [-webkit-text-stroke:1px_#141414]" aria-label="5 out of 5 stars">★★★★★</p>
+              <blockquote class="font-serif text-lg leading-snug mt-3 flex-1">"I gift The Fix to my uncles every Christmas. The Mt. Apo honey is the one they still bring up at every family lunch."</blockquote>
+              <figcaption class="mt-5 pt-4 border-t-2 border-dashed border-ube text-sm">
+                <b>Carlo M.</b>, Makati<br><span class="font-label uppercase tracking-wider text-xs">On the May drop</span>
+              </figcaption>
+            </figure>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===== Recent coffees archive ===== -->
+    <section id="archive" class="scroll-mt-16 bg-papel border-y-2 border-tinta py-16 md:py-24" aria-labelledby="archive-title">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6">
+        <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+          <div>
+            <p class="font-label font-bold uppercase tracking-[0.2em] text-sm">Coffee archive</p>
+            <h2 id="archive-title" class="font-display uppercase text-banga text-3xl sm:text-5xl mt-2">Recent coffees</h2>
+            <p class="font-serif text-lg sm:text-xl mt-3 max-w-xl">Past lots from The Fix. Filter by how the cherry was processed.</p>
+          </div>
+          <div class="flex flex-wrap gap-2" role="group" aria-label="Filter by process">
+            <button type="button" data-filter="All" aria-pressed="true" class="filter-btn font-label font-bold uppercase tracking-wider text-sm px-4 py-2 rounded-full border-2 border-tinta transition aria-pressed:bg-tinta aria-pressed:text-gata hover:shadow-ube-sm">All</button>
+            <button type="button" data-filter="Natural" aria-pressed="false" class="filter-btn font-label font-bold uppercase tracking-wider text-sm px-4 py-2 rounded-full border-2 border-tinta transition aria-pressed:bg-tinta aria-pressed:text-gata hover:shadow-ube-sm">Natural</button>
+            <button type="button" data-filter="Washed" aria-pressed="false" class="filter-btn font-label font-bold uppercase tracking-wider text-sm px-4 py-2 rounded-full border-2 border-tinta transition aria-pressed:bg-tinta aria-pressed:text-gata hover:shadow-ube-sm">Washed</button>
+            <button type="button" data-filter="Honey" aria-pressed="false" class="filter-btn font-label font-bold uppercase tracking-wider text-sm px-4 py-2 rounded-full border-2 border-tinta transition aria-pressed:bg-tinta aria-pressed:text-gata hover:shadow-ube-sm">Honey</button>
+          </div>
+        </div>
+
+        <ul id="lots" class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-10"></ul>
+        <p id="lots-status" class="sr-only" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <!-- ===== Moving text (decorative) ===== -->
+    <div class="bg-gata-light border-b-2 border-tinta overflow-hidden py-5 sm:py-7" aria-hidden="true">
+      <div class="marquee-track slow reverse font-label uppercase text-3xl sm:text-6xl whitespace-nowrap">
+        <p class="flex items-center gap-6 sm:gap-10 pr-6 sm:pr-10"><span>Get your fix</span><svg viewBox="0 0 100 100" class="w-8 h-8 sm:w-12 sm:h-12 shrink-0"><use href="#burst" fill="#F2B732" stroke="#141414" stroke-width="4"/></svg><span class="text-outline">One lot a month</span><svg viewBox="0 0 100 100" class="w-8 h-8 sm:w-12 sm:h-12 shrink-0"><use href="#burst" fill="#F2B732" stroke="#141414" stroke-width="4"/></svg><span class="text-banga">Made to be shared</span><svg viewBox="0 0 100 100" class="w-8 h-8 sm:w-12 sm:h-12 shrink-0"><use href="#burst" fill="#F2B732" stroke="#141414" stroke-width="4"/></svg></p><p class="flex items-center gap-6 sm:gap-10 pr-6 sm:pr-10"><span>Get your fix</span><svg viewBox="0 0 100 100" class="w-8 h-8 sm:w-12 sm:h-12 shrink-0"><use href="#burst" fill="#F2B732" stroke="#141414" stroke-width="4"/></svg><span class="text-outline">One lot a month</span><svg viewBox="0 0 100 100" class="w-8 h-8 sm:w-12 sm:h-12 shrink-0"><use href="#burst" fill="#F2B732" stroke="#141414" stroke-width="4"/></svg><span class="text-banga">Made to be shared</span><svg viewBox="0 0 100 100" class="w-8 h-8 sm:w-12 sm:h-12 shrink-0"><use href="#burst" fill="#F2B732" stroke="#141414" stroke-width="4"/></svg></p>
+        <p class="flex items-center gap-6 sm:gap-10 pr-6 sm:pr-10"><span>Get your fix</span><svg viewBox="0 0 100 100" class="w-8 h-8 sm:w-12 sm:h-12 shrink-0"><use href="#burst" fill="#F2B732" stroke="#141414" stroke-width="4"/></svg><span class="text-outline">One lot a month</span><svg viewBox="0 0 100 100" class="w-8 h-8 sm:w-12 sm:h-12 shrink-0"><use href="#burst" fill="#F2B732" stroke="#141414" stroke-width="4"/></svg><span class="text-banga">Made to be shared</span><svg viewBox="0 0 100 100" class="w-8 h-8 sm:w-12 sm:h-12 shrink-0"><use href="#burst" fill="#F2B732" stroke="#141414" stroke-width="4"/></svg></p><p class="flex items-center gap-6 sm:gap-10 pr-6 sm:pr-10"><span>Get your fix</span><svg viewBox="0 0 100 100" class="w-8 h-8 sm:w-12 sm:h-12 shrink-0"><use href="#burst" fill="#F2B732" stroke="#141414" stroke-width="4"/></svg><span class="text-outline">One lot a month</span><svg viewBox="0 0 100 100" class="w-8 h-8 sm:w-12 sm:h-12 shrink-0"><use href="#burst" fill="#F2B732" stroke="#141414" stroke-width="4"/></svg><span class="text-banga">Made to be shared</span><svg viewBox="0 0 100 100" class="w-8 h-8 sm:w-12 sm:h-12 shrink-0"><use href="#burst" fill="#F2B732" stroke="#141414" stroke-width="4"/></svg></p>
+      </div>
+    </div>
+
+    <!-- ===== Plan selector ===== -->
+    <section id="get-your-fix" class="scroll-mt-16 py-16 md:py-24 bg-kalamansi-soft" aria-labelledby="plans-title">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6">
+        <div class="text-center max-w-2xl mx-auto">
+          <h2 id="plans-title" class="font-accent uppercase text-banga text-5xl sm:text-7xl [text-shadow:4px_4px_0_#5B3A8C]">Get your fix</h2>
+          <p class="font-serif text-lg sm:text-xl mt-5">Every plan ships one 250 g bag a month with free delivery in Metro Manila. Pick how you'd like to pay.</p>
+        </div>
+
+        <fieldset class="mt-12">
+          <legend class="sr-only">Payment frequency</legend>
+          <div class="grid md:grid-cols-3 gap-6 md:gap-8 items-stretch">
+            <label class="relative flex flex-col bg-papel border-2 border-tinta rounded-3xl p-7 cursor-pointer transition hover:-translate-y-1 has-[:checked]:-translate-y-1 has-[:checked]:shadow-ube-lg has-[:focus-visible]:outline has-[:focus-visible]:outline-[3px] has-[:focus-visible]:outline-dashed has-[:focus-visible]:outline-offset-4">
+              <input type="radio" name="plan" value="monthly" class="peer sr-only" data-name="Monthly" data-rate="650" data-total="650" data-billing="Billed ₱650 every month">
+              <span class="absolute top-7 right-7 w-6 h-6 rounded-full border-2 border-tinta grid place-items-center peer-checked:bg-banga peer-checked:border-banga" aria-hidden="true"><span class="w-2 h-2 rounded-full bg-papel"></span></span>
+              <span class="font-label font-bold uppercase tracking-wider">Monthly</span>
+              <span class="mt-4 flex items-baseline gap-1"><span class="font-display text-5xl">₱650</span><span class="font-label font-bold">/mo+</span></span>
+              <span class="mt-2 text-sm">Billed every month. Pause or cancel anytime.</span>
+              <span class="mt-6 pt-4 border-t-2 border-dashed border-ube text-sm">Brew card and origin story with every bag.</span>
+            </label>
+
+            <label class="relative flex flex-col bg-papel border-2 border-tinta rounded-3xl p-7 cursor-pointer transition hover:-translate-y-1 has-[:checked]:-translate-y-1 has-[:checked]:shadow-ube-lg has-[:focus-visible]:outline has-[:focus-visible]:outline-[3px] has-[:focus-visible]:outline-dashed has-[:focus-visible]:outline-offset-4">
+              <input type="radio" name="plan" value="1-year" class="peer sr-only" checked data-name="1 Year" data-rate="595" data-total="7140" data-billing="Billed ₱7,140 once a year">
+              <span class="absolute top-7 right-7 w-6 h-6 rounded-full border-2 border-tinta grid place-items-center peer-checked:bg-banga peer-checked:border-banga" aria-hidden="true"><span class="w-2 h-2 rounded-full bg-papel"></span></span>
+              <span class="font-label font-bold uppercase tracking-wider">1 Year</span>
+              <span class="mt-4 flex items-baseline gap-1"><span class="font-display text-5xl">₱595</span><span class="font-label font-bold">/mo+</span></span>
+              <span class="mt-2 text-sm">Billed ₱7,140 once a year.</span>
+              <span class="mt-6 pt-4 border-t-2 border-dashed border-ube text-sm"><b class="bg-kalamansi px-1.5 rounded">Up to ₱5,000</b> in free gifts: ceramic dripper and Kasalo tumbler.</span>
+            </label>
+
+            <label class="relative flex flex-col bg-papel border-2 border-tinta rounded-3xl p-7 cursor-pointer transition hover:-translate-y-1 has-[:checked]:-translate-y-1 has-[:checked]:shadow-ube-lg has-[:focus-visible]:outline has-[:focus-visible]:outline-[3px] has-[:focus-visible]:outline-dashed has-[:focus-visible]:outline-offset-4">
+              <input type="radio" name="plan" value="2-years" class="peer sr-only" data-name="2 Years" data-rate="565" data-total="13560" data-billing="Billed ₱13,560 every 2 years">
+              <span class="absolute top-7 right-7 w-6 h-6 rounded-full border-2 border-tinta grid place-items-center peer-checked:bg-banga peer-checked:border-banga" aria-hidden="true"><span class="w-2 h-2 rounded-full bg-papel"></span></span>
+              <span class="absolute -top-8 right-14 w-24 rotate-12" aria-hidden="true">
+                <svg viewBox="0 0 100 100" class="w-full"><use href="#burst" fill="#F2B732" stroke="#141414" stroke-width="1.5"/></svg>
+                <span class="absolute inset-0 grid place-content-center text-center font-accent uppercase leading-none text-tinta text-sm">Best<br>value!</span>
+              </span>
+              <span class="font-label font-bold uppercase tracking-wider flex items-center gap-2">2 Years <span class="sr-only">(Best value)</span></span>
+              <span class="mt-4 flex items-baseline gap-1"><span class="font-display text-5xl">₱565</span><span class="font-label font-bold">/mo+</span></span>
+              <span class="mt-2 text-sm">Billed ₱13,560 every 2 years.</span>
+              <span class="mt-6 pt-4 border-t-2 border-dashed border-ube text-sm"><b class="bg-kalamansi px-1.5 rounded">Up to ₱9,500</b> in free gifts: dripper, tumbler, and a hand grinder.</span>
+            </label>
+          </div>
+        </fieldset>
+
+        <div class="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 text-center sm:text-left">
+          <p id="plan-summary" class="font-serif text-lg" aria-live="polite"></p>
+          <button id="add-plan" type="button" class="bg-banga text-papel font-label font-bold uppercase tracking-wider px-8 py-4 rounded-full border-2 border-tinta shadow-ube hover:-translate-y-0.5 hover:shadow-[8px_8px_0_#5B3A8C] transition">Add The Fix to cart</button>
+        </div>
+        <p class="text-center text-sm mt-4">“+” prices are for one 250 g bag. Add a second bag at checkout.</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== Footer ===== -->
+  <footer class="bg-papel border-t-2 border-tinta">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 py-14 grid lg:grid-cols-12 gap-12">
+      <nav class="lg:col-span-7 grid grid-cols-2 sm:grid-cols-4 gap-8" aria-label="Footer">
+        <div>
+          <h2 class="font-label font-bold uppercase tracking-wider">Shop</h2>
+          <ul class="mt-3 space-y-2">
+            <li><a href="index.html#menu" class="hover:text-banga hover:underline underline-offset-4">Coffee</a></li>
+            <li><a href="#" class="hover:text-banga hover:underline underline-offset-4">Tea</a></li>
+            <li><a href="#" class="hover:text-banga hover:underline underline-offset-4">Syrup</a></li>
+            <li><a href="#" class="hover:text-banga hover:underline underline-offset-4">Equipment</a></li>
+            <li><a href="#" class="hover:text-banga hover:underline underline-offset-4">Merch</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2 class="font-label font-bold uppercase tracking-wider">Subscribe</h2>
+          <ul class="mt-3 space-y-2">
+            <li><a href="#top" class="hover:text-banga hover:underline underline-offset-4">The Fix</a></li>
+            <li><a href="#get-your-fix" class="hover:text-banga hover:underline underline-offset-4">Subscriptions</a></li>
+            <li><a href="#" class="hover:text-banga hover:underline underline-offset-4">Account</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2 class="font-label font-bold uppercase tracking-wider">Company</h2>
+          <ul class="mt-3 space-y-2">
+            <li><a href="index.html#about" class="hover:text-banga hover:underline underline-offset-4">About Us</a></li>
+            <li><a href="#visit" class="hover:text-banga hover:underline underline-offset-4">Wholesale</a></li>
+            <li><a href="#" class="hover:text-banga hover:underline underline-offset-4">Giving Back</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2 class="font-label font-bold uppercase tracking-wider">More Info</h2>
+          <ul class="mt-3 space-y-2">
+            <li><a href="#archive" class="hover:text-banga hover:underline underline-offset-4">Coffee Archive</a></li>
+            <li><a href="#" class="hover:text-banga hover:underline underline-offset-4">Tours</a></li>
+            <li><a href="#" class="hover:text-banga hover:underline underline-offset-4">FAQs</a></li>
+          </ul>
+        </div>
+      </nav>
+
+      <section id="visit" class="scroll-mt-24 lg:col-span-5 bg-gata border-2 border-tinta rounded-3xl p-6 sm:p-8 shadow-ube" aria-labelledby="visit-title">
+        <h2 id="visit-title" class="font-display uppercase text-banga text-2xl">Visit us</h2>
+        <div class="grid sm:grid-cols-2 gap-6 mt-4">
+          <div>
+            <h3 class="font-label font-bold uppercase tracking-wider text-sm">Café</h3>
+            <address class="not-italic mt-2 leading-relaxed">Padre Faura St., Ermita,<br>Manila, 1000 Metro Manila,<br>Philippines</address>
+          </div>
+          <div>
+            <h3 class="font-label font-bold uppercase tracking-wider text-sm">Hours</h3>
+            <dl class="mt-2 grid grid-cols-[auto_1fr] gap-x-3 gap-y-1">
+              <dt class="whitespace-nowrap">Mon–Fri</dt><dd class="whitespace-nowrap">6AM – 10PM</dd>
+              <dt class="whitespace-nowrap">Sat–Sun</dt><dd class="whitespace-nowrap">7AM – 10PM</dd>
+            </dl>
+          </div>
+          <div class="sm:col-span-2">
+            <h3 class="font-label font-bold uppercase tracking-wider text-sm">Contact &amp; wholesale</h3>
+            <p class="mt-2"><a href="mailto:kasalokape@gmail.com" class="underline underline-offset-4 hover:text-banga">kasalokape@gmail.com</a></p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 pb-12 grid lg:grid-cols-3 gap-8 items-center">
+      <ul class="flex flex-wrap gap-x-6 gap-y-3" aria-label="Social media">
+        <li><a href="https://www.facebook.com/kasalokape" target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-banga font-bold hover:underline underline-offset-4">
+          <img src="icons/fb%20logo.png" alt="" class="w-6 h-6 object-contain brightness-0">Facebook</a></li>
+        <li><a href="https://www.instagram.com/kasalokape/" target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-banga font-bold hover:underline underline-offset-4">
+          <img src="icons/ig%20logo.png" alt="" class="w-6 h-6 object-contain brightness-0">@kasalokape</a></li>
+        <li><a href="#" class="inline-flex items-center gap-2 text-banga font-bold hover:underline underline-offset-4">
+          <svg class="w-6 h-6" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="4" fill="#141414"/><path d="M10 9l5 3-5 3z" fill="#FFFFFF"/></svg>YouTube</a></li>
+      </ul>
+
+      <form class="newsletter" aria-label="Newsletter">
+        <label for="news-email" class="font-label font-bold uppercase tracking-wider text-sm">Get new drops by email</label>
+        <div class="mt-2 flex gap-2">
+          <input id="news-email" type="email" required autocomplete="email" placeholder="you@email.com" class="flex-1 min-w-0 bg-papel border-2 border-tinta rounded-full px-4 py-2.5 placeholder:text-tinta/60">
+          <button type="submit" class="bg-banga text-papel font-label font-bold uppercase tracking-wider px-5 py-2.5 rounded-full border-2 border-tinta hover:shadow-ube-sm transition">Join</button>
+        </div>
+        <p class="news-msg mt-2 text-sm min-h-[1.25rem]" aria-live="polite"></p>
+      </form>
+
+      <p class="inline-flex items-center gap-3 justify-self-start lg:justify-self-end bg-kalamansi border-2 border-tinta rounded-full pl-3 pr-5 py-2 shadow-ube-sm">
+        <svg class="w-7 h-7 shrink-0" viewBox="0 0 24 24" fill="none" stroke="#141414" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l5 7h-3l4 6h-5v7h-2v-7H6l4-6H7z"/></svg>
+        <span class="font-label font-bold uppercase tracking-wider text-sm"><span id="tree-count">1,248</span> trees planted since 2024</span>
+        <span class="live-dot w-2.5 h-2.5 rounded-full bg-jeepney" aria-hidden="true"></span>
+      </p>
+    </div>
+
+    <div class="border-t-2 border-tinta">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 py-5 flex flex-col md:flex-row md:items-center md:justify-between gap-3 text-sm">
+        <p>© 2026 Kasalo Kape. Made to be shared.</p>
+        <ul class="flex flex-wrap gap-x-5 gap-y-2">
+          <li><a href="#" class="hover:text-banga hover:underline underline-offset-4">Privacy Policy</a></li>
+          <li><a href="#" class="hover:text-banga hover:underline underline-offset-4">Terms of Service</a></li>
+          <li><a href="#" class="hover:text-banga hover:underline underline-offset-4">Accessibility</a></li>
+        </ul>
+        <p>Site by the Kasalo Kape team</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="cart.js"></script>
+  <script>
+    // fruit: 0–100 position on the Fruit ↔ Chocolate scale (100 = all fruit)
+    const LOTS = [
+      { name: 'Kalinga Tinglayan Natural', origin: 'Tinglayan, Kalinga', process: 'Natural', roast: 'Light Roast', masl: '1,400', month: 'Oct 2026', notes: 'Blueberry, rose, dark cherry', fruit: 88 },
+      { name: 'Benguet Atok Natural', origin: 'Atok, Benguet', process: 'Natural', roast: 'Light Roast', masl: '1,600', month: 'Sep 2026', notes: 'Strawberry, hibiscus, cacao nib', fruit: 80 },
+      { name: 'Bukidnon Kitanglad Honey', origin: 'Mt. Kitanglad, Bukidnon', process: 'Honey', roast: 'Medium-Light', masl: '1,450', month: 'Aug 2026', notes: 'Pineapple, panela, cocoa', fruit: 62 },
+      { name: 'Batangas Lipa Barako Natural', origin: 'Lipa, Batangas', process: 'Natural', roast: 'Medium-Dark', masl: '300', month: 'Jul 2026', notes: 'Jackfruit, dark chocolate, smoke', fruit: 35 },
+      { name: 'Ifugao Kiangan Washed', origin: 'Kiangan, Ifugao', process: 'Washed', roast: 'Medium', masl: '1,200', month: 'Jun 2026', notes: 'Red apple, milk chocolate, almond', fruit: 42 },
+      { name: 'Mt. Apo Kapatagan Honey', origin: 'Kapatagan, Davao del Sur', process: 'Honey', roast: 'Medium', masl: '1,350', month: 'May 2026', notes: 'Mango, caramel, cocoa', fruit: 52 },
+      { name: 'Cavite Amadeo Washed', origin: 'Amadeo, Cavite', process: 'Washed', roast: 'Medium-Dark', masl: '500', month: 'Apr 2026', notes: 'Toasted pecan, dark chocolate, molasses', fruit: 18 },
+      { name: 'Sagada Bontoc Washed', origin: 'Sagada, Mountain Province', process: 'Washed', roast: 'Medium-Light', masl: '1,500', month: 'Mar 2026', notes: 'Orange peel, brown sugar, black tea', fruit: 66 },
+    ];
+
+    const PROCESS_DOT = { Natural: 'bg-sili', Washed: 'bg-jeepney', Honey: 'bg-kalamansi border border-tinta' };
+
+    const lotCard = l => `
+      <li><article class="group h-full flex flex-col bg-gata border-2 border-tinta rounded-2xl p-5 transition duration-200 hover:-translate-y-1 hover:shadow-ube">
+        <div class="flex items-start justify-between gap-3">
+          <p class="font-label font-bold uppercase tracking-wider text-xs pt-1">${l.month}</p>
+          <span class="-rotate-3 bg-kalamansi font-accent uppercase text-xs px-2.5 py-1 rounded-md border-2 border-tinta shadow-ube-sm whitespace-nowrap">${l.roast}</span>
+        </div>
+        <h3 class="font-serif text-2xl font-semibold leading-tight mt-3">${l.name}</h3>
+        <dl class="mt-4 grid grid-cols-[auto_1fr] gap-x-3 gap-y-1.5 text-sm">
+          <dt class="font-label font-bold uppercase tracking-wider text-xs pt-0.5">Origin</dt><dd>${l.origin}</dd>
+          <dt class="font-label font-bold uppercase tracking-wider text-xs pt-0.5">Process</dt>
+          <dd class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full ${PROCESS_DOT[l.process]}" aria-hidden="true"></span>${l.process}</dd>
+          <dt class="font-label font-bold uppercase tracking-wider text-xs pt-0.5">Elevation</dt><dd>${l.masl} masl</dd>
+        </dl>
+        <p class="font-serif italic text-lg mt-4">${l.notes}</p>
+        <div class="mt-auto pt-5">
+          <div class="flex justify-between font-label font-bold uppercase tracking-wider text-xs"><span>Fruit</span><span>Chocolate</span></div>
+          <div class="relative h-2.5 mt-1.5 rounded-full border-2 border-tinta bg-papel" role="img" aria-label="Flavor profile: ${l.fruit}% fruit, ${100 - l.fruit}% chocolate">
+            <span class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-banga border-2 border-tinta shadow-ube-sm" style="left:${100 - l.fruit}%"></span>
+          </div>
+        </div>
+      </article></li>`;
+
+    const lotsEl = document.getElementById('lots');
+    const renderLots = filter => {
+      const shown = LOTS.filter(l => filter === 'All' || l.process === filter);
+      lotsEl.innerHTML = shown.map(lotCard).join('');
+      document.getElementById('lots-status').textContent = `Showing ${shown.length} ${filter === 'All' ? '' : filter.toLowerCase() + ' '}coffees.`;
+    };
+    document.querySelectorAll('.filter-btn').forEach(btn => btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.setAttribute('aria-pressed', b === btn));
+      renderLots(btn.dataset.filter);
+    }));
+    renderLots('All');
+
+    // Plan selector
+    const summary = document.getElementById('plan-summary');
+    const plan = () => document.querySelector('input[name="plan"]:checked');
+    const showPlan = () => {
+      const p = plan().dataset;
+      summary.innerHTML = `<b>${p.name}</b> · ₱${p.rate}/mo · ${p.billing}`;
+    };
+    document.querySelectorAll('input[name="plan"]').forEach(i => i.addEventListener('change', showPlan));
+    showPlan();
+    const addBtn = document.getElementById('add-plan');
+    addBtn.addEventListener('click', () => {
+      const p = plan().dataset;
+      KasaloCart.add({ id: 'the-fix-' + plan().value, name: `The Fix · ${p.name} plan`, price: Number(p.total), variant: p.billing, img: 'cup%20logo%202.png' });
+      addBtn.textContent = 'Added ✓';
+      setTimeout(() => { addBtn.textContent = 'Add The Fix to cart'; }, 1400);
+    });
+
+    // Mobile nav
+    const menuBtn = document.getElementById('menu-btn');
+    const mobileNav = document.getElementById('mobile-nav');
+    const setNav = open => {
+      mobileNav.classList.toggle('hidden', !open);
+      menuBtn.setAttribute('aria-expanded', open);
+      menuBtn.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
+    };
+    menuBtn.addEventListener('click', () => setNav(mobileNav.classList.contains('hidden')));
+    mobileNav.addEventListener('click', e => { if (e.target.closest('a')) setNav(false); });
+
+    // shortcut: newsletter has no backend yet, it only confirms in the page; wire to a real endpoint before launch.
+    document.querySelector('.newsletter').addEventListener('submit', e => {
+      e.preventDefault();
+      e.target.querySelector('.news-msg').textContent = "Thanks! You're on the list.";
+      e.target.reset();
+    });
+  </script>
+</body>
+</html>
