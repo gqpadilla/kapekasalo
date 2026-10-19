@@ -20,6 +20,30 @@
     </defs>
   </svg>
 
+  <!-- ===== Intro film: opens on every load; Skip intro, Esc, or the film ending closes it ===== -->
+  <dialog id="intro" class="intro" aria-label="Kasalo Kape intro film">
+    <video id="intro-video" src="Video/kasalo-promo.mp4" playsinline preload="auto" class="w-full h-full object-contain"></video>
+    <div class="absolute bottom-4 right-4 sm:bottom-8 sm:right-8 flex flex-wrap justify-end gap-3">
+      <button type="button" id="intro-sound" hidden class="bg-papel text-tinta font-label font-bold uppercase tracking-wider text-sm px-5 py-3 rounded-full border-2 border-tinta hover:bg-kalamansi transition">Sound on</button>
+      <button type="button" id="intro-skip" autofocus class="bg-kalamansi text-tinta font-label font-bold uppercase tracking-wider text-sm px-6 py-3 rounded-full border-2 border-tinta shadow-ube hover:-translate-y-0.5 transition">Skip intro</button>
+    </div>
+  </dialog>
+  <script>
+    (() => {
+      const intro = document.getElementById('intro'), video = document.getElementById('intro-video'), sound = document.getElementById('intro-sound');
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) return intro.remove();   // the film is still in the Watch section
+      const end = () => intro.open && intro.close();
+      intro.addEventListener('close', () => { video.pause(); intro.remove(); });
+      document.getElementById('intro-skip').addEventListener('click', end);
+      video.addEventListener('ended', end);
+      video.addEventListener('error', end);   // never trap visitors behind a film that can't load
+      sound.addEventListener('click', () => { video.muted = false; sound.hidden = true; });
+      intro.showModal();
+      // browsers block autoplay with sound: fall back to muted with a Sound on button
+      video.play().catch(() => { video.muted = true; sound.hidden = false; return video.play(); }).catch(end);
+    })();
+  </script>
+
   <a href="#menu" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:bg-kalamansi focus:px-4 focus:py-2 focus:rounded-full font-label font-bold">Skip to menu</a>
 
   <!-- ===== Utility bar ===== -->
@@ -138,6 +162,16 @@
         </p>
       </div>
     </div>
+
+    <!-- ===== The film ===== -->
+    <section id="film" class="on-dark scroll-mt-16 py-14 sm:py-20 bg-tinta text-gata border-b-2 border-tinta" aria-labelledby="film-title">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6">
+        <p class="font-label font-bold uppercase tracking-[0.2em] text-sm text-kalamansi">Watch</p>
+        <h2 id="film-title" class="font-display uppercase text-3xl sm:text-5xl mt-2 [text-shadow:3px_3px_0_#5B3A8C]">Kasalo Kape in 20 seconds</h2>
+        <video src="Video/kasalo-promo.mp4" poster="Video/kasalo-promo-poster.jpg" controls playsinline preload="none" aria-label="Kasalo Kape 20-second film"
+          class="mt-8 w-full aspect-video rounded-3xl bg-tinta shadow-kal"></video>
+      </div>
+    </section>
 
     <!-- ===== Featured ===== -->
     <section class="py-14 sm:py-20" aria-labelledby="featured-title">
@@ -601,7 +635,7 @@
       if (!add) return;
       const p = PRODUCTS.find(x => x.id === add.dataset.add);
       const variant = p.variants?.[state.variant[p.id] || 0];
-      KasaloCart.add({ id: p.id, name: p.name, price: priceOf(p), img: p.src, variant: variant?.label });
+      KasaloCart.add({ id: p.id, name: p.name, price: priceOf(p), cat: p.cat, img: p.src, variant: variant?.label });
     });
 
     // ?cat=coffee (from product-page breadcrumbs) opens the catalog on that category

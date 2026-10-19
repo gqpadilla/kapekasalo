@@ -36,6 +36,11 @@ html { scroll-behavior: smooth; overflow-x: clip; }
 .retro { text-shadow: 4px 4px 0 #A84A2A, 8px 8px 0 #F2B732, 12px 12px 0 #141414; }
 @media (min-width: 1024px) { .retro { text-shadow: 6px 6px 0 #A84A2A, 12px 12px 0 #F2B732; } }
 
+/* ---- Intro film (index.html): full-screen modal over the page ---- */
+.intro { width: 100vw; height: 100dvh; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: #141414; }
+.intro::backdrop { background: #141414; }
+html:has(.intro[open]) { overflow: hidden; }   /* on html: its overflow-x: clip keeps body's overflow from reaching the viewport */
+
 .live-dot { animation: pulse 1.8s ease-in-out infinite; }
 @keyframes pulse { 50% { opacity: .3; } }
 

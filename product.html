@@ -346,7 +346,7 @@
       form.addEventListener('submit', e => {
         e.preventDefault();
         const variant = picked().map(c => c.label).join(' · ');
-        KasaloCart.add({ id: p.id, name: p.name, price: price(), img: p.src, variant }, qty);
+        KasaloCart.add({ id: p.id, name: p.name, price: price(), cat: p.cat, img: p.src, variant }, qty);
         const label = document.getElementById('add-label');
         label.textContent = 'Added ✓';
         setTimeout(() => { label.textContent = 'Add to Cart'; }, 1400);

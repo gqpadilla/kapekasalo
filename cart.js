@@ -40,6 +40,18 @@
   const toast = document.getElementById('cart-toast');
   const count = () => items.reduce((n, i) => n + i.qty, 0);
   const subtotal = () => items.reduce((n, i) => n + i.qty * i.price, 0);
+
+  // Kasalo Bundle: each drink (coffee or cooler) paired with a pastry or rice cake saves ₱20.
+  // Pairs are counted by quantity as sold (a "Box of 4" line is one pastry); The Fix plans have no cat and never count.
+  const BUNDLE_OFF = 20;
+  const catOf = i => i.cat || window.KASALO?.find(i.key.split('|')[0])?.cat;   // items saved before cat was stored
+  const qtyIn = (list, cats) => list.filter(i => cats.includes(catOf(i))).reduce((n, i) => n + i.qty, 0);
+  const bundlesIn = list => Math.min(qtyIn(list, ['coffee', 'coolers']), qtyIn(list, ['pastries']));
+  console.assert(bundlesIn([{ key: 'a', cat: 'coffee', qty: 2 }, { key: 'b', cat: 'pastries', qty: 1 }, { key: 'the-fix-1-year', qty: 1 }]) === 1
+    && bundlesIn([{ key: 'a', cat: 'coolers', qty: 3 }, { key: 'b', cat: 'pastries', qty: 2 }]) === 2
+    && bundlesIn([{ key: 'b', cat: 'pastries', qty: 4 }]) === 0, 'Kasalo Bundle pairing');
+  const discount = () => bundlesIn(items) * BUNDLE_OFF;
+  const total = () => subtotal() - discount();
   const thumb = src => src
     ? `<img src="${esc(src)}" alt="" class="w-full h-full object-contain">`
     : `<img src="cup%20logo%202.png" alt="" class="w-full h-full object-contain opacity-40">`;
@@ -84,8 +96,9 @@
     foot.innerHTML = `
       <dl class="space-y-1">
         <div class="flex justify-between"><dt>Subtotal</dt><dd>${peso(subtotal())}</dd></div>
+        ${discount() ? `<div class="flex justify-between font-bold text-banga"><dt>Kasalo Bundle${bundlesIn(items) > 1 ? ` ×${bundlesIn(items)}` : ''}</dt><dd>−${peso(discount())}</dd></div>` : ''}
         <div class="flex justify-between text-sm"><dt>Pickup at Padre Faura St.</dt><dd>Free</dd></div>
-        <div class="flex justify-between font-bold text-lg pt-2 border-t-2 border-dashed border-ube mt-2"><dt>Total</dt><dd>${peso(subtotal())}</dd></div>
+        <div class="flex justify-between font-bold text-lg pt-2 border-t-2 border-dashed border-ube mt-2"><dt>Total</dt><dd>${peso(total())}</dd></div>
       </dl>
       <button type="button" data-checkout class="mt-4 w-full bg-banga text-papel font-label font-bold uppercase tracking-wider py-4 rounded-full border-2 border-tinta shadow-ube hover:-translate-y-0.5 transition">Checkout</button>
       <button type="button" data-cart-close class="mt-2 w-full font-label font-bold uppercase tracking-wider text-sm py-3 rounded-full hover:bg-papel transition">Continue shopping</button>`;
@@ -93,7 +106,7 @@
 
   function checkout() {
     const order = 'KK-' + Math.floor(1000 + Math.random() * 9000);
-    const total = subtotal();
+    const paid = total();
     items = []; save(); render();
     body.innerHTML = `
       <div class="h-full grid place-content-center text-center gap-3 py-16">
@@ -102,7 +115,7 @@
           <svg class="absolute inset-0 m-auto w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="#141414" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 6"/></svg>
         </div>
         <p class="font-display uppercase text-2xl text-banga">Order received!</p>
-        <p class="font-serif text-lg">Order <b>${order}</b> · ${peso(total)}<br>Ready for pickup at Padre Faura St. in about 15 minutes.</p>
+        <p class="font-serif text-lg">Order <b>${order}</b> · ${peso(paid)}<br>Ready for pickup at Padre Faura St. in about 15 minutes.</p>
         <p class="text-sm text-tinta/70">This is a demo checkout. No payment was taken.</p>
       </div>`;
     foot.innerHTML = `<button type="button" data-cart-close class="w-full bg-banga text-papel font-label font-bold uppercase tracking-wider py-4 rounded-full border-2 border-tinta hover:shadow-ube-sm transition">Back to shopping</button>`;
@@ -133,12 +146,12 @@
     dialog.showModal();
   }
 
-  // item: { id, name, price, img?, variant? }
+  // item: { id, name, price, cat?, img?, variant? }  (cat: products.js category, used for the Kasalo Bundle)
   function add(item, qty = 1) {
     const key = item.id + (item.variant ? '|' + item.variant : '');
     const found = items.find(i => i.key === key);
     if (found) found.qty += qty;
-    else items.push({ key, name: item.name, price: item.price, img: item.img || null, variant: item.variant || '', qty });
+    else items.push({ key, name: item.name, price: item.price, cat: item.cat || '', img: item.img || null, variant: item.variant || '', qty });
     save(); render(); showToast(item);
   }
 
