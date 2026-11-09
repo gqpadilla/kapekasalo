@@ -1,0 +1,4 @@
+confirm.html  →  subject: Confirm your Kasalo Kape account
+magic_link.html  →  subject: Your Kasalo Kape login link
+reset_password.html  →  subject: Reset your Kasalo Kape password
+change_email.html  →  subject: Confirm your new email for Kasalo Kape

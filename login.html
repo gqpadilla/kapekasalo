@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Log in · Kasalo Kape</title>
+  <meta name="description" content="Log in or create your Kasalo Kape account to order ahead, track orders, and collect points.">
+  <link rel="icon" href="cup%20logo%202.png">
+  <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+  <script src="tailwind.config.js"></script>
+  <link rel="stylesheet" href="brand.css">
+</head>
+
+<body class="bg-gata-light text-tinta font-sans antialiased">
+  <svg width="0" height="0" class="absolute" aria-hidden="true">
+    <defs>
+      <polygon id="burst" points="50.0,0.0 57.4,12.7 69.1,3.8 71.1,18.4 85.4,14.6 81.6,28.9 96.2,30.9 87.3,42.6 100.0,50.0 87.3,57.4 96.2,69.1 81.6,71.1 85.4,85.4 71.1,81.6 69.1,96.2 57.4,87.3 50.0,100.0 42.6,87.3 30.9,96.2 28.9,81.6 14.6,85.4 18.4,71.1 3.8,69.1 12.7,57.4 0.0,50.0 12.7,42.6 3.8,30.9 18.4,28.9 14.6,14.6 28.9,18.4 30.9,3.8 42.6,12.7"/>
+    </defs>
+  </svg>
+
+  <div class="min-h-[100dvh] grid lg:grid-cols-[1.1fr_1fr] items-start">
+    <!-- ===== Photo side ===== -->
+    <aside class="relative hidden lg:block lg:sticky lg:top-0 lg:h-[100dvh] border-r-2 border-tinta overflow-hidden" aria-hidden="true">
+      <img src="img/cafe.jpg" alt="" class="absolute inset-0 w-full h-full object-cover">
+      <div class="absolute inset-0 bg-gradient-to-t from-tinta/85 via-tinta/20 to-tinta/10"></div>
+      <a href="index.html" class="absolute top-8 left-10 bg-gata/90 backdrop-blur rounded-2xl px-3 py-1.5 border-2 border-tinta" tabindex="-1">
+        <img src="logo1%20bnw%202.png" alt="" class="h-12 w-[108px] object-cover mix-blend-multiply">
+      </a>
+      <div class="absolute top-8 right-10 w-28 rotate-12">
+        <svg viewBox="0 0 100 100" class="w-full drop-shadow-[3px_3px_0_#5B3A8C]"><use href="#burst" fill="#F2B732" stroke="#141414" stroke-width="1.5"/></svg>
+        <span class="absolute inset-0 grid place-content-center text-center font-accent uppercase leading-tight text-tinta text-sm">1 point<br>per ₱50</span>
+      </div>
+      <figure class="absolute left-10 right-10 bottom-10 text-papel max-w-xl">
+        <p class="font-label uppercase tracking-[0.25em] text-xs text-kalamansi">ka- (companion) + salo (to share a meal)</p>
+        <blockquote class="font-serif text-4xl xl:text-5xl leading-[1.08] mt-4">A kasalo is the person you share a table with, someone who eats from the same plate.</blockquote>
+        <figcaption class="mt-6 flex items-center gap-3 font-label uppercase tracking-wider text-xs">
+          <span class="h-0.5 w-10 bg-kalamansi"></span> Padre Faura St., Ermita · Open daily until 10PM
+        </figcaption>
+      </figure>
+    </aside>
+
+    <!-- ===== Form side ===== -->
+    <main id="main" class="min-h-[100dvh] flex flex-col px-5 sm:px-10 lg:px-16 py-6 lg:py-10">
+      <div class="flex items-center justify-between">
+        <a href="index.html" class="lg:invisible"><img src="logo1%20bnw%202.png" alt="Kasalo Kape home" class="h-12 w-[108px] object-cover mix-blend-multiply"></a>
+        <a href="index.html" class="inline-flex items-center gap-2 font-label uppercase tracking-wider text-sm hover:text-banga">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+          Back to the shop
+        </a>
+      </div>
+
+      <div class="flex-1 grid place-items-center py-10">
+        <div class="w-full max-w-md">
+          <p id="not-configured" hidden class="mb-6 rounded-2xl border-2 border-tinta bg-kalamansi-soft px-4 py-3 text-sm">
+            <b>Accounts are almost ready.</b> This site isn't connected to the database yet, so logging in is turned off for now.
+          </p>
+
+          <!-- Log in / Sign up switch -->
+          <div id="switch" role="tablist" aria-label="Account" class="inline-flex p-1 rounded-full border-2 border-tinta bg-papel mb-8">
+            <button type="button" role="tab" data-mode="login" class="px-5 py-2 rounded-full font-label uppercase tracking-wider text-sm transition aria-selected:bg-tinta aria-selected:text-gata">Log in</button>
+            <button type="button" role="tab" data-mode="signup" class="px-5 py-2 rounded-full font-label uppercase tracking-wider text-sm transition aria-selected:bg-tinta aria-selected:text-gata">Sign up</button>
+          </div>
+
+          <h1 id="title" class="font-serif text-5xl sm:text-6xl leading-[1.02]"></h1>
+          <p id="lede" class="font-serif text-lg sm:text-xl mt-3 text-tinta/80"></p>
+
+          <div id="alert" role="alert" hidden class="mt-6 rounded-2xl border-2 px-4 py-3 text-sm"></div>
+
+          <form id="form" class="mt-8 space-y-5" novalidate>
+            <div data-field="name">
+              <label for="name" class="font-label uppercase tracking-wider text-xs">Your name</label>
+              <input id="name" name="name" autocomplete="name" class="kk-input" placeholder="Juan dela Cruz">
+            </div>
+            <div data-field="email">
+              <label for="email" class="font-label uppercase tracking-wider text-xs">Email</label>
+              <input id="email" name="email" type="email" autocomplete="email" class="kk-input" placeholder="you@email.com">
+            </div>
+            <div data-field="password">
+              <div class="flex items-center justify-between">
+                <label for="password" class="font-label uppercase tracking-wider text-xs">Password</label>
+                <button type="button" data-goto="forgot" data-show="login" class="text-sm underline underline-offset-4 hover:text-banga">Forgot password?</button>
+              </div>
+              <div class="relative">
+                <input id="password" name="password" type="password" autocomplete="current-password" class="kk-input pr-20" placeholder="At least 8 characters">
+                <button type="button" id="reveal" aria-pressed="false" class="absolute right-2 top-1/2 -translate-y-1/2 mt-1 px-3 py-1.5 rounded-full text-xs font-bold hover:bg-gata">Show</button>
+              </div>
+              <div data-show="signup reset" class="mt-2 flex items-center gap-3" aria-live="polite">
+                <div class="flex-1 grid grid-cols-4 gap-1" aria-hidden="true">
+                  <span class="meter h-1.5 rounded-full bg-tinta/10"></span><span class="meter h-1.5 rounded-full bg-tinta/10"></span>
+                  <span class="meter h-1.5 rounded-full bg-tinta/10"></span><span class="meter h-1.5 rounded-full bg-tinta/10"></span>
+                </div>
+                <span id="strength" class="text-xs w-20 text-right"></span>
+              </div>
+            </div>
+
+            <button id="submit" type="submit" class="w-full bg-banga text-papel font-label uppercase tracking-wider text-lg py-4 rounded-2xl border-2 border-tinta shadow-ube hover:-translate-y-0.5 transition disabled:opacity-60 disabled:hover:translate-y-0"></button>
+
+            <div data-show="login" class="relative text-center">
+              <span class="absolute inset-x-0 top-1/2 border-t border-tinta/20" aria-hidden="true"></span>
+              <span class="relative bg-gata-light px-3 text-sm text-tinta/70">or</span>
+            </div>
+            <button type="button" data-goto="magic" data-show="login" class="w-full bg-papel font-label uppercase tracking-wider py-3.5 rounded-2xl border-2 border-tinta hover:shadow-ube-sm transition">Email me a login link</button>
+            <button type="button" data-goto="login" data-show="magic forgot" class="w-full font-label uppercase tracking-wider text-sm py-3 rounded-2xl hover:bg-papel transition">Back to log in with password</button>
+          </form>
+
+          <!-- "Check your inbox" state -->
+          <div id="sent" hidden class="mt-8 rounded-3xl border-2 border-tinta bg-papel p-6 shadow-ube">
+            <div class="flex items-start gap-4">
+              <div class="relative w-14 shrink-0" aria-hidden="true">
+                <svg viewBox="0 0 100 100" class="w-full"><use href="#burst" fill="#F2B732" stroke="#141414" stroke-width="2"/></svg>
+                <svg class="absolute inset-0 m-auto w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="#141414" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+              </div>
+              <div>
+                <p class="font-serif text-2xl leading-tight">Check your inbox</p>
+                <p id="sent-text" class="mt-1"></p>
+                <p class="mt-3 text-sm text-tinta/70">No email after a minute? Check spam, or <button type="button" data-goto="login" class="underline underline-offset-4 hover:text-banga">try again</button>.</p>
+              </div>
+            </div>
+          </div>
+
+          <p data-show="signup" class="mt-6 text-sm text-tinta/70">By signing up you agree to receive order emails from Kasalo Kape. We never share your email.</p>
+        </div>
+      </div>
+
+      <p class="text-sm text-tinta/70">© 2026 Kasalo Kape. Made to be shared.</p>
+    </main>
+  </div>
+
+  <style>
+    .kk-input { display: block; width: 100%; margin-top: .375rem; padding: .85rem 1rem; background: #FFFFFF; border: 2px solid #141414;
+      border-radius: .9rem; font-size: 1rem; transition: box-shadow .15s; }
+    .kk-input::placeholder { color: rgba(20, 20, 20, .45); }
+    .kk-input:focus { outline: none; box-shadow: 4px 4px 0 #5B3A8C; }
+    .kk-input[aria-invalid="true"] { border-color: #E8453F; }
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.js"></script>
+  <script src="supabase.js"></script>
+  <script>
+    const { sb, configured } = KK;
+    const $ = s => document.querySelector(s);
+    const params = new URLSearchParams(location.search);
+
+    // Only send people on to a page of this site (no open redirects).
+    const next = /^(admin\/)?[a-z0-9-]+\.html(\?[^#]*)?$/i.test(params.get('next') || '') ? params.get('next') : null;
+    const redirectTo = path => `${location.origin}${location.pathname.replace(/[^/]*$/, '')}${path}`;
+
+    const MODES = {
+      login:  { title: 'Welcome back, kasalo.', lede: 'Log in to order ahead, see your orders, and collect points.', submit: 'Log in', fields: ['email', 'password'], tab: 'login' },
+      signup: { title: 'Pull up a chair.', lede: 'Make an account in a minute. Every ₱50 you spend earns a point.', submit: 'Create account', fields: ['name', 'email', 'password'], tab: 'signup' },
+      magic:  { title: 'No password? No problem.', lede: 'We’ll email you a one-time link that logs you straight in.', submit: 'Send me a login link', fields: ['email'], tab: 'login' },
+      forgot: { title: 'Forgot your password?', lede: 'Enter your email and we’ll send a link to set a new one.', submit: 'Send reset link', fields: ['email'], tab: 'login' },
+      reset:  { title: 'Set a new password.', lede: 'Choose something you haven’t used before.', submit: 'Save new password', fields: ['password'], tab: null },
+    };
+    let mode = params.get('mode') in MODES ? params.get('mode') : 'login';
+
+    function alertBox(text, kind = 'error') {
+      const a = $('#alert');
+      a.hidden = !text;
+      a.textContent = text || '';
+      a.className = 'mt-6 rounded-2xl border-2 px-4 py-3 text-sm ' +
+        (kind === 'error' ? 'border-sili bg-sili-soft' : 'border-jeepney bg-jeepney-soft');
+    }
+
+    function setMode(m) {
+      mode = m;
+      const cfg = MODES[m];
+      $('#title').textContent = cfg.title;
+      $('#lede').textContent = cfg.lede;
+      $('#submit').textContent = cfg.submit;
+      document.title = `${m === 'signup' ? 'Sign up' : 'Log in'} · Kasalo Kape`;
+      document.querySelectorAll('[data-field]').forEach(el => { el.hidden = !cfg.fields.includes(el.dataset.field); });
+      document.querySelectorAll('[data-show]').forEach(el => { el.hidden = !el.dataset.show.split(' ').includes(m); });
+      document.querySelectorAll('#switch [data-mode]').forEach(b => b.setAttribute('aria-selected', b.dataset.mode === cfg.tab));
+      $('#switch').hidden = !cfg.tab;
+      $('#password').autocomplete = m === 'login' ? 'current-password' : 'new-password';
+      $('#form').hidden = false; $('#sent').hidden = true;
+      document.querySelectorAll('.kk-input').forEach(i => i.removeAttribute('aria-invalid'));
+      alertBox('');
+      strength();
+    }
+
+    // Password strength: length, mixed case, numbers, symbols.
+    function strength() {
+      const v = $('#password').value;
+      const score = !v ? 0 : [v.length >= 8, /[a-z]/.test(v) && /[A-Z]/.test(v), /\d/.test(v), /[^A-Za-z0-9]/.test(v) || v.length >= 14].filter(Boolean).length;
+      const colors = ['', 'bg-sili', 'bg-kalamansi', 'bg-jeepney', 'bg-jeepney'];
+      document.querySelectorAll('.meter').forEach((m, i) => { m.className = `meter h-1.5 rounded-full ${i < score ? colors[score] : 'bg-tinta/10'}`; });
+      $('#strength').textContent = ['', 'Weak', 'Okay', 'Good', 'Strong'][score];
+    }
+
+    function invalid(id, text) {
+      $('#' + id).setAttribute('aria-invalid', 'true');
+      $('#' + id).focus();
+      alertBox(text);
+      return false;
+    }
+
+    function validate() {
+      document.querySelectorAll('.kk-input').forEach(i => i.removeAttribute('aria-invalid'));
+      const f = MODES[mode].fields;
+      if (f.includes('name') && !$('#name').value.trim()) return invalid('name', 'Please tell us your name.');
+      if (f.includes('email') && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test($('#email').value.trim())) return invalid('email', 'Enter a valid email address.');
+      if (f.includes('password') && mode !== 'login' && $('#password').value.length < 8) return invalid('password', 'Use a password with at least 8 characters.');
+      if (f.includes('password') && mode === 'login' && !$('#password').value) return invalid('password', 'Enter your password.');
+      return true;
+    }
+
+    function sent(text) {
+      $('#form').hidden = true; $('#switch').hidden = true;
+      $('#sent').hidden = false; $('#sent-text').textContent = text;
+    }
+
+    // Where to go after logging in: admins to the dashboard, customers back to where they came from.
+    async function goHome() {
+      const p = await KK.profile();
+      if (p?.role === 'admin' && !next?.startsWith('admin/')) return location.replace('admin/index.html');
+      location.replace(next || 'account.html');
+    }
+
+    $('#form').addEventListener('submit', async e => {
+      e.preventDefault();
+      if (!configured) return alertBox('Logging in is turned off until the site is connected to the database.');
+      if (!validate()) return;
+      const email = $('#email').value.trim().toLowerCase(), password = $('#password').value, btn = $('#submit');
+      btn.disabled = true; const label = btn.textContent; btn.textContent = 'Please wait…';
+      try {
+        if (mode === 'login') {
+          const { error } = await sb.auth.signInWithPassword({ email, password });
+          if (error) throw error;
+          return goHome();
+        }
+        if (mode === 'signup') {
+          const { data, error } = await sb.auth.signUp({ email, password,
+            options: { data: { full_name: $('#name').value.trim() }, emailRedirectTo: redirectTo('login.html?confirmed=1') } });
+          if (error) throw error;
+          if (data.session) return goHome();   // email confirmation turned off in Supabase
+          return sent(`We sent a confirmation link to ${email}. Open it to finish creating your account.`);
+        }
+        if (mode === 'magic') {
+          const { error } = await sb.auth.signInWithOtp({ email, options: { shouldCreateUser: false, emailRedirectTo: redirectTo(`login.html${next ? '?next=' + encodeURIComponent(next) : ''}`) } });
+          if (error) throw error;
+          return sent(`We sent a login link to ${email}. It works once and expires in an hour.`);
+        }
+        if (mode === 'forgot') {
+          const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: redirectTo('login.html?mode=reset') });
+          if (error) throw error;
+          return sent(`If ${email} has an account, a reset link is on its way.`);
+        }
+        if (mode === 'reset') {
+          const { error } = await sb.auth.updateUser({ password });
+          if (error) throw error;
+          alertBox('Password saved. Taking you to your account…', 'ok');
+          return setTimeout(goHome, 900);
+        }
+      } catch (err) {
+        alertBox(KK.message(err));
+      } finally {
+        btn.disabled = false; btn.textContent = label;
+      }
+    });
+
+    document.addEventListener('click', e => {
+      const tab = e.target.closest('#switch [data-mode]');
+      if (tab) setMode(tab.dataset.mode);
+      const go = e.target.closest('[data-goto]');
+      if (go) setMode(go.dataset.goto);
+    });
+    $('#reveal').addEventListener('click', e => {
+      const show = $('#password').type === 'password';
+      $('#password').type = show ? 'text' : 'password';
+      e.target.textContent = show ? 'Hide' : 'Show';
+      e.target.setAttribute('aria-pressed', show);
+    });
+    $('#password').addEventListener('input', strength);
+
+    setMode(mode);
+    if (!configured) { $('#not-configured').hidden = false; }
+    else {
+      if (params.get('confirmed')) alertBox('Email confirmed. Welcome to Kasalo Kape!', 'ok');
+      // Arriving from an email link: Supabase reads the token from the URL and fires these events.
+      sb.auth.onAuthStateChange((event, session) => {
+        if (event === 'PASSWORD_RECOVERY') setMode('reset');
+        else if (event === 'SIGNED_IN' && session && mode !== 'reset' && (location.hash.includes('access_token') || params.get('confirmed'))) goHome();
+      });
+      // Already logged in? Skip the form.
+      KK.session().then(s => { if (s && mode !== 'reset' && !location.hash.includes('type=recovery')) goHome(); });
+    }
+  </script>
+</body>
+</html>

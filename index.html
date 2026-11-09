@@ -79,7 +79,7 @@
       </nav>
 
       <div class="flex items-center gap-1 sm:gap-2">
-        <a href="#" aria-label="Your account" class="p-2 rounded-full hover:bg-papel transition">
+        <a id="account-link" href="login.html" aria-label="Log in" class="p-2 rounded-full hover:bg-papel transition">
           <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>
         </a>
         <button id="cart-btn" type="button" aria-haspopup="dialog" class="relative inline-flex items-center gap-2 whitespace-nowrap font-label font-bold uppercase tracking-wider text-sm px-3 sm:px-4 py-2 rounded-full border-2 border-tinta bg-papel hover:shadow-ube-sm transition">
@@ -471,7 +471,10 @@
     </div>
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.js"></script>
+  <script src="supabase.js"></script>
   <script src="cart.js"></script>
+  <script src="chat.js"></script>
   <script src="products.js"></script>
   <script>
     const { CATS, PRODUCTS } = KASALO;

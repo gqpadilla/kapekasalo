@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Receipt · Kasalo Kape</title>
+  <meta name="description" content="Your Kasalo Kape sales invoice.">
+  <link rel="icon" href="cup%20logo%202.png">
+
+  <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+  <script src="tailwind.config.js"></script>
+  <link rel="stylesheet" href="brand.css">
+</head>
+
+<body id="top" class="bg-gata text-tinta font-sans antialiased">
+  <!-- Reusable starburst shape -->
+  <svg width="0" height="0" class="absolute" aria-hidden="true">
+    <defs>
+      <polygon id="burst" points="50.0,0.0 57.4,12.7 69.1,3.8 71.1,18.4 85.4,14.6 81.6,28.9 96.2,30.9 87.3,42.6 100.0,50.0 87.3,57.4 96.2,69.1 81.6,71.1 85.4,85.4 71.1,81.6 69.1,96.2 57.4,87.3 50.0,100.0 42.6,87.3 30.9,96.2 28.9,81.6 14.6,85.4 18.4,71.1 3.8,69.1 12.7,57.4 0.0,50.0 12.7,42.6 3.8,30.9 18.4,28.9 14.6,14.6 28.9,18.4 30.9,3.8 42.6,12.7"/>
+    </defs>
+  </svg>
+
+  <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:bg-kalamansi focus:px-4 focus:py-2 focus:rounded-full font-label font-bold">Skip to content</a>
+
+  <!-- ===== Utility bar ===== -->
+  <div class="on-dark bg-tinta text-gata font-label font-bold uppercase tracking-wider text-xs">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 h-9 flex items-center justify-between gap-4">
+      <a href="index.html#visit-cafe" class="inline-flex items-center gap-1.5 hover:text-kalamansi">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M12 21s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>
+        <span class="hidden sm:inline">Padre Faura St., Ermita</span><span class="sm:hidden">Find us</span>
+      </a>
+      <ul class="flex items-center gap-4">
+        <li class="hidden sm:block">Open daily until 10PM</li>
+        <li><a href="mailto:kasalokape@gmail.com" class="hover:text-kalamansi">Help</a></li>
+        <li><a href="the-fix.html#get-your-fix" class="hover:text-kalamansi">Join The Fix</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ===== Header ===== -->
+  <header class="sticky top-0 z-40 bg-gata/95 backdrop-blur border-b-2 border-tinta">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+      <a href="index.html" class="shrink-0">
+        <img src="logo1%20bnw%202.png" alt="Kasalo Kape home" class="h-14 w-[126px] object-cover mix-blend-multiply">
+      </a>
+
+      <nav aria-label="Main" class="hidden lg:block">
+        <ul class="flex gap-7 font-label font-bold uppercase tracking-wider text-sm">
+          <li><a href="index.html#menu" class="py-2 border-b-2 border-transparent hover:text-banga hover:border-ube transition">Shop</a></li>
+          <li><a href="the-fix.html#get-your-fix" class="py-2 border-b-2 border-transparent hover:text-banga hover:border-ube transition">Subscribe</a></li>
+          <li><a href="the-fix.html" class="py-2 border-b-2 border-transparent hover:text-banga hover:border-ube transition">The Fix</a></li>
+          <li><a href="index.html#about" class="py-2 border-b-2 border-transparent hover:text-banga hover:border-ube transition">About Us</a></li>
+          <li><a href="the-fix.html#visit" class="py-2 border-b-2 border-transparent hover:text-banga hover:border-ube transition">Wholesale</a></li>
+        </ul>
+      </nav>
+
+      <div class="flex items-center gap-1 sm:gap-2">
+        <a id="account-link" href="login.html" aria-label="Log in" class="p-2 rounded-full hover:bg-papel transition">
+          <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>
+        </a>
+        <button id="cart-btn" type="button" aria-haspopup="dialog" class="relative inline-flex items-center gap-2 whitespace-nowrap font-label font-bold uppercase tracking-wider text-sm px-3 sm:px-4 py-2 rounded-full border-2 border-tinta bg-papel hover:shadow-ube-sm transition">
+          <span>Cart (<span id="cart-count">0</span>)</span>
+          <span id="cart-dot" class="hidden absolute -top-1 -right-1 w-3 h-3 rounded-full bg-sili border-2 border-gata" aria-hidden="true"></span>
+        </button>
+        <button id="menu-btn" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="mobile-nav" class="lg:hidden p-2 rounded-full hover:bg-papel transition">
+          <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <nav id="mobile-nav" aria-label="Mobile" class="lg:hidden hidden border-t-2 border-tinta bg-gata">
+      <ul class="px-4 py-2 font-label font-bold uppercase tracking-wider">
+        <li><a href="index.html#menu" class="block py-3 border-b border-tinta/20 hover:text-banga">Shop</a></li>
+        <li><a href="the-fix.html#get-your-fix" class="block py-3 border-b border-tinta/20 hover:text-banga">Subscribe</a></li>
+        <li><a href="the-fix.html" class="block py-3 border-b border-tinta/20 hover:text-banga">The Fix</a></li>
+        <li><a href="index.html#about" class="block py-3 border-b border-tinta/20 hover:text-banga">About Us</a></li>
+        <li><a href="the-fix.html#visit" class="block py-3 hover:text-banga">Wholesale</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main" class="bg-gata-light min-h-[70vh] py-10 sm:py-14 px-4">
+    <div class="no-print mx-auto max-w-3xl flex flex-wrap items-center justify-between gap-3 mb-6">
+      <a id="back" href="account.html#orders" class="inline-flex items-center gap-2 font-label uppercase tracking-wider text-sm hover:text-banga">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+        Back to your orders
+      </a>
+      <div class="flex flex-wrap gap-2">
+        <div role="radiogroup" aria-label="Receipt layout" class="inline-flex p-1 rounded-full border-2 border-tinta bg-papel">
+          <button type="button" data-format="page" class="fmt px-4 py-1.5 rounded-full font-label uppercase tracking-wider text-xs">Full page</button>
+          <button type="button" data-format="thermal" class="fmt px-4 py-1.5 rounded-full font-label uppercase tracking-wider text-xs">80 mm</button>
+        </div>
+        <button type="button" id="print" class="bg-banga text-papel font-label uppercase tracking-wider text-sm px-5 py-2 rounded-full border-2 border-tinta shadow-ube-sm hover:-translate-y-0.5 transition">Print / Save PDF</button>
+      </div>
+    </div>
+
+    <p id="status" class="text-center py-20 font-label uppercase tracking-wider text-sm">Loading receipt…</p>
+    <article id="invoice" hidden aria-label="Sales invoice"></article>
+  </main>
+
+  <style>
+    /* ---- Full-page invoice ---- */
+    #invoice.page { max-width: 48rem; margin: 0 auto; background: #FFFFFF; border: 2px solid #141414; border-radius: 1.5rem;
+      box-shadow: 10px 10px 0 #5B3A8C; padding: 2.5rem; position: relative; overflow: hidden; }
+    #invoice.page .demo { position: absolute; top: 2.3rem; right: -3.2rem; transform: rotate(35deg); background: #F2B732; border-block: 2px solid #141414;
+      padding: .3rem 4rem; font: 700 .7rem/1 'MADE Sunflower', sans-serif; letter-spacing: .08em; text-transform: uppercase; }
+    #invoice table { width: 100%; border-collapse: collapse; }
+    #invoice.page th { text-align: left; font: .7rem 'MADE Sunflower', sans-serif; text-transform: uppercase; letter-spacing: .06em; padding: .6rem 0; border-bottom: 2px solid #141414; }
+    #invoice.page td { padding: .7rem 0; border-bottom: 1px solid rgba(20, 20, 20, .15); vertical-align: top; }
+    #invoice .num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    #invoice.page .num { padding-left: 1rem; }
+
+    /* ---- 80 mm thermal receipt ---- */
+    #invoice.thermal { width: 80mm; max-width: 100%; margin: 0 auto; background: #FFFFFF; padding: 5mm 4mm; border: 1px dashed rgba(20, 20, 20, .4);
+      font: 11.5px/1.45 'Courier New', ui-monospace, monospace; color: #000; }
+    #invoice.thermal * { font-family: inherit !important; font-size: inherit; letter-spacing: 0 !important; }
+    #invoice.thermal .t-center { text-align: center; }
+    #invoice.thermal .t-big { font-size: 15px; font-weight: 700; }
+    #invoice.thermal .rule { border-top: 1px dashed #000; margin: 2mm 0; }
+    #invoice.thermal td { padding: .5mm 0; vertical-align: top; }
+    #invoice.thermal .demo { text-align: center; border: 1px solid #000; padding: 1mm; margin-bottom: 2mm; font-weight: 700; }
+
+    @media print {
+      body > :not(main), .no-print { display: none !important; }   /* site chrome only; the invoice has its own header/footer */
+      body, main { background: #FFFFFF !important; padding: 0 !important; }
+      #invoice.page { box-shadow: none; border: 0; border-radius: 0; padding: 0; max-width: none; }
+      #invoice.thermal { border: 0; padding: 0; }
+    }
+  </style>
+
+  <!-- ===== Footer ===== -->
+  <footer class="bg-papel border-t-2 border-tinta">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 py-14 grid lg:grid-cols-12 gap-12">
+      <nav class="lg:col-span-7 grid grid-cols-2 sm:grid-cols-4 gap-8" aria-label="Footer">
+        <div>
+          <h2 class="font-label font-bold uppercase tracking-wider">Shop</h2>
+          <ul class="mt-3 space-y-2">
+            <li><a href="index.html#menu" class="hover:text-banga hover:underline underline-offset-4">Coffee</a></li>
+            <li><a href="#" class="hover:text-banga hover:underline underline-offset-4">Tea</a></li>
+            <li><a href="#" class="hover:text-banga hover:underline underline-offset-4">Syrup</a></li>
+            <li><a href="#" class="hover:text-banga hover:underline underline-offset-4">Equipment</a></li>
+            <li><a href="#" class="hover:text-banga hover:underline underline-offset-4">Merch</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2 class="font-label font-bold uppercase tracking-wider">Subscribe</h2>
+          <ul class="mt-3 space-y-2">
+            <li><a href="the-fix.html" class="hover:text-banga hover:underline underline-offset-4">The Fix</a></li>
+            <li><a href="the-fix.html#get-your-fix" class="hover:text-banga hover:underline underline-offset-4">Subscriptions</a></li>
+            <li><a href="#" class="hover:text-banga hover:underline underline-offset-4">Account</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2 class="font-label font-bold uppercase tracking-wider">Company</h2>
+          <ul class="mt-3 space-y-2">
+            <li><a href="index.html#about" class="hover:text-banga hover:underline underline-offset-4">About Us</a></li>
+            <li><a href="the-fix.html#visit" class="hover:text-banga hover:underline underline-offset-4">Wholesale</a></li>
+            <li><a href="#" class="hover:text-banga hover:underline underline-offset-4">Giving Back</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2 class="font-label font-bold uppercase tracking-wider">More Info</h2>
+          <ul class="mt-3 space-y-2">
+            <li><a href="the-fix.html#archive" class="hover:text-banga hover:underline underline-offset-4">Coffee Archive</a></li>
+            <li><a href="#" class="hover:text-banga hover:underline underline-offset-4">Tours</a></li>
+            <li><a href="#" class="hover:text-banga hover:underline underline-offset-4">FAQs</a></li>
+          </ul>
+        </div>
+      </nav>
+
+      <section class="lg:col-span-5 bg-gata border-2 border-tinta rounded-3xl p-6 sm:p-8 shadow-ube" aria-labelledby="visit-title">
+        <h2 id="visit-title" class="font-display uppercase text-banga text-2xl">Visit us</h2>
+        <div class="grid sm:grid-cols-2 gap-6 mt-4">
+          <div>
+            <h3 class="font-label font-bold uppercase tracking-wider text-sm">Café</h3>
+            <address class="not-italic mt-2 leading-relaxed">Padre Faura St., Ermita,<br>Manila, 1000 Metro Manila,<br>Philippines</address>
+          </div>
+          <div>
+            <h3 class="font-label font-bold uppercase tracking-wider text-sm">Hours</h3>
+            <dl class="mt-2 grid grid-cols-[auto_1fr] gap-x-3 gap-y-1">
+              <dt class="whitespace-nowrap">Mon–Fri</dt><dd class="whitespace-nowrap">6AM – 10PM</dd>
+              <dt class="whitespace-nowrap">Sat–Sun</dt><dd class="whitespace-nowrap">7AM – 10PM</dd>
+            </dl>
+          </div>
+          <div class="sm:col-span-2">
+            <h3 class="font-label font-bold uppercase tracking-wider text-sm">Contact &amp; wholesale</h3>
+            <p class="mt-2"><a href="mailto:kasalokape@gmail.com" class="underline underline-offset-4 hover:text-banga">kasalokape@gmail.com</a></p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 pb-12 grid lg:grid-cols-3 gap-8 items-center">
+      <ul class="flex flex-wrap gap-x-6 gap-y-3" aria-label="Social media">
+        <li><a href="https://www.facebook.com/kasalokape" target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-banga font-bold hover:underline underline-offset-4">
+          <img src="icons/fb%20logo.png" alt="" class="w-6 h-6 object-contain brightness-0">Facebook</a></li>
+        <li><a href="https://www.instagram.com/kasalokape/" target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-banga font-bold hover:underline underline-offset-4">
+          <img src="icons/ig%20logo.png" alt="" class="w-6 h-6 object-contain brightness-0">@kasalokape</a></li>
+        <li><a href="#" class="inline-flex items-center gap-2 text-banga font-bold hover:underline underline-offset-4">
+          <svg class="w-6 h-6" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="4" fill="#141414"/><path d="M10 9l5 3-5 3z" fill="#FFFFFF"/></svg>YouTube</a></li>
+      </ul>
+
+      <form class="newsletter" aria-label="Newsletter">
+        <label for="news-email" class="font-label font-bold uppercase tracking-wider text-sm">Get new drops by email</label>
+        <div class="mt-2 flex gap-2">
+          <input id="news-email" type="email" required autocomplete="email" placeholder="you@email.com" class="flex-1 min-w-0 bg-papel border-2 border-tinta rounded-full px-4 py-2.5 placeholder:text-tinta/60">
+          <button type="submit" class="bg-banga text-papel font-label font-bold uppercase tracking-wider px-5 py-2.5 rounded-full border-2 border-tinta hover:shadow-ube-sm transition">Join</button>
+        </div>
+        <p class="news-msg mt-2 text-sm min-h-[1.25rem]" aria-live="polite"></p>
+      </form>
+
+      <p class="inline-flex items-center gap-3 justify-self-start lg:justify-self-end bg-kalamansi border-2 border-tinta rounded-full pl-3 pr-5 py-2 shadow-ube-sm">
+        <svg class="w-7 h-7 shrink-0" viewBox="0 0 24 24" fill="none" stroke="#141414" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l5 7h-3l4 6h-5v7h-2v-7H6l4-6H7z"/></svg>
+        <span class="font-label font-bold uppercase tracking-wider text-sm">1,248 trees planted since 2024</span>
+      </p>
+    </div>
+
+    <div class="border-t-2 border-tinta">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 py-5 flex flex-col md:flex-row md:items-center md:justify-between gap-3 text-sm">
+        <p>© 2026 Kasalo Kape. Made to be shared.</p>
+        <ul class="flex flex-wrap gap-x-5 gap-y-2">
+          <li><a href="#" class="hover:text-banga hover:underline underline-offset-4">Privacy Policy</a></li>
+          <li><a href="#" class="hover:text-banga hover:underline underline-offset-4">Terms of Service</a></li>
+          <li><a href="#" class="hover:text-banga hover:underline underline-offset-4">Accessibility</a></li>
+        </ul>
+        <p>Site by the Kasalo Kape team</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.js"></script>
+  <script src="supabase.js"></script>
+  <script src="cart.js"></script>
+  <script>
+    // Sales invoice per BIR RR 7-2024 (EOPT): seller name, address, TIN + branch code, "NON-VAT REG TIN" or "VAT REG TIN",
+    // serial number, date, buyer, item lines, discounts (Senior/PWD with ID), total, and the POS permit details.
+    const { sb, peso, orderLabel } = KK;
+    const $ = s => document.querySelector(s);
+    const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    const params = new URLSearchParams(location.search);
+    const money = n => Number(n).toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const METHOD = { cash: 'Cash', card: 'Debit/Credit card', qrph: 'QR Ph', gcash: 'GCash', maya: 'Maya' };
+    let order, inv, store, format = params.get('format') === 'thermal' ? 'thermal' : 'page';
+
+    function render() {
+      const o = order, paid = !!o.receipt_no;
+      const tin = `${inv.vat_registered ? 'VAT' : 'NON-VAT'} REG TIN: ${inv.tin}-${inv.branch_code}`;
+      const no = paid ? String(o.receipt_no).padStart(7, '0') : '—';
+      const date = new Date(o.paid_at || o.created_at).toLocaleString('en-PH', { timeZone: 'Asia/Manila', dateStyle: 'medium', timeStyle: 'short' });
+      const lines = o.items.map(i => ({ qty: i.qty, name: i.name, variant: i.variant, unit: i.unit_price, amt: i.line_total }));
+      const disc = [
+        o.bundle_discount > 0 && ['Less: Kasalo Bundle', o.bundle_discount],
+        o.senior_discount > 0 && ['Less: Senior Citizen/PWD discount (20%)', o.senior_discount],
+      ].filter(Boolean);
+      const vatRows = inv.vat_registered
+        ? [['VATable sales', o.vatable_sales], ['VAT-exempt sales', o.vat_exempt], ['Zero-rated sales', 0], ['VAT (12%)', o.vat]] : [];
+      const legal = inv.vat_registered ? '' : 'THIS DOCUMENT IS NOT VALID FOR CLAIM OF INPUT TAX.';
+      const demo = inv.is_demo ? 'Demo · not a BIR-registered invoice' : '';
+      const title = paid ? 'SALES INVOICE' : 'ORDER SUMMARY (UNPAID)';
+      const pay = paid ? [['Paid by', METHOD[o.payment_method] || o.payment_method],
+        ...(o.cash_tendered != null ? [['Cash received', money(o.cash_tendered)], ['Change', money(o.change_due)]] : [])] : [];
+
+      const el = $('#invoice');
+      el.className = format;
+      document.getElementById('page-size').textContent = format === 'thermal' ? '@page { size: 80mm auto; margin: 3mm; }' : '@page { size: A4; margin: 14mm; }';
+      document.querySelectorAll('.fmt').forEach(b => {
+        const on = b.dataset.format === format;
+        b.setAttribute('aria-checked', on); b.classList.toggle('bg-tinta', on); b.classList.toggle('text-gata', on);
+      });
+
+      if (format === 'thermal') {
+        const row = (l, r, b) => `<tr${b ? ' class="t-big"' : ''}><td>${l}</td><td class="num">${r}</td></tr>`;
+        el.innerHTML = `
+          ${demo ? `<div class="demo">${esc(demo.toUpperCase())}</div>` : ''}
+          <div class="t-center"><div class="t-big">${esc(inv.trade_name)}</div>${esc(inv.registered_name)}<br>${esc(inv.address)}<br>${esc(tin)}</div>
+          <div class="rule"></div>
+          <div class="t-center t-big">${title}</div>
+          <table>${row('No.', no)}${row('Date', date)}${row('Order', orderLabel(o.order_no))}${row('Sold to', esc(o.buyer))}</table>
+          <div class="rule"></div>
+          <table>${lines.map(l => `<tr><td colspan="2">${esc(l.name)}${l.variant ? ` (${esc(l.variant)})` : ''}</td></tr>${row(`&nbsp;&nbsp;${l.qty} x ${money(l.unit)}`, money(l.amt))}`).join('')}</table>
+          <div class="rule"></div>
+          <table>${row('Total sales', money(o.subtotal))}${disc.map(([l, v]) => row(l, '-' + money(v))).join('')}${row('AMOUNT DUE', money(o.total), true)}
+            ${pay.map(([l, v]) => row(l, esc(v))).join('')}${vatRows.map(([l, v]) => row(l, money(v))).join('')}</table>
+          ${o.senior_id ? `<div class="rule"></div>SC/PWD ID: ${esc(o.senior_id)}<br>Name: ____________________<br>Signature: _______________` : ''}
+          <div class="rule"></div>
+          <div class="t-center">${esc(inv.pos_provider)}<br>PTU No. ${esc(inv.ptu_no)}<br>Issued ${esc(inv.ptu_date)}<br>${esc(inv.machine_no)} · ${esc(inv.serial_no)}
+            ${legal ? `<br><br>${legal}` : ''}<br><br>Thank you, kasalo!</div>`;
+        return;
+      }
+
+      const line = (l, v, cls = '') => `<div class="flex justify-between gap-6 ${cls}"><dt>${l}</dt><dd class="num">${v}</dd></div>`;
+      el.innerHTML = `
+        ${demo ? `<div class="demo" aria-label="${esc(demo)}">Demo</div>` : ''}
+        <header class="grid sm:grid-cols-[1fr_auto] gap-6 pb-6 border-b-2 border-tinta">
+          <div class="flex gap-4 items-start">
+            <img src="cup%20logo%202.png" alt="" class="w-20 -ml-2 mix-blend-multiply">
+            <div>
+              <p class="font-display uppercase text-2xl leading-none">${esc(inv.trade_name)}</p>
+              <p class="mt-2">${esc(inv.registered_name)}</p>
+              <p class="text-sm">${esc(inv.address)}</p>
+              <p class="text-sm font-bold mt-1">${esc(tin)}</p>
+            </div>
+          </div>
+          <div class="sm:text-right">
+            <p class="font-label uppercase tracking-[0.2em] text-sm text-banga">${title}</p>
+            <p class="font-display text-3xl mt-1">No. ${no}</p>
+            <p class="text-sm mt-1">${date}</p>
+            <p class="text-sm">Order ${orderLabel(o.order_no)} · ${o.channel === 'pos' ? 'Counter' : 'Online pickup'}</p>
+          </div>
+        </header>
+
+        <section class="grid sm:grid-cols-3 gap-4 py-5 border-b border-tinta/20 text-sm">
+          <div><p class="font-label uppercase tracking-wider text-xs">Sold to</p><p class="mt-1 font-bold">${esc(o.buyer)}</p></div>
+          <div><p class="font-label uppercase tracking-wider text-xs">Address</p><p class="mt-1 border-b border-tinta/40 min-h-[1.25rem]"></p></div>
+          <div><p class="font-label uppercase tracking-wider text-xs">TIN</p><p class="mt-1 border-b border-tinta/40 min-h-[1.25rem]"></p></div>
+        </section>
+
+        <table class="mt-2">
+          <thead><tr><th class="w-12">Qty</th><th>Description</th><th class="num">Unit price</th><th class="num">Amount</th></tr></thead>
+          <tbody>${lines.map(l => `<tr><td>${l.qty}</td><td><b>${esc(l.name)}</b>${l.variant ? `<br><span class="text-sm text-tinta/70">${esc(l.variant)}</span>` : ''}</td>
+            <td class="num">${money(l.unit)}</td><td class="num">${money(l.amt)}</td></tr>`).join('')}</tbody>
+        </table>
+
+        <div class="grid sm:grid-cols-[1fr_18rem] gap-8 mt-6">
+          <div class="text-sm space-y-3">
+            ${o.senior_id ? `<div class="rounded-2xl border-2 border-tinta p-4">
+                <p class="font-label uppercase tracking-wider text-xs">Senior Citizen / PWD</p>
+                <p class="mt-1">ID No.: <b>${esc(o.senior_id)}</b></p>
+                <p class="mt-4 border-b border-tinta/60">&nbsp;</p><p class="text-xs mt-1">Signature over printed name</p></div>` : ''}
+            ${pay.length ? `<dl class="space-y-1">${pay.map(([l, v]) => line(l, esc(v))).join('')}</dl>`
+              : `<p class="rounded-2xl bg-kalamansi-soft border-2 border-tinta p-4">This order hasn't been paid yet, so no invoice number has been issued.</p>`}
+          </div>
+          <dl class="space-y-1.5">
+            ${line('Total sales', money(o.subtotal))}
+            ${disc.map(([l, v]) => line(l, '−' + money(v))).join('')}
+            ${line('Total amount due', '₱' + money(o.total), 'font-display text-2xl pt-3 mt-2 border-t-2 border-tinta')}
+            ${vatRows.length ? `<div class="pt-3 mt-2 border-t border-tinta/20 text-sm space-y-1">${vatRows.map(([l, v]) => line(l, money(v))).join('')}</div>` : ''}
+          </dl>
+        </div>
+
+        <footer class="mt-8 pt-5 border-t-2 border-dashed border-ube text-xs text-tinta/70 grid sm:grid-cols-2 gap-2">
+          <p>${esc(inv.pos_provider)} · ${esc(inv.machine_no)} · ${esc(inv.serial_no)}<br>BIR PTU No. ${esc(inv.ptu_no)} · Date issued ${esc(inv.ptu_date)}</p>
+          <p class="sm:text-right">${legal ? `<b class="text-tinta">${legal}</b><br>` : ''}${demo ? esc(demo) : ''}</p>
+        </footer>`;
+    }
+
+    document.querySelectorAll('.fmt').forEach(b => b.addEventListener('click', () => {
+      format = b.dataset.format; render();
+      const u = new URL(location); u.searchParams.set('format', format); history.replaceState(null, '', u);
+    }));
+    $('#print').addEventListener('click', () => window.print());
+
+    (async () => {
+      const fail = text => { $('#status').textContent = text; };
+      if (!KK.configured) return fail('Receipts appear here once the site is connected to the database.');
+      const id = params.get('order'), token = params.get('t');
+      if (!id) return fail('No order selected.');
+      if (!token) await KK.requireLogin();            // account receipts need login; guest links carry a token
+      else $('#back').href = 'index.html';
+      const [{ data: o, error }, { data: settings }] = await Promise.all([
+        sb.rpc('get_order', { p_order: id, p_token: token }),
+        sb.from('settings').select('key, value').in('key', ['invoice', 'store']),
+      ]);
+      if (error) return fail(/not found/i.test(error.message) ? 'We couldn’t find that receipt. Check the link or log in.' : KK.message(error));
+      order = o;
+      inv = settings.find(s => s.key === 'invoice')?.value || {};
+      document.title = `${o.receipt_no ? 'Invoice ' + String(o.receipt_no).padStart(7, '0') : orderLabel(o.order_no)} · Kasalo Kape`;
+      $('#status').hidden = true; $('#invoice').hidden = false;
+      render();
+    })();
+  </script>
+  <style id="page-size"></style>
+</body>
+</html>

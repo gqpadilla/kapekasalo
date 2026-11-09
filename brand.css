@@ -11,6 +11,7 @@
 /* Single-weight display fonts: never let the browser fake a bold version. */
 .font-display, .font-accent, .font-label, .font-neon { font-synthesis: none; }
 
+[hidden] { display: none !important; }   /* utility classes like .flex would otherwise override the hidden attribute */
 html { scroll-behavior: smooth; overflow-x: clip; }
 :focus-visible { outline: 3px dashed #141414; outline-offset: 3px; }
 .on-dark :focus-visible { outline-color: #F2B732; }
