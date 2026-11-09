@@ -5,11 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Shop the Menu · Kasalo Kape</title>
   <meta name="description" content="Order Filipino coffee, coolers, rice cakes, and pastries from Kasalo Kape on Padre Faura St., Ermita, Manila.">
-  <link rel="icon" href="cup%20logo%202.png">
+  <link rel="icon" href="img/logo/cup-logo.png">
 
   <script src="https://cdn.tailwindcss.com/3.4.16"></script>
-  <script src="tailwind.config.js"></script>
-  <link rel="stylesheet" href="brand.css">
+  <script src="js/tailwind.config.js"></script>
+  <link rel="stylesheet" href="css/brand.css">
 </head>
 
 <body id="top" class="bg-gata text-tinta font-sans antialiased">
@@ -22,7 +22,7 @@
 
   <!-- ===== Intro film: opens on every load; Skip intro, Esc, or the film ending closes it ===== -->
   <dialog id="intro" class="intro" aria-label="Kasalo Kape intro film">
-    <video id="intro-video" src="Video/kasalo-promo.mp4" playsinline preload="auto" class="w-full h-full object-contain"></video>
+    <video id="intro-video" src="video/kasalo-promo.mp4" playsinline preload="auto" class="w-full h-full object-contain"></video>
     <div class="absolute bottom-4 right-4 sm:bottom-8 sm:right-8 flex flex-wrap justify-end gap-3">
       <button type="button" id="intro-sound" hidden class="bg-papel text-tinta font-label font-bold uppercase tracking-wider text-sm px-5 py-3 rounded-full border-2 border-tinta hover:bg-kalamansi transition">Sound on</button>
       <button type="button" id="intro-skip" autofocus class="bg-kalamansi text-tinta font-label font-bold uppercase tracking-wider text-sm px-6 py-3 rounded-full border-2 border-tinta shadow-ube hover:-translate-y-0.5 transition">Skip intro</button>
@@ -65,7 +65,7 @@
   <header class="sticky top-0 z-40 bg-gata/95 backdrop-blur border-b-2 border-tinta">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
       <a href="index.html" class="shrink-0">
-        <img src="logo1%20bnw%202.png" alt="Kasalo Kape home" class="h-14 w-[126px] object-cover mix-blend-multiply">
+        <img src="img/logo/wordmark.png" alt="Kasalo Kape home" class="h-14 w-[126px] object-cover mix-blend-multiply">
       </a>
 
       <nav aria-label="Main" class="hidden lg:block">
@@ -168,7 +168,7 @@
       <div class="mx-auto max-w-7xl px-4 sm:px-6">
         <p class="font-label font-bold uppercase tracking-[0.2em] text-sm text-kalamansi">Watch</p>
         <h2 id="film-title" class="font-display uppercase text-3xl sm:text-5xl mt-2 [text-shadow:3px_3px_0_#5B3A8C]">Kasalo Kape in 20 seconds</h2>
-        <video src="Video/kasalo-promo.mp4" poster="Video/kasalo-promo-poster.jpg" controls playsinline preload="none" aria-label="Kasalo Kape 20-second film"
+        <video src="video/kasalo-promo.mp4" poster="video/kasalo-promo-poster.jpg" controls playsinline preload="none" aria-label="Kasalo Kape 20-second film"
           class="mt-8 w-full aspect-video rounded-3xl bg-tinta shadow-kal"></video>
       </div>
     </section>
@@ -436,9 +436,9 @@
     <div class="mx-auto max-w-7xl px-4 sm:px-6 pb-12 grid lg:grid-cols-3 gap-8 items-center">
       <ul class="flex flex-wrap gap-x-6 gap-y-3" aria-label="Social media">
         <li><a href="https://www.facebook.com/kasalokape" target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-banga font-bold hover:underline underline-offset-4">
-          <img src="icons/fb%20logo.png" alt="" class="w-6 h-6 object-contain brightness-0">Facebook</a></li>
+          <img src="img/icons/facebook.png" alt="" class="w-6 h-6 object-contain brightness-0">Facebook</a></li>
         <li><a href="https://www.instagram.com/kasalokape/" target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-banga font-bold hover:underline underline-offset-4">
-          <img src="icons/ig%20logo.png" alt="" class="w-6 h-6 object-contain brightness-0">@kasalokape</a></li>
+          <img src="img/icons/instagram.png" alt="" class="w-6 h-6 object-contain brightness-0">@kasalokape</a></li>
         <li><a href="#" class="inline-flex items-center gap-2 text-banga font-bold hover:underline underline-offset-4">
           <svg class="w-6 h-6" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="4" fill="#141414"/><path d="M10 9l5 3-5 3z" fill="#FFFFFF"/></svg>YouTube</a></li>
       </ul>
@@ -472,10 +472,10 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.js"></script>
-  <script src="supabase.js"></script>
-  <script src="cart.js"></script>
-  <script src="chat.js"></script>
-  <script src="products.js"></script>
+  <script src="js/supabase.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/chat.js"></script>
+  <script src="js/products.js"></script>
   <script>
     const { CATS, PRODUCTS } = KASALO;
     const TAGS = ['Hot', 'Iced', 'Best Seller', 'Seasonal', 'Pastry', 'Rice Cake'];
@@ -582,7 +582,7 @@
     const photo = p => p.src
       ? `<img src="${p.src}" alt="${p.name}" loading="lazy" class="w-full h-full object-contain p-2 transition duration-300 group-hover:scale-105">`
       : `<div class="w-full h-full grid place-items-center bg-papel">
-           <img src="cup%20logo%202.png" alt="" class="w-3/5 opacity-25 mix-blend-multiply">
+           <img src="img/logo/cup-logo.png" alt="" class="w-3/5 opacity-25 mix-blend-multiply">
            <p class="absolute -inset-x-6 top-1/2 -translate-y-1/2 -rotate-6 bg-tinta text-kalamansi text-center py-1.5 sm:py-2 border-y-2 border-ube font-accent uppercase tracking-wider text-xs sm:text-sm"><span class="sm:hidden">Coming soon</span><span class="hidden sm:inline">Catalog photo coming soon</span></p>
          </div>`;
 

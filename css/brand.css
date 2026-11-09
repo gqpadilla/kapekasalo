@@ -1,12 +1,12 @@
 /* Shared brand styles for every page. */
 
 /* ---- Brand fonts (files in /fonts) ---- */
-@font-face { font-family: 'Provicali'; src: url('fonts/Provicali.otf') format('opentype'); font-display: swap; }
-@font-face { font-family: 'Quiapo'; src: url('fonts/Quiapo.ttf') format('truetype'); font-display: swap; }
-@font-face { font-family: 'Apple Garamond'; src: url('fonts/AppleGaramond.ttf') format('truetype'); font-display: swap; }
-@font-face { font-family: 'Apple Garamond'; src: url('fonts/AppleGaramond-Italic.ttf') format('truetype'); font-style: italic; font-display: swap; }
-@font-face { font-family: 'MADE Sunflower'; src: url('fonts/MADESunflower.otf') format('opentype'); font-display: swap; }
-@font-face { font-family: 'The 2K12'; src: url('fonts/The2K12-web.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'Provicali'; src: url('../fonts/Provicali.otf') format('opentype'); font-display: swap; }
+@font-face { font-family: 'Quiapo'; src: url('../fonts/Quiapo.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'Apple Garamond'; src: url('../fonts/AppleGaramond.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'Apple Garamond'; src: url('../fonts/AppleGaramond-Italic.ttf') format('truetype'); font-style: italic; font-display: swap; }
+@font-face { font-family: 'MADE Sunflower'; src: url('../fonts/MADESunflower.otf') format('opentype'); font-display: swap; }
+@font-face { font-family: 'The 2K12'; src: url('../fonts/The2K12-web.ttf') format('truetype'); font-display: swap; }
 
 /* Single-weight display fonts: never let the browser fake a bold version. */
 .font-display, .font-accent, .font-label, .font-neon { font-synthesis: none; }

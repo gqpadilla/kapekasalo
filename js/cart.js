@@ -54,7 +54,7 @@
   const total = () => subtotal() - discount();
   const thumb = src => src
     ? `<img src="${esc(src)}" alt="" class="w-full h-full object-contain">`
-    : `<img src="cup%20logo%202.png" alt="" class="w-full h-full object-contain opacity-40">`;
+    : `<img src="img/logo/cup-logo.png" alt="" class="w-full h-full object-contain opacity-40">`;
 
   function render() {
     const n = count();

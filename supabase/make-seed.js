@@ -5,14 +5,14 @@ const path = require('path');
 const root = path.join(__dirname, '..');
 
 const window = {};
-new Function('window', fs.readFileSync(path.join(root, 'products.js'), 'utf8'))(window);
+new Function('window', fs.readFileSync(path.join(root, 'js', 'products.js'), 'utf8'))(window);
 const { PRODUCTS, optionsFor } = window.KASALO;
 
 const fix = fs.readFileSync(path.join(root, 'the-fix.html'), 'utf8');
 const LOTS = new Function(`return ${fix.match(/const LOTS = (\[[\s\S]*?\n {4}\]);/)[1]}`)();
 const PLANS = [...fix.matchAll(/name="plan" value="([^"]+)"[^>]*data-name="([^"]+)" data-rate="(\d+)" data-total="(\d+)" data-billing="([^"]+)"/g)]
   .map(([, id, name, rate, total, billing]) => ({ id, name, rate: +rate, total: +total, billing, months: { monthly: 1, '1-year': 12, '2-years': 24 }[id] }));
-const BUNDLE_OFF = +fs.readFileSync(path.join(root, 'cart.js'), 'utf8').match(/BUNDLE_OFF = (\d+)/)[1];
+const BUNDLE_OFF = +fs.readFileSync(path.join(root, 'js', 'cart.js'), 'utf8').match(/BUNDLE_OFF = (\d+)/)[1];
 
 const q = v => v == null ? 'null' : `'${String(v).replace(/'/g, "''")}'`;
 const j = v => v == null ? 'null' : `${q(JSON.stringify(v))}::jsonb`;

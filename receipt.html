@@ -5,11 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Receipt · Kasalo Kape</title>
   <meta name="description" content="Your Kasalo Kape sales invoice.">
-  <link rel="icon" href="cup%20logo%202.png">
+  <link rel="icon" href="img/logo/cup-logo.png">
 
   <script src="https://cdn.tailwindcss.com/3.4.16"></script>
-  <script src="tailwind.config.js"></script>
-  <link rel="stylesheet" href="brand.css">
+  <script src="js/tailwind.config.js"></script>
+  <link rel="stylesheet" href="css/brand.css">
 </head>
 
 <body id="top" class="bg-gata text-tinta font-sans antialiased">
@@ -41,7 +41,7 @@
   <header class="sticky top-0 z-40 bg-gata/95 backdrop-blur border-b-2 border-tinta">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
       <a href="index.html" class="shrink-0">
-        <img src="logo1%20bnw%202.png" alt="Kasalo Kape home" class="h-14 w-[126px] object-cover mix-blend-multiply">
+        <img src="img/logo/wordmark.png" alt="Kasalo Kape home" class="h-14 w-[126px] object-cover mix-blend-multiply">
       </a>
 
       <nav aria-label="Main" class="hidden lg:block">
@@ -193,9 +193,9 @@
     <div class="mx-auto max-w-7xl px-4 sm:px-6 pb-12 grid lg:grid-cols-3 gap-8 items-center">
       <ul class="flex flex-wrap gap-x-6 gap-y-3" aria-label="Social media">
         <li><a href="https://www.facebook.com/kasalokape" target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-banga font-bold hover:underline underline-offset-4">
-          <img src="icons/fb%20logo.png" alt="" class="w-6 h-6 object-contain brightness-0">Facebook</a></li>
+          <img src="img/icons/facebook.png" alt="" class="w-6 h-6 object-contain brightness-0">Facebook</a></li>
         <li><a href="https://www.instagram.com/kasalokape/" target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-banga font-bold hover:underline underline-offset-4">
-          <img src="icons/ig%20logo.png" alt="" class="w-6 h-6 object-contain brightness-0">@kasalokape</a></li>
+          <img src="img/icons/instagram.png" alt="" class="w-6 h-6 object-contain brightness-0">@kasalokape</a></li>
         <li><a href="#" class="inline-flex items-center gap-2 text-banga font-bold hover:underline underline-offset-4">
           <svg class="w-6 h-6" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="4" fill="#141414"/><path d="M10 9l5 3-5 3z" fill="#FFFFFF"/></svg>YouTube</a></li>
       </ul>
@@ -229,8 +229,8 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.js"></script>
-  <script src="supabase.js"></script>
-  <script src="cart.js"></script>
+  <script src="js/supabase.js"></script>
+  <script src="js/cart.js"></script>
   <script>
     // The order page. While unpaid it is the payment page: the café's GCash/InstaPay QR (customer pays, then submits the
     // reference number for staff to confirm) or pay-at-pickup instructions. Once paid it is the receipt: a Sales Invoice
@@ -375,7 +375,7 @@
       el.innerHTML = `
         <header class="grid sm:grid-cols-[1fr_auto] gap-6 pb-6 border-b-2 border-tinta">
           <div class="flex gap-4 items-start">
-            <img src="cup%20logo%202.png" alt="" class="w-20 -ml-2 mix-blend-multiply">
+            <img src="img/logo/cup-logo.png" alt="" class="w-20 -ml-2 mix-blend-multiply">
             <div>
               <p class="font-display uppercase text-2xl leading-none">${esc(inv.trade_name)}</p>
               <p class="mt-2">${esc(inv.registered_name)}</p>

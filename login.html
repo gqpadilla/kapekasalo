@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Log in · Kasalo Kape</title>
   <meta name="description" content="Log in or create your Kasalo Kape account to order ahead, track orders, and collect points.">
-  <link rel="icon" href="cup%20logo%202.png">
+  <link rel="icon" href="img/logo/cup-logo.png">
   <script src="https://cdn.tailwindcss.com/3.4.16"></script>
-  <script src="tailwind.config.js"></script>
-  <link rel="stylesheet" href="brand.css">
+  <script src="js/tailwind.config.js"></script>
+  <link rel="stylesheet" href="css/brand.css">
 </head>
 
 <body class="bg-gata-light text-tinta font-sans antialiased">
@@ -24,7 +24,7 @@
       <img src="img/cafe.jpg" alt="" class="absolute inset-0 w-full h-full object-cover">
       <div class="absolute inset-0 bg-gradient-to-t from-tinta/85 via-tinta/20 to-tinta/10"></div>
       <a href="index.html" class="absolute top-8 left-10 bg-gata/90 backdrop-blur rounded-2xl px-3 py-1.5 border-2 border-tinta" tabindex="-1">
-        <img src="logo1%20bnw%202.png" alt="" class="h-12 w-[108px] object-cover mix-blend-multiply">
+        <img src="img/logo/wordmark.png" alt="" class="h-12 w-[108px] object-cover mix-blend-multiply">
       </a>
       <div class="absolute top-8 right-10 w-28 rotate-12">
         <svg viewBox="0 0 100 100" class="w-full drop-shadow-[3px_3px_0_#5B3A8C]"><use href="#burst" fill="#F2B732" stroke="#141414" stroke-width="1.5"/></svg>
@@ -42,7 +42,7 @@
     <!-- ===== Form side ===== -->
     <main id="main" class="min-h-[100dvh] flex flex-col px-5 sm:px-10 lg:px-16 py-6 lg:py-10">
       <div class="flex items-center justify-between">
-        <a href="index.html" class="lg:invisible"><img src="logo1%20bnw%202.png" alt="Kasalo Kape home" class="h-12 w-[108px] object-cover mix-blend-multiply"></a>
+        <a href="index.html" class="lg:invisible"><img src="img/logo/wordmark.png" alt="Kasalo Kape home" class="h-12 w-[108px] object-cover mix-blend-multiply"></a>
         <a href="index.html" class="inline-flex items-center gap-2 font-label uppercase tracking-wider text-sm hover:text-banga">
           <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
           Back to the shop
@@ -135,7 +135,7 @@
   </style>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.js"></script>
-  <script src="supabase.js"></script>
+  <script src="js/supabase.js"></script>
   <script>
     const { sb, configured } = KK;
     const $ = s => document.querySelector(s);

@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Dashboard · Kasalo Kape Admin</title>
   <meta name="robots" content="noindex">
-  <link rel="icon" href="../cup%20logo%202.png">
+  <link rel="icon" href="../img/logo/cup-logo.png">
   <script src="https://cdn.tailwindcss.com/3.4.16"></script>
-  <script src="../tailwind.config.js"></script>
-  <link rel="stylesheet" href="../brand.css">
+  <script src="../js/tailwind.config.js"></script>
+  <link rel="stylesheet" href="../css/brand.css">
 </head>
 
 <body class="bg-gata-light text-tinta font-sans antialiased">
@@ -19,7 +19,7 @@
     <aside class="bg-tinta text-gata lg:min-h-screen lg:sticky lg:top-0 lg:h-screen flex flex-col on-dark">
       <div class="flex items-center justify-between lg:block px-5 py-4 lg:py-6 border-b border-gata/15">
         <a href="index.html" class="flex items-center gap-3">
-          <span class="bg-gata rounded-xl px-2 py-1"><img src="../logo1%20bnw%202.png" alt="Kasalo Kape" class="h-9 w-[81px] object-cover mix-blend-multiply"></span>
+          <span class="bg-gata rounded-xl px-2 py-1"><img src="../img/logo/wordmark.png" alt="Kasalo Kape" class="h-9 w-[81px] object-cover mix-blend-multiply"></span>
           <span class="font-label uppercase tracking-wider text-xs text-kalamansi">Admin</span>
         </a>
         <button id="nav-btn" type="button" aria-expanded="false" aria-controls="admin-nav" class="lg:hidden p-2 rounded-full hover:bg-gata/10" aria-label="Open admin menu">
@@ -109,7 +109,7 @@
   </style>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.js"></script>
-  <script src="../supabase.js"></script>
+  <script src="../js/supabase.js"></script>
   <script>
     const { sb, peso, orderLabel } = KK;
     const $ = s => document.querySelector(s);

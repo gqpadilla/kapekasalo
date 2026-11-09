@@ -1,6 +1,6 @@
 // Shared Supabase client and auth helpers for every page. Load after the supabase-js CDN script:
 //   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.js"></script>
-//   <script src="supabase.js"></script>
+//   <script src="js/supabase.js"></script>
 // The URL and publishable (anon) key are public by design; Row Level Security in the database decides what each user can do.
 window.KK = (() => {
   const SUPABASE_URL = 'https://jopcshxmpsoiodjqejow.supabase.co';
