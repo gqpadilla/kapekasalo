@@ -92,7 +92,7 @@
             <p id="hello-sub" class="font-serif text-lg sm:text-xl mt-3 text-tinta/80"></p>
           </div>
           <div class="relative bg-papel border-2 border-tinta rounded-3xl p-6 shadow-ube w-full sm:w-80">
-            <div class="absolute -top-6 -right-4 w-20 rotate-12" aria-hidden="true">
+            <div class="absolute -top-6 right-2 sm:-right-4 w-20 rotate-12" aria-hidden="true">
               <svg viewBox="0 0 100 100" class="w-full"><use href="#burst" fill="#F2B732" stroke="#141414" stroke-width="2"/></svg>
               <span class="absolute inset-0 grid place-content-center font-accent uppercase text-xs text-center leading-tight">Kasalo<br>points</span>
             </div>
@@ -307,7 +307,10 @@
         return;
       }
       $('#orders').innerHTML = orders.map(o => {
-        const [label, color] = STATUS[o.status] || [o.status, 'bg-papel'];
+        const checking = o.status === 'pending_payment' && o.payments?.some(p => p.status === 'pending');
+        const [label, color] = checking ? ['Checking payment', 'bg-jeepney-soft']
+          : o.status === 'pending_payment' && o.pay_option === 'pickup' ? ['Pay at pickup', 'bg-kalamansi-soft']
+          : STATUS[o.status] || [o.status, 'bg-papel'];
         const items = o.order_items.map(i => `${i.qty}× ${esc(i.name)}`).join(', ');
         const canReorder = o.order_items.some(i => i.product_id);
         return `
@@ -323,7 +326,7 @@
             <div class="flex sm:flex-col items-center sm:items-end justify-between gap-3">
               <p class="font-display text-2xl">${peso(o.total)}</p>
               <div class="flex flex-wrap gap-2 justify-end">
-                <a href="receipt.html?order=${o.id}" class="font-label uppercase tracking-wider text-xs px-4 py-2 rounded-full border-2 border-tinta hover:bg-kalamansi transition">${o.receipt_no ? 'Receipt' : 'Details'}</a>
+                <a href="receipt.html?order=${o.id}" class="font-label uppercase tracking-wider text-xs px-4 py-2 rounded-full border-2 border-tinta hover:bg-kalamansi transition">${o.receipt_no ? 'Receipt' : o.pay_option !== 'pickup' && o.channel === 'online' && !checking ? 'Pay now' : 'Details'}</a>
                 ${canReorder ? `<button type="button" data-reorder="${o.id}" class="font-label uppercase tracking-wider text-xs px-4 py-2 rounded-full border-2 border-tinta bg-tinta text-gata hover:bg-banga transition">Reorder</button>` : ''}
                 ${o.status === 'pending_payment' ? `<button type="button" data-cancel="${o.id}" class="font-label uppercase tracking-wider text-xs px-4 py-2 rounded-full border-2 border-sili hover:bg-sili-soft transition">Cancel</button>` : ''}
               </div>
@@ -350,7 +353,7 @@
     });
 
     async function loadOrders() {
-      const { data, error } = await sb.from('orders').select('*, order_items(*)').eq('customer_id', me.id)
+      const { data, error } = await sb.from('orders').select('*, order_items(*), payments(status)').eq('customer_id', me.id)
         .order('created_at', { ascending: false }).limit(50);
       if (error) throw error;
       orders = data;

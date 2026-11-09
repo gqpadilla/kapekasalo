@@ -60,6 +60,15 @@
         <div class="kpi bg-banga-soft"><p class="kpi-l">Bundles + SC/PWD off</p><p id="k-disc" class="kpi-v">—</p></div>
       </section>
 
+      <section class="mt-6 bg-papel border-2 border-tinta rounded-3xl p-6 shadow-ube" aria-labelledby="pay-title">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <h2 id="pay-title" class="font-display uppercase text-xl">Payments to check</h2>
+          <p class="text-sm text-tinta/70">Match each GCash reference with your GCash app before confirming.</p>
+        </div>
+        <p id="pay-msg" role="alert" hidden class="mt-4 rounded-2xl border-2 border-sili bg-sili-soft px-4 py-3 text-sm"></p>
+        <ul id="payments" class="mt-4 grid gap-3"></ul>
+      </section>
+
       <div class="mt-6 grid xl:grid-cols-[1.4fr_1fr] gap-6">
         <section class="bg-papel border-2 border-tinta rounded-3xl p-6" aria-labelledby="queue-title">
           <div class="flex items-center justify-between">
@@ -129,15 +138,17 @@
 
     async function load() {
       const today = manilaDate();
-      const [rep, queue, stock, recent] = await Promise.all([
+      const [rep, queue, stock, recent, pending] = await Promise.all([
         sb.rpc('sales_report', { p_from: today, p_to: today }),
         sb.from('orders').select('id, order_no, status, total, channel, created_at, guest_name, order_items(qty, name)')
           .in('status', ['paid', 'preparing', 'ready']).order('created_at').limit(12),
         sb.from('ingredients').select('name, unit, stock, low_stock_at').eq('active', true).order('stock'),
         sb.from('orders').select('id, order_no, status, total, channel, created_at, guest_name, profiles:customer_id(full_name, email)')
           .order('created_at', { ascending: false }).limit(8),
+        sb.from('orders').select('id, order_no, total, channel, pay_option, created_at, guest_name, profiles:customer_id(full_name, email), payments(id, status, reference, note), order_items(qty, name)')
+          .eq('status', 'pending_payment').order('created_at').limit(30),
       ]);
-      const err = [rep, queue, stock, recent].find(r => r.error)?.error;
+      const err = [rep, queue, stock, recent, pending].find(r => r.error)?.error;
       if (err) { $('#error').hidden = false; $('#error').textContent = KK.message(err); return; }
 
       const r = rep.data;
@@ -152,6 +163,8 @@
             <p class="text-sm truncate">${o.order_items.map(i => `${i.qty}× ${esc(i.name)}`).join(', ')}</p></div>
           <span class="font-label uppercase tracking-wider text-xs whitespace-nowrap">${STATUS[o.status]}</span>
         </li>`).join('') : '<li class="text-sm text-tinta/70">No orders waiting. The queue updates by itself.</li>';
+
+      renderPayments(pending.data);
 
       const low = stock.data.filter(i => Number(i.stock) <= Number(i.low_stock_at));
       $('#stock').innerHTML = low.length ? low.map(i => `
@@ -170,6 +183,67 @@
         </tr>`).join('') : '<tr><td colspan="6" class="py-4 text-tinta/70">No orders yet.</td></tr>';
     }
 
+    // ---------- Payments to check ----------
+    // GCash references sent by customers (confirm or reject), pay-at-pickup orders (cash received),
+    // and counter GCash sales (type the reference from the customer's phone). Orders still waiting for a reference are listed last.
+    const btn = 'font-label uppercase tracking-wider text-xs px-4 py-2 rounded-full border-2 border-tinta transition';
+    const input = 'px-3 py-2 rounded-xl border-2 border-tinta w-full sm:w-44 focus:outline-none focus:shadow-ube-sm';
+    function renderPayments(list) {
+      const who = o => esc(o.profiles?.full_name || o.profiles?.email || o.guest_name || 'Walk-in');
+      const head = o => `<p class="font-bold">${orderLabel(o.order_no)} · ${peso(o.total)} <span class="font-normal text-tinta/70">· ${who(o)} · ${time(o.created_at)}</span></p>
+        <p class="text-sm truncate">${o.order_items.map(i => `${i.qty}× ${esc(i.name)}`).join(', ')}</p>`;
+      const sent = o => o.payments.find(p => p.status === 'pending');
+      const rank = o => sent(o) ? 0 : (o.pay_option === 'pickup' || o.channel === 'pos') ? 1 : 2;
+      const rows = [...list].sort((a, b) => rank(a) - rank(b)).map(o => {
+        const p = sent(o);
+        if (p) return `
+          <li class="rounded-2xl border-2 border-tinta bg-kalamansi-soft p-4 grid lg:grid-cols-[1fr_auto] gap-3 items-center" data-order="${o.id}">
+            <div class="min-w-0">${head(o)}<p class="mt-1">GCash reference <b class="tracking-wider">${esc(p.reference)}</b></p></div>
+            <div class="flex flex-wrap gap-2 items-center">
+              <button type="button" data-confirm="gcash" class="${btn} bg-tinta text-gata hover:bg-banga">Confirm paid</button>
+              <input data-reason class="${input}" placeholder="Reason, if rejecting">
+              <button type="button" data-reject class="${btn} border-sili hover:bg-sili-soft">Reject</button>
+            </div>
+          </li>`;
+        if (o.pay_option === 'pickup' || o.channel === 'pos') {
+          const counterGcash = o.channel === 'pos';
+          return `
+          <li class="rounded-2xl border-2 border-tinta p-4 grid lg:grid-cols-[1fr_auto] gap-3 items-center" data-order="${o.id}">
+            <div class="min-w-0">${head(o)}<p class="mt-1 text-sm">${counterGcash ? 'Counter sale paid by GCash' : 'Pay at pickup'}</p></div>
+            <div class="flex flex-wrap gap-2 items-center">
+              ${counterGcash
+                ? `<input data-ref class="${input}" inputmode="numeric" placeholder="GCash reference"><button type="button" data-confirm="gcash" class="${btn} bg-tinta text-gata hover:bg-banga">Confirm paid</button>`
+                : `<input data-cash class="${input}" type="number" min="${o.total}" inputmode="numeric" placeholder="Cash received (₱)"><button type="button" data-confirm="cash" class="${btn} bg-tinta text-gata hover:bg-banga">Mark paid</button>`}
+            </div>
+          </li>`;
+        }
+        const rejected = o.payments.find(x => x.status === 'failed' && x.note);
+        return `
+          <li class="rounded-2xl border-2 border-dashed border-tinta/40 p-4 text-sm" data-order="${o.id}">
+            ${head(o)}<p class="mt-1 text-tinta/70">Waiting for the customer's GCash reference${rejected ? ` (last one rejected: ${esc(rejected.note)})` : ''}.</p>
+          </li>`;
+      });
+      $('#payments').innerHTML = rows.join('') || '<li class="text-sm text-tinta/70">Nothing to check. New payments appear here by themselves.</li>';
+    }
+
+    $('#payments').addEventListener('click', async e => {
+      const row = e.target.closest('[data-order]'), confirmBtn = e.target.closest('[data-confirm]'), rejectBtn = e.target.closest('[data-reject]');
+      if (!row || (!confirmBtn && !rejectBtn)) return;
+      const msg = $('#pay-msg'); msg.hidden = true;
+      let res;
+      if (rejectBtn) {
+        const reason = row.querySelector('[data-reason]').value.trim();
+        if (!reason) { msg.hidden = false; msg.textContent = 'Type a reason for the customer first, e.g. "No GCash payment with that reference".'; return; }
+        res = await sb.rpc('reject_payment', { p_order: row.dataset.order, p_reason: reason });
+      } else {
+        const method = confirmBtn.dataset.confirm, cash = row.querySelector('[data-cash]')?.value, ref = row.querySelector('[data-ref]')?.value;
+        res = await sb.rpc('confirm_payment', { p_order: row.dataset.order, p_method: method,
+          p_cash_tendered: cash ? Number(cash) : null, p_reference: ref?.trim() || null });
+      }
+      if (res.error) { msg.hidden = false; msg.textContent = KK.message(res.error); return; }
+      await load();
+    });
+
     (async () => {
       const me = await KK.requireAdmin();
       $('#gate').hidden = true; $('#app').hidden = false;
@@ -180,7 +254,11 @@
       $('#today').textContent = new Date().toLocaleDateString('en-PH', { timeZone: 'Asia/Manila', weekday: 'long', month: 'long', day: 'numeric' });
       await load();
       // Live: refresh when any order changes
-      sb.channel('dash').on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, load).subscribe();
+      // Refresh on any order change, and every 20 s for new references (those are payment rows, not order changes),
+      // but never while someone is typing a reason, reference or cash amount.
+      const refresh = () => { if (![...document.querySelectorAll('#payments input')].some(i => i.value || i === document.activeElement)) load(); };
+      sb.channel('dash').on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, refresh).subscribe();
+      setInterval(refresh, 20000);
     })();
   </script>
 </body>

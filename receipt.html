@@ -85,7 +85,7 @@
         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
         Back to your orders
       </a>
-      <div class="flex flex-wrap gap-2">
+      <div id="tools" hidden class="flex flex-wrap gap-2">
         <div role="radiogroup" aria-label="Receipt layout" class="inline-flex p-1 rounded-full border-2 border-tinta bg-papel">
           <button type="button" data-format="page" class="fmt px-4 py-1.5 rounded-full font-label uppercase tracking-wider text-xs">Full page</button>
           <button type="button" data-format="thermal" class="fmt px-4 py-1.5 rounded-full font-label uppercase tracking-wider text-xs">80 mm</button>
@@ -94,16 +94,17 @@
       </div>
     </div>
 
-    <p id="status" class="text-center py-20 font-label uppercase tracking-wider text-sm">Loading receipt…</p>
-    <article id="invoice" hidden aria-label="Sales invoice"></article>
+    <p id="status" class="text-center py-20 font-label uppercase tracking-wider text-sm">Loading your order…</p>
+    <section id="pay" hidden class="no-print mx-auto max-w-3xl mb-8" aria-label="Payment"></section>
+    <article id="invoice" hidden aria-label="Receipt"></article>
   </main>
 
   <style>
     /* ---- Full-page invoice ---- */
     #invoice.page { max-width: 48rem; margin: 0 auto; background: #FFFFFF; border: 2px solid #141414; border-radius: 1.5rem;
       box-shadow: 10px 10px 0 #5B3A8C; padding: 2.5rem; position: relative; overflow: hidden; }
-    #invoice.page .demo { position: absolute; top: 2.3rem; right: -3.2rem; transform: rotate(35deg); background: #F2B732; border-block: 2px solid #141414;
-      padding: .3rem 4rem; font: 700 .7rem/1 'MADE Sunflower', sans-serif; letter-spacing: .08em; text-transform: uppercase; }
+    .step { flex-shrink: 0; width: 1.75rem; height: 1.75rem; display: grid; place-items: center; border-radius: 999px; background: #F2B732;
+      border: 2px solid #141414; font: .8rem 'MADE Sunflower', sans-serif; }
     #invoice table { width: 100%; border-collapse: collapse; }
     #invoice.page th { text-align: left; font: .7rem 'MADE Sunflower', sans-serif; text-transform: uppercase; letter-spacing: .06em; padding: .6rem 0; border-bottom: 2px solid #141414; }
     #invoice.page td { padding: .7rem 0; border-bottom: 1px solid rgba(20, 20, 20, .15); vertical-align: top; }
@@ -118,7 +119,6 @@
     #invoice.thermal .t-big { font-size: 15px; font-weight: 700; }
     #invoice.thermal .rule { border-top: 1px dashed #000; margin: 2mm 0; }
     #invoice.thermal td { padding: .5mm 0; vertical-align: top; }
-    #invoice.thermal .demo { text-align: center; border: 1px solid #000; padding: 1mm; margin-bottom: 2mm; font-weight: 700; }
 
     @media print {
       body > :not(main), .no-print { display: none !important; }   /* site chrome only; the invoice has its own header/footer */
@@ -232,18 +232,102 @@
   <script src="supabase.js"></script>
   <script src="cart.js"></script>
   <script>
-    // Sales invoice per BIR RR 7-2024 (EOPT): seller name, address, TIN + branch code, "NON-VAT REG TIN" or "VAT REG TIN",
-    // serial number, date, buyer, item lines, discounts (Senior/PWD with ID), total, and the POS permit details.
+    // The order page. While unpaid it is the payment page: the café's GCash/InstaPay QR (customer pays, then submits the
+    // reference number for staff to confirm) or pay-at-pickup instructions. Once paid it is the receipt: a Sales Invoice
+    // per BIR RR 7-2024 when the café is BIR-registered (settings.invoice.bir_registered), otherwise an Order Receipt
+    // without registration numbers.
     const { sb, peso, orderLabel } = KK;
     const $ = s => document.querySelector(s);
     const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
     const params = new URLSearchParams(location.search);
     const money = n => Number(n).toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    const METHOD = { cash: 'Cash', card: 'Debit/Credit card', qrph: 'QR Ph', gcash: 'GCash', maya: 'Maya' };
-    let order, inv, store, format = params.get('format') === 'thermal' ? 'thermal' : 'page';
+    const METHOD = { cash: 'Cash', gcash: 'GCash / InstaPay' };
+    const id = params.get('order'), token = params.get('t');
+    let order, inv, gcash, poll, editing = false, format = params.get('format') === 'thermal' ? 'thermal' : 'page';
 
+    // ---------- Payment panel ----------
+    const box = html => `<div class="bg-papel border-2 border-tinta rounded-3xl p-6 sm:p-8 shadow-ube">${html}</div>`;
+    function payPanel() {
+      const o = order, el = $('#pay'), p = o.payment, label = orderLabel(o.order_no);
+      if (o.status !== 'pending_payment') { el.hidden = true; clearInterval(poll); return; }
+      el.hidden = false;
+
+      if (o.pay_option === 'pickup' || o.channel === 'pos') {
+        el.innerHTML = box(`
+          <p class="font-label uppercase tracking-[0.2em] text-xs text-banga">Pay at pickup</p>
+          <h1 class="font-serif text-4xl sm:text-5xl leading-tight mt-2">Your order is in.</h1>
+          <p class="font-serif text-lg sm:text-xl mt-3">Pay <b>${peso(o.total)}</b> in cash at the counter on Padre Faura St. Just show order <b>${label}</b>.</p>
+          <p class="text-sm mt-4 text-tinta/70">Open Mon–Fri 6AM–10PM, Sat–Sun 7AM–10PM. Your receipt appears here once you've paid.</p>`);
+        return;
+      }
+
+      if (p?.status === 'pending' && !editing) {
+        el.innerHTML = box(`
+          <div class="flex items-start gap-4">
+            <span class="live-dot mt-3 w-3 h-3 rounded-full bg-jeepney shrink-0" aria-hidden="true"></span>
+            <div>
+              <p class="font-label uppercase tracking-[0.2em] text-xs text-banga">Payment sent</p>
+              <h1 class="font-serif text-4xl leading-tight mt-2">Thanks! We're checking it.</h1>
+              <p class="font-serif text-lg mt-3">We'll match reference <b>${esc(p.reference)}</b> with our GCash. This page updates by itself; your receipt appears here once it's confirmed.</p>
+              <button type="button" data-edit class="mt-5 text-sm underline underline-offset-4 hover:text-banga">Typed the wrong number? Send it again</button>
+            </div>
+          </div>`);
+        return;
+      }
+
+      el.innerHTML = box(`
+        ${p?.status === 'failed' && p.note ? `<p role="alert" class="mb-6 rounded-2xl border-2 border-sili bg-sili-soft px-4 py-3 text-sm">
+          <b>We couldn't confirm your last payment:</b> ${esc(p.note)}. Please check the reference number and send it again.</p>` : ''}
+        <div class="grid sm:grid-cols-[15rem_1fr] gap-8 items-start">
+          <figure class="relative">
+            <img src="${esc(gcash.qr_image)}" alt="Kasalo Kape GCash and InstaPay QR code" class="w-full rounded-2xl border-2 border-tinta">
+            <figcaption class="mt-3 text-center text-sm">${esc(gcash.account_name)}</figcaption>
+            <a href="${esc(gcash.qr_image)}" download="kasalo-kape-gcash-qr.webp" class="mt-2 block text-center text-sm underline underline-offset-4 hover:text-banga">Save QR image</a>
+          </figure>
+          <div>
+            <p class="font-label uppercase tracking-[0.2em] text-xs text-banga">Pay with GCash or InstaPay</p>
+            <h1 class="font-serif text-4xl leading-tight mt-2">Scan to pay <span class="whitespace-nowrap">${peso(o.total)}</span></h1>
+            <ol class="mt-5 space-y-3">
+              <li class="flex gap-3"><span class="step">1</span><span>Open GCash, Maya or your bank app and scan the QR. On your phone? Save the QR image and upload it in the app.</span></li>
+              <li class="flex gap-3"><span class="step">2</span><span>Send exactly <b>${peso(o.total)}</b>. If the app asks for a message, type <b>${label}</b>.</span></li>
+              <li class="flex gap-3"><span class="step">3</span><span>Copy the <b>reference number</b> from your payment receipt and enter it here.</span></li>
+            </ol>
+            <form id="ref-form" class="mt-6 grid sm:grid-cols-[1fr_auto] gap-3" novalidate>
+              <label for="ref" class="sr-only">GCash reference number</label>
+              <input id="ref" inputmode="numeric" autocomplete="off" placeholder="e.g. 1234 567 891011" value="${editing && p?.reference ? esc(p.reference) : ''}"
+                class="w-full px-4 py-3 rounded-xl border-2 border-tinta focus:outline-none focus:shadow-ube-sm text-lg tracking-wider">
+              <button class="bg-banga text-papel font-label uppercase tracking-wider px-6 py-3 rounded-xl border-2 border-tinta shadow-ube-sm hover:-translate-y-0.5 transition disabled:opacity-60">I've paid</button>
+              <p id="ref-msg" role="alert" class="sm:col-span-2 text-sm text-sili min-h-[1.25rem]"></p>
+            </form>
+          </div>
+        </div>`);
+    }
+
+    $('#pay').addEventListener('click', e => { if (e.target.closest('[data-edit]')) { editing = true; payPanel(); $('#ref')?.focus(); } });
+    $('#pay').addEventListener('submit', async e => {
+      e.preventDefault();
+      const btn = e.target.querySelector('button'), msg = $('#ref-msg'), ref = $('#ref').value.replace(/[\s-]/g, '');
+      if (!/^[0-9A-Za-z]{6,30}$/.test(ref)) { msg.textContent = 'Enter the reference number from your GCash receipt (numbers only).'; return; }
+      btn.disabled = true; btn.textContent = 'Sending…';
+      const { data, error } = await sb.rpc('submit_gcash_payment', { p_order: id, p_reference: ref, p_token: token });
+      if (error) { msg.textContent = KK.message(error); btn.disabled = false; btn.textContent = "I've paid"; return; }
+      editing = false; order = data; show(); watch();
+    });
+
+    // While a reference is waiting for confirmation, check again every 8 seconds.
+    function watch() {
+      clearInterval(poll);
+      if (order.status === 'pending_payment' && order.payment?.status === 'pending') {
+        poll = setInterval(async () => {
+          const { data } = await sb.rpc('get_order', { p_order: id, p_token: token });
+          if (data && (data.status !== order.status || data.payment?.status !== order.payment?.status)) { order = data; show(); watch(); }
+        }, 8000);
+      }
+    }
+
+    // ---------- Receipt ----------
     function render() {
-      const o = order, paid = !!o.receipt_no;
+      const o = order, paid = !!o.receipt_no, bir = inv.bir_registered === true;
       const tin = `${inv.vat_registered ? 'VAT' : 'NON-VAT'} REG TIN: ${inv.tin}-${inv.branch_code}`;
       const no = paid ? String(o.receipt_no).padStart(7, '0') : '—';
       const date = new Date(o.paid_at || o.created_at).toLocaleString('en-PH', { timeZone: 'Asia/Manila', dateStyle: 'medium', timeStyle: 'short' });
@@ -252,12 +336,12 @@
         o.bundle_discount > 0 && ['Less: Kasalo Bundle', o.bundle_discount],
         o.senior_discount > 0 && ['Less: Senior Citizen/PWD discount (20%)', o.senior_discount],
       ].filter(Boolean);
-      const vatRows = inv.vat_registered
+      const vatRows = bir && inv.vat_registered
         ? [['VATable sales', o.vatable_sales], ['VAT-exempt sales', o.vat_exempt], ['Zero-rated sales', 0], ['VAT (12%)', o.vat]] : [];
-      const legal = inv.vat_registered ? '' : 'THIS DOCUMENT IS NOT VALID FOR CLAIM OF INPUT TAX.';
-      const demo = inv.is_demo ? 'Demo · not a BIR-registered invoice' : '';
-      const title = paid ? 'SALES INVOICE' : 'ORDER SUMMARY (UNPAID)';
-      const pay = paid ? [['Paid by', METHOD[o.payment_method] || o.payment_method],
+      const legal = bir && !inv.vat_registered ? 'THIS DOCUMENT IS NOT VALID FOR CLAIM OF INPUT TAX.' : '';
+      const title = !paid ? 'ORDER SUMMARY' : bir ? 'SALES INVOICE' : 'ORDER RECEIPT';
+      const ref = o.payment?.status === 'paid' && o.payment.reference;
+      const pay = paid ? [['Paid by', METHOD[o.payment_method] || o.payment_method], ...(ref ? [['Reference no.', ref]] : []),
         ...(o.cash_tendered != null ? [['Cash received', money(o.cash_tendered)], ['Change', money(o.change_due)]] : [])] : [];
 
       const el = $('#invoice');
@@ -271,11 +355,10 @@
       if (format === 'thermal') {
         const row = (l, r, b) => `<tr${b ? ' class="t-big"' : ''}><td>${l}</td><td class="num">${r}</td></tr>`;
         el.innerHTML = `
-          ${demo ? `<div class="demo">${esc(demo.toUpperCase())}</div>` : ''}
-          <div class="t-center"><div class="t-big">${esc(inv.trade_name)}</div>${esc(inv.registered_name)}<br>${esc(inv.address)}<br>${esc(tin)}</div>
+          <div class="t-center"><div class="t-big">${esc(inv.trade_name)}</div>${esc(inv.registered_name)}<br>${esc(inv.address)}${bir ? `<br>${esc(tin)}` : ''}</div>
           <div class="rule"></div>
           <div class="t-center t-big">${title}</div>
-          <table>${row('No.', no)}${row('Date', date)}${row('Order', orderLabel(o.order_no))}${row('Sold to', esc(o.buyer))}</table>
+          <table>${row(bir ? 'No.' : 'Receipt no.', no)}${row('Date', date)}${row('Order', orderLabel(o.order_no))}${row('Sold to', esc(o.buyer))}</table>
           <div class="rule"></div>
           <table>${lines.map(l => `<tr><td colspan="2">${esc(l.name)}${l.variant ? ` (${esc(l.variant)})` : ''}</td></tr>${row(`&nbsp;&nbsp;${l.qty} x ${money(l.unit)}`, money(l.amt))}`).join('')}</table>
           <div class="rule"></div>
@@ -283,14 +366,13 @@
             ${pay.map(([l, v]) => row(l, esc(v))).join('')}${vatRows.map(([l, v]) => row(l, money(v))).join('')}</table>
           ${o.senior_id ? `<div class="rule"></div>SC/PWD ID: ${esc(o.senior_id)}<br>Name: ____________________<br>Signature: _______________` : ''}
           <div class="rule"></div>
-          <div class="t-center">${esc(inv.pos_provider)}<br>PTU No. ${esc(inv.ptu_no)}<br>Issued ${esc(inv.ptu_date)}<br>${esc(inv.machine_no)} · ${esc(inv.serial_no)}
-            ${legal ? `<br><br>${legal}` : ''}<br><br>Thank you, kasalo!</div>`;
+          <div class="t-center">${bir ? `${esc(inv.pos_provider)}<br>PTU No. ${esc(inv.ptu_no)}<br>Issued ${esc(inv.ptu_date)}<br>${esc(inv.machine_no)} · ${esc(inv.serial_no)}<br><br>` : ''}
+            ${legal ? `${legal}<br><br>` : ''}Thank you, kasalo!</div>`;
         return;
       }
 
       const line = (l, v, cls = '') => `<div class="flex justify-between gap-6 ${cls}"><dt>${l}</dt><dd class="num">${v}</dd></div>`;
       el.innerHTML = `
-        ${demo ? `<div class="demo" aria-label="${esc(demo)}">Demo</div>` : ''}
         <header class="grid sm:grid-cols-[1fr_auto] gap-6 pb-6 border-b-2 border-tinta">
           <div class="flex gap-4 items-start">
             <img src="cup%20logo%202.png" alt="" class="w-20 -ml-2 mix-blend-multiply">
@@ -298,21 +380,21 @@
               <p class="font-display uppercase text-2xl leading-none">${esc(inv.trade_name)}</p>
               <p class="mt-2">${esc(inv.registered_name)}</p>
               <p class="text-sm">${esc(inv.address)}</p>
-              <p class="text-sm font-bold mt-1">${esc(tin)}</p>
+              ${bir ? `<p class="text-sm font-bold mt-1">${esc(tin)}</p>` : ''}
             </div>
           </div>
           <div class="sm:text-right">
             <p class="font-label uppercase tracking-[0.2em] text-sm text-banga">${title}</p>
-            <p class="font-display text-3xl mt-1">No. ${no}</p>
+            <p class="font-display text-3xl mt-1">${paid ? `No. ${no}` : orderLabel(o.order_no)}</p>
             <p class="text-sm mt-1">${date}</p>
             <p class="text-sm">Order ${orderLabel(o.order_no)} · ${o.channel === 'pos' ? 'Counter' : 'Online pickup'}</p>
           </div>
         </header>
 
-        <section class="grid sm:grid-cols-3 gap-4 py-5 border-b border-tinta/20 text-sm">
+        <section class="grid ${bir ? 'sm:grid-cols-3' : ''} gap-4 py-5 border-b border-tinta/20 text-sm">
           <div><p class="font-label uppercase tracking-wider text-xs">Sold to</p><p class="mt-1 font-bold">${esc(o.buyer)}</p></div>
-          <div><p class="font-label uppercase tracking-wider text-xs">Address</p><p class="mt-1 border-b border-tinta/40 min-h-[1.25rem]"></p></div>
-          <div><p class="font-label uppercase tracking-wider text-xs">TIN</p><p class="mt-1 border-b border-tinta/40 min-h-[1.25rem]"></p></div>
+          ${bir ? `<div><p class="font-label uppercase tracking-wider text-xs">Address</p><p class="mt-1 border-b border-tinta/40 min-h-[1.25rem]"></p></div>
+          <div><p class="font-label uppercase tracking-wider text-xs">TIN</p><p class="mt-1 border-b border-tinta/40 min-h-[1.25rem]"></p></div>` : ''}
         </section>
 
         <table class="mt-2">
@@ -327,21 +409,29 @@
                 <p class="font-label uppercase tracking-wider text-xs">Senior Citizen / PWD</p>
                 <p class="mt-1">ID No.: <b>${esc(o.senior_id)}</b></p>
                 <p class="mt-4 border-b border-tinta/60">&nbsp;</p><p class="text-xs mt-1">Signature over printed name</p></div>` : ''}
-            ${pay.length ? `<dl class="space-y-1">${pay.map(([l, v]) => line(l, esc(v))).join('')}</dl>`
-              : `<p class="rounded-2xl bg-kalamansi-soft border-2 border-tinta p-4">This order hasn't been paid yet, so no invoice number has been issued.</p>`}
+            ${pay.length ? `<dl class="space-y-1">${pay.map(([l, v]) => line(l, esc(v))).join('')}</dl>` : ''}
           </div>
           <dl class="space-y-1.5">
             ${line('Total sales', money(o.subtotal))}
             ${disc.map(([l, v]) => line(l, '−' + money(v))).join('')}
-            ${line('Total amount due', '₱' + money(o.total), 'font-display text-2xl pt-3 mt-2 border-t-2 border-tinta')}
+            ${line(paid ? 'Total paid' : 'Total to pay', '₱' + money(o.total), 'font-display text-2xl pt-3 mt-2 border-t-2 border-tinta')}
             ${vatRows.length ? `<div class="pt-3 mt-2 border-t border-tinta/20 text-sm space-y-1">${vatRows.map(([l, v]) => line(l, money(v))).join('')}</div>` : ''}
           </dl>
         </div>
 
         <footer class="mt-8 pt-5 border-t-2 border-dashed border-ube text-xs text-tinta/70 grid sm:grid-cols-2 gap-2">
-          <p>${esc(inv.pos_provider)} · ${esc(inv.machine_no)} · ${esc(inv.serial_no)}<br>BIR PTU No. ${esc(inv.ptu_no)} · Date issued ${esc(inv.ptu_date)}</p>
-          <p class="sm:text-right">${legal ? `<b class="text-tinta">${legal}</b><br>` : ''}${demo ? esc(demo) : ''}</p>
+          ${bir ? `<p>${esc(inv.pos_provider)} · ${esc(inv.machine_no)} · ${esc(inv.serial_no)}<br>BIR PTU No. ${esc(inv.ptu_no)} · Date issued ${esc(inv.ptu_date)}</p>`
+                : `<p>Pickup at Padre Faura St., Ermita · kasalokape@gmail.com</p>`}
+          <p class="sm:text-right">${legal ? `<b class="text-tinta">${legal}</b><br>` : ''}Thank you, kasalo!</p>
         </footer>`;
+    }
+
+    function show() {
+      const paid = !!order.receipt_no;
+      document.title = `${paid ? (inv.bir_registered ? 'Invoice ' : 'Receipt ') + String(order.receipt_no).padStart(7, '0') : 'Pay for ' + orderLabel(order.order_no)} · Kasalo Kape`;
+      $('#tools').hidden = !paid;   // print and layout buttons only once there is a receipt
+      payPanel();
+      render();
     }
 
     document.querySelectorAll('.fmt').forEach(b => b.addEventListener('click', () => {
@@ -352,21 +442,21 @@
 
     (async () => {
       const fail = text => { $('#status').textContent = text; };
-      if (!KK.configured) return fail('Receipts appear here once the site is connected to the database.');
-      const id = params.get('order'), token = params.get('t');
+      if (!KK.configured) return fail('Orders are offline right now. Please try again later.');
       if (!id) return fail('No order selected.');
       if (!token) await KK.requireLogin();            // account receipts need login; guest links carry a token
       else $('#back').href = 'index.html';
+      if (token) $('#back').lastChild.textContent = ' Back to the shop';
       const [{ data: o, error }, { data: settings }] = await Promise.all([
         sb.rpc('get_order', { p_order: id, p_token: token }),
-        sb.from('settings').select('key, value').in('key', ['invoice', 'store']),
+        sb.from('settings').select('key, value').in('key', ['invoice', 'gcash']),
       ]);
-      if (error) return fail(/not found/i.test(error.message) ? 'We couldn’t find that receipt. Check the link or log in.' : KK.message(error));
+      if (error) return fail(/not found/i.test(error.message) ? 'We couldn’t find that order. Check the link or log in.' : KK.message(error));
       order = o;
       inv = settings.find(s => s.key === 'invoice')?.value || {};
-      document.title = `${o.receipt_no ? 'Invoice ' + String(o.receipt_no).padStart(7, '0') : orderLabel(o.order_no)} · Kasalo Kape`;
+      gcash = settings.find(s => s.key === 'gcash')?.value || {};
       $('#status').hidden = true; $('#invoice').hidden = false;
-      render();
+      show(); watch();
     })();
   </script>
   <style id="page-size"></style>

@@ -41,7 +41,7 @@ insert into public.promotions (kind, name, value) values ('bundle', 'Kasalo Bund
 insert into public.settings (key, value) values
   ('vat_rate', '0'),
   ('store', '{"address":"Padre Faura St., Ermita, Manila, 1000 Metro Manila","email":"kasalokape@gmail.com","hours":{"Mon-Fri":"6AM-10PM","Sat-Sun":"7AM-10PM"}}'::jsonb),
-  ('invoice', '{"registered_name":"Kasalo Kape","trade_name":"Kasalo Kape · Kape atbp.","address":"Padre Faura St., Ermita, Manila, 1000 Metro Manila","vat_registered":false,"tin":"000-000-000","branch_code":"00000","ptu_no":"FP000000-000-0000000-00000","ptu_date":"2026-01-01","machine_no":"MIN 0000000000","serial_no":"SN KASALO-POS-01","pos_provider":"Kasalo Kape in-house POS","is_demo":true}'::jsonb);
+  ('invoice', '{"registered_name":"Kasalo Kape","trade_name":"Kasalo Kape · Kape atbp.","address":"Padre Faura St., Ermita, Manila, 1000 Metro Manila","vat_registered":false,"tin":"000-000-000","branch_code":"00000","ptu_no":"FP000000-000-0000000-00000","ptu_date":"2026-01-01","machine_no":"MIN 0000000000","serial_no":"SN KASALO-POS-01","pos_provider":"Kasalo Kape in-house POS","bir_registered":false}'::jsonb);
 
 insert into public.ingredients (name, unit, stock, low_stock_at, cost_per_unit) values
   ('Espresso beans', 'g', 5000, 1000, 1.2),

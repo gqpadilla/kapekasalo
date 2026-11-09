@@ -83,27 +83,35 @@ ok((await db.query(`select full_name from public.profiles where id = '${A}'`)).r
 ok(await fails('authenticated', A, `select public.pos_sale($1, 'cash', 1000)`, [cart], 'Admins only'), 'customers cannot use the POS');
 ok((await as('authenticated', A, 'select * from public.ingredients')).rows.length === 0, 'customers cannot read inventory');
 ok((await as('authenticated', A, 'select * from public.audit_log')).rows.length === 0, 'customers cannot read the audit log');
-ok(await fails('authenticated', A, `select public.record_paymongo_payment($1, 'x', 'card', 654, '{}')`, [order.id]), 'customers cannot mark orders paid');
+ok(await fails('authenticated', A, `select public.confirm_payment($1, 'gcash', null, '1234567890123')`, [order.id], 'Admins only'), 'customers cannot mark orders paid');
 
-// ---- PayMongo webhook path (service role) ----
-await db.query(`insert into public.payments (order_id, provider, provider_ref, amount) values ($1, 'paymongo', 'cs_test_1', 654)`, [order.id]);
+// ---- GCash QR: customer submits the reference, an admin confirms ----
+ok(order.pay_option === 'gcash_qr', 'online orders default to GCash QR');
+ok(await fails('authenticated', A, 'select public.submit_gcash_payment($1, $2)', [order.id, '12 34'], 'reference number'), 'a too-short reference is refused');
+ok(await fails('anon', null, 'select public.submit_gcash_payment($1, $2)', [order.id, '1234567890123'], 'not found'), 'strangers cannot submit payment for an order');
+const sent = (await one('authenticated', A, 'select public.submit_gcash_payment($1, $2) o', [order.id, '1234 5678 90123'])).o;
+ok(sent.payment.status === 'pending' && sent.payment.reference === '1234567890123' && sent.status === 'pending_payment', 'reference saved (spaces removed); order waits for confirmation');
 const beansBefore = await stock('Espresso beans');
-const bad = (await one('service_role', null, `select public.record_paymongo_payment($1, 'cs_test_1', 'card', 600, '{}') r`, [order.id])).r;
-ok(!!bad.error && (await db.query(`select status from public.payments where provider_ref = 'cs_test_1'`)).rows[0].status === 'failed', 'wrong paid amount is refused and the payment marked failed');
-await db.query(`update public.payments set status = 'pending' where provider_ref = 'cs_test_1'`);
-const paid = (await one('service_role', null, `select public.record_paymongo_payment($1, 'cs_test_1', 'qrph', 654, '{}') r`, [order.id])).r;
-ok(paid.status === 'paid' && paid.receipt_no != null && paid.payment_method === 'qrph', `webhook marks paid, receipt #${paid.receipt_no}`);
+const paid = (await one('authenticated', ADMIN, `select public.confirm_payment($1, 'gcash') o`, [order.id])).o;
+ok(paid.status === 'paid' && paid.receipt_no != null && paid.payment_method === 'gcash', `admin confirms GCash, receipt #${paid.receipt_no}`);
 ok(beansBefore - await stock('Espresso beans') === 36, 'stock deducted: 2 lattes × 18 g espresso');
 ok(await stock('Flour') === 15000 - 70 * 4, 'box of 4 ensaymada deducts 4 portions of flour');
 ok((await db.query(`select loyalty_points from public.profiles where id = '${A}'`)).rows[0].loyalty_points === 13, 'loyalty: ₱654 → 13 points');
-const again = (await one('service_role', null, `select public.record_paymongo_payment($1, 'cs_test_1', 'qrph', 654, '{}') r`, [order.id])).r;
-ok(again.receipt_no === paid.receipt_no && beansBefore - await stock('Espresso beans') === 36, 'webhook retry does not double-charge stock');
+ok(await fails('authenticated', ADMIN, `select public.confirm_payment($1, 'gcash')`, [order.id], 'already paid'), 'confirming twice is refused (no double stock)');
+ok(await fails('authenticated', A, 'select public.submit_gcash_payment($1, $2)', [order.id, '9999999999999'], 'already paid'), 'paid orders take no new reference');
 
-// ---- subscription purchase ----
+// ---- subscription purchase, a rejected reference, then resubmission ----
 const sub = (await one('authenticated', B, 'select public.place_order($1) o', [JSON.stringify([{ plan_id: 'monthly', qty: 1 }])])).o;
 ok(sub.total === 650 && sub.bundle_discount === 0, 'The Fix monthly plan priced ₱650, no bundle');
-await db.query(`insert into public.payments (order_id, provider, provider_ref, amount) values ($1, 'paymongo', 'cs_test_2', 650)`, [sub.id]);
-await as('service_role', null, `select public.record_paymongo_payment($1, 'cs_test_2', 'card', 650, '{}')`, [sub.id]);
+ok(await fails('authenticated', B, `select public.place_order($1, null, null, 'pickup')`, [JSON.stringify([{ plan_id: 'monthly', qty: 1 }])], 'GCash'), 'The Fix must be paid by GCash');
+ok(await fails('authenticated', B, 'select public.submit_gcash_payment($1, $2)', [sub.id, '1234567890123'], 'already used'), 'a reference already used for another order is refused');
+await as('authenticated', B, 'select public.submit_gcash_payment($1, $2)', [sub.id, '5555555555555']);
+ok(await fails('authenticated', ADMIN, `select public.reject_payment($1, '')`, [sub.id], 'why'), 'rejecting needs a reason for the customer');
+await as('authenticated', ADMIN, `select public.reject_payment($1, 'No GCash payment found with that reference')`, [sub.id]);
+const rej = (await one('authenticated', B, 'select public.get_order($1) o', [sub.id])).o;
+ok(rej.payment.status === 'failed' && /No GCash payment/.test(rej.payment.note) && rej.status === 'pending_payment', 'customer sees the rejection reason and can try again');
+await as('authenticated', B, 'select public.submit_gcash_payment($1, $2)', [sub.id, '6666666666666']);
+await as('authenticated', ADMIN, `select public.confirm_payment($1, 'gcash')`, [sub.id]);
 ok((await as('authenticated', B, 'select * from public.subscriptions')).rows.length === 1, 'paying a plan creates the subscription');
 const paused = (await one('authenticated', B, `select (public.update_my_subscription((select id from public.subscriptions limit 1), 'paused')).status s`)).s;
 ok(paused === 'paused', 'customer can pause their subscription');
@@ -119,8 +127,8 @@ ok(senior.change_due === 101 && senior.status === 'paid' && Number(senior.vat) =
 ok(await fails('authenticated', ADMIN, `select public.pos_sale($1, 'cash', 200, true, '')`, [JSON.stringify([{ product_id: 'kutsinta', qty: 1 }])], 'ID'), 'Senior/PWD needs an ID number');
 ok(await fails('authenticated', ADMIN, `select public.pos_sale($1, 'cash', 10)`, [JSON.stringify([{ product_id: 'barako-brusko', qty: 1 }])], 'less than'), 'cash below total refused');
 const barako = (await one('authenticated', ADMIN, `select public.pos_sale($1, 'cash', 100) o`, [JSON.stringify([{ product_id: 'barako-brusko', qty: 1 }])])).o;
-const card = (await one('authenticated', ADMIN, `select public.pos_sale($1, 'card') o`, [JSON.stringify([{ product_id: 'espasol', qty: 2 }])])).o;
-ok(card.status === 'pending_payment', 'POS card sale waits for PayMongo');
+const card = (await one('authenticated', ADMIN, `select public.pos_sale($1, 'gcash') o`, [JSON.stringify([{ product_id: 'espasol', qty: 2 }])])).o;
+ok(card.status === 'pending_payment', 'POS GCash sale waits for staff to confirm it');
 
 const barakoBeans = await stock('Barako beans');
 ok(await fails('authenticated', ADMIN, `select public.void_order($1, '')`, [barako.id], 'reason'), 'void needs a reason');
@@ -157,7 +165,7 @@ await as('authenticated', ADMIN, `update public.products set price = 125 where i
 const audit = (await as('authenticated', ADMIN, `select action, table_name, actor from public.audit_log`)).rows;
 ok(audit.some(r => r.table_name === 'products' && r.action === 'UPDATE' && r.actor === 'admin@test.ph'), 'price change is in the audit log with who did it');
 ok(audit.some(r => r.table_name === 'profiles' && r.action === 'UPDATE'), 'role change is audited');
-ok(audit.some(r => r.action === 'PAYMENT_MISMATCH'), 'amount mismatch is audited');
+ok(audit.some(r => r.action === 'PAYMENT_SUBMITTED'), 'submitted GCash references are audited');
 ok(await fails('authenticated', ADMIN, 'delete from public.audit_log'), 'admins cannot delete audit rows');
 ok(await fails('service_role', null, 'delete from public.audit_log'), 'even the service role cannot delete audit rows');
 await as('anon', null, `insert into public.newsletter_subscribers (email) values ('hello@test.ph')`);
@@ -175,6 +183,14 @@ ok(await fails('anon', null, 'select public.get_order($1, gen_random_uuid())', [
 ok(await fails('authenticated', A, 'select public.get_order($1)', [guest.id], 'not found'), "a customer cannot open someone else's receipt without the link");
 ok(await fails('anon', null, 'select public.get_order($1)', [order.id], 'not found'), 'logged-out visitors cannot open account receipts');
 ok((await one('authenticated', A, 'select public.get_order($1) o', [order.id])).o.buyer === 'Ana', 'customer A opens their own receipt');
+
+// ---- pay at pickup ----
+const pick = (await one('anon', null, `select public.place_order($1, 'Lia', 'lia@test.ph', 'pickup') o`, [JSON.stringify([{ product_id: 'espasol', qty: 1 }])])).o;
+ok(pick.pay_option === 'pickup' && pick.status === 'pending_payment', 'guest can choose to pay at pickup');
+ok(await fails('anon', null, 'select public.submit_gcash_payment($1, $2, $3)', [pick.id, '7777777777777', pick.access_token], 'pickup'), 'pickup orders take no GCash reference');
+ok(await fails('authenticated', ADMIN, `select public.confirm_payment($1, 'cash', 20)`, [pick.id], 'less than'), 'cash below the total refused at pickup');
+const picked = (await one('authenticated', ADMIN, `select public.confirm_payment($1, 'cash', 100) o`, [pick.id])).o;
+ok(picked.status === 'paid' && picked.change_due === 41 && picked.payment_method === 'cash', 'staff record cash at pickup: ₱100 for ₱59, change ₱41');
 
 // ---- non-VAT café (the real setting) ----
 await db.exec(`update public.settings set value = '0' where key = 'vat_rate'`);

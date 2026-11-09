@@ -638,7 +638,8 @@
       if (!add) return;
       const p = PRODUCTS.find(x => x.id === add.dataset.add);
       const variant = p.variants?.[state.variant[p.id] || 0];
-      KasaloCart.add({ id: p.id, name: p.name, price: priceOf(p), cat: p.cat, img: p.src, variant: variant?.label });
+      KasaloCart.add({ id: p.id, name: p.name, price: priceOf(p), cat: p.cat, img: p.src, variant: variant?.label,
+                       choices: p.variants ? { flavor: state.variant[p.id] || 0 } : {} });   // other options default to the first choice
     });
 
     // ?cat=coffee (from product-page breadcrumbs) opens the catalog on that category

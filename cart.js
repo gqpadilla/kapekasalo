@@ -1,5 +1,5 @@
-// Mock cart shared by the-fix.html and index.html.
-// shortcut: front-end only, saved in this browser's localStorage; checkout is a demo with no payment or backend.
+// Cart shared by every page. The bag lives in this browser's localStorage; checkout creates the order in Supabase
+// (place_order reprices everything on the server), then opens the order page to pay by GCash QR or at pickup.
 (() => {
   const KEY = 'kasalo-cart';
   const peso = n => '₱' + n.toLocaleString('en-PH');
@@ -104,21 +104,79 @@
       <button type="button" data-cart-close class="mt-2 w-full font-label font-bold uppercase tracking-wider text-sm py-3 rounded-full hover:bg-papel transition">Continue shopping</button>`;
   }
 
-  function checkout() {
-    const order = 'KK-' + Math.floor(1000 + Math.random() * 9000);
-    const paid = total();
-    items = []; save(); render();
+  // ---------- Checkout ----------
+  // A bag line as the server expects it: { product_id, choices, qty } or { plan_id, qty } for The Fix.
+  const toServer = i => {
+    const id = i.pid || i.key.split('|')[0];
+    return id.startsWith('the-fix-') ? { plan_id: id.slice(8), qty: i.qty } : { product_id: id, choices: i.choices || {}, qty: i.qty };
+  };
+  const hasPlan = () => items.some(i => (i.pid || i.key).startsWith('the-fix-'));
+  const rootPath = () => (location.pathname.includes('/admin/') ? '../' : '');
+  let guestSaved = {};
+  try { guestSaved = JSON.parse(localStorage.getItem('kasalo-guest')) || {}; } catch {}
+
+  async function checkout() {
+    const me = await window.KK?.profile().catch(() => null);
+    const plan = hasPlan();
+    const back = encodeURIComponent(location.pathname.split('/').pop() + location.search);
     body.innerHTML = `
-      <div class="h-full grid place-content-center text-center gap-3 py-16">
-        <div class="relative w-28 mx-auto" aria-hidden="true">
-          <svg viewBox="0 0 100 100" class="w-full"><use href="#burst" fill="#F2B732" stroke="#141414" stroke-width="1.5"/></svg>
-          <svg class="absolute inset-0 m-auto w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="#141414" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 6"/></svg>
+      <form id="checkout-form" class="py-6 grid gap-6" novalidate>
+        <div>
+          <p class="font-label uppercase tracking-wider text-xs">Step 2 of 2</p>
+          <p class="font-serif text-3xl leading-tight mt-1">Almost yours.</p>
         </div>
-        <p class="font-display uppercase text-2xl text-banga">Order received!</p>
-        <p class="font-serif text-lg">Order <b>${order}</b> · ${peso(paid)}<br>Ready for pickup at Padre Faura St. in about 15 minutes.</p>
-        <p class="text-sm text-tinta/70">This is a demo checkout. No payment was taken.</p>
-      </div>`;
-    foot.innerHTML = `<button type="button" data-cart-close class="w-full bg-banga text-papel font-label font-bold uppercase tracking-wider py-4 rounded-full border-2 border-tinta hover:shadow-ube-sm transition">Back to shopping</button>`;
+        ${me ? `
+          <div class="rounded-2xl border-2 border-tinta bg-gata-light p-4">
+            <p class="text-sm">Ordering as</p>
+            <p class="font-bold">${esc(me.full_name || me.email)}</p>
+            <p class="text-sm text-tinta/70">${esc(me.email)}</p>
+          </div>` : `
+          <div class="grid gap-4">
+            <p class="text-sm">Checking out as a guest. <a href="${rootPath()}login.html?next=${back}" class="underline underline-offset-4 hover:text-banga">Log in</a> to earn points${plan ? ' (needed for The Fix)' : ''}.</p>
+            <label class="block"><span class="font-label uppercase tracking-wider text-xs">Your name</span>
+              <input name="name" autocomplete="name" value="${esc(guestSaved.name || '')}" class="mt-1 w-full px-4 py-3 rounded-xl border-2 border-tinta focus:outline-none focus:shadow-ube-sm" placeholder="Juan dela Cruz"></label>
+            <label class="block"><span class="font-label uppercase tracking-wider text-xs">Email for your receipt</span>
+              <input name="email" type="email" autocomplete="email" value="${esc(guestSaved.email || '')}" class="mt-1 w-full px-4 py-3 rounded-xl border-2 border-tinta focus:outline-none focus:shadow-ube-sm" placeholder="you@email.com"></label>
+          </div>`}
+        <fieldset class="grid gap-3">
+          <legend class="font-label uppercase tracking-wider text-xs mb-3">How will you pay?</legend>
+          <label class="flex gap-3 items-start rounded-2xl border-2 border-tinta p-4 cursor-pointer has-[:checked]:bg-kalamansi-soft has-[:checked]:shadow-ube-sm">
+            <input type="radio" name="pay" value="gcash_qr" checked class="kk-check rounded-full mt-0.5">
+            <span><b>GCash / InstaPay QR</b><br><span class="text-sm">Scan our QR with GCash, Maya or any bank app, then enter the reference number.</span></span>
+          </label>
+          <label class="flex gap-3 items-start rounded-2xl border-2 border-tinta p-4 ${plan ? 'opacity-50' : 'cursor-pointer'} has-[:checked]:bg-kalamansi-soft has-[:checked]:shadow-ube-sm">
+            <input type="radio" name="pay" value="pickup" ${plan ? 'disabled' : ''} class="kk-check rounded-full mt-0.5">
+            <span><b>Pay at pickup</b><br><span class="text-sm">${plan ? 'Not available for The Fix subscriptions.' : 'Pay cash at the counter on Padre Faura St.'}</span></span>
+          </label>
+        </fieldset>
+        <p id="checkout-error" role="alert" hidden class="rounded-2xl border-2 border-sili bg-sili-soft px-4 py-3 text-sm"></p>
+      </form>`;
+    foot.innerHTML = `
+      <div class="flex justify-between font-bold text-lg"><span>Total</span><span>${peso(total())}</span></div>
+      <button type="submit" form="checkout-form" id="place-order" class="mt-4 w-full bg-banga text-papel font-label font-bold uppercase tracking-wider py-4 rounded-full border-2 border-tinta shadow-ube hover:-translate-y-0.5 transition disabled:opacity-60">Place order</button>
+      <button type="button" data-cart-back class="mt-2 w-full font-label font-bold uppercase tracking-wider text-sm py-3 rounded-full hover:bg-papel transition">Back to bag</button>`;
+    body.querySelector('input[name="name"]')?.focus();
+
+    document.getElementById('checkout-form').addEventListener('submit', async e => {
+      e.preventDefault();
+      const form = e.target, err = document.getElementById('checkout-error'), btn = document.getElementById('place-order');
+      const fail = m => { err.hidden = false; err.textContent = m; btn.disabled = false; btn.textContent = 'Place order'; };
+      if (!window.KK?.configured) return fail('Ordering is offline right now. Please try again later.');
+      const name = form.elements.name?.value.trim(), email = form.elements.email?.value.trim();
+      if (!me) {
+        if (!name) return fail('Please tell us your name.');
+        if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email || '')) return fail('Enter a valid email for your receipt.');
+        try { localStorage.setItem('kasalo-guest', JSON.stringify({ name, email })); } catch {}
+      }
+      btn.disabled = true; btn.textContent = 'Placing your order…';
+      const { data, error } = await KK.sb.rpc('place_order', {
+        p_items: items.map(toServer), p_guest_name: me ? null : name, p_guest_email: me ? null : email,
+        p_pay_option: form.elements.pay.value,
+      });
+      if (error) return fail(KK.message(error));
+      items = []; save();
+      location.href = `${rootPath()}receipt.html?order=${data.id}&t=${data.access_token}`;
+    });
   }
 
   let toastTimer;
@@ -146,12 +204,14 @@
     dialog.showModal();
   }
 
-  // item: { id, name, price, cat?, img?, variant? }  (cat: products.js category, used for the Kasalo Bundle)
+  // item: { id, name, price, cat?, img?, variant?, choices? }
+  //   cat: products.js category (Kasalo Bundle estimate); choices: { optionKey: choiceIndex } sent to the server at checkout
   function add(item, qty = 1) {
     const key = item.id + (item.variant ? '|' + item.variant : '');
     const found = items.find(i => i.key === key);
     if (found) found.qty += qty;
-    else items.push({ key, name: item.name, price: item.price, cat: item.cat || '', img: item.img || null, variant: item.variant || '', qty });
+    else items.push({ key, pid: item.id, choices: item.choices || {}, name: item.name, price: item.price, cat: item.cat || '',
+                      img: item.img || null, variant: item.variant || '', qty });
     save(); render(); showToast(item);
   }
 
@@ -161,6 +221,7 @@
     if (t.closest('[data-cart-close]')) return dialog.close();
     if (t === dialog) return dialog.close(); // click on the backdrop
     if (t.closest('[data-checkout]')) return checkout();
+    if (t.closest('[data-cart-back]')) return render();
     const qtyBtn = t.closest('[data-qty]');
     if (qtyBtn) {
       const i = items.find(x => x.key === qtyBtn.dataset.key);

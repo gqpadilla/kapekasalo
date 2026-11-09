@@ -70,7 +70,7 @@ sql += `insert into public.settings (key, value) values\n  ('vat_rate', '0'),\n 
   registered_name: 'Kasalo Kape', trade_name: 'Kasalo Kape · Kape atbp.', address: 'Padre Faura St., Ermita, Manila, 1000 Metro Manila',
   vat_registered: false, tin: '000-000-000', branch_code: '00000', ptu_no: 'FP000000-000-0000000-00000', ptu_date: '2026-01-01',
   machine_no: 'MIN 0000000000', serial_no: 'SN KASALO-POS-01', pos_provider: 'Kasalo Kape in-house POS',
-  is_demo: true })});\n\n`;
+  bir_registered: false })});\n\n`;
 
 sql += `insert into public.ingredients (name, unit, stock, low_stock_at, cost_per_unit) values\n` +
   INGREDIENTS.map(([n, u, s, low, c]) => `  (${q(n)}, ${q(u)}, ${s}, ${low}, ${c})`).join(',\n') + `;\n\n`;
