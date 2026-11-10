@@ -15,28 +15,7 @@
   <div id="gate" class="min-h-screen grid place-items-center font-label uppercase tracking-wider text-sm">Checking access…</div>
 
   <div id="app" hidden class="min-h-screen lg:grid lg:grid-cols-[16rem_1fr]">
-    <!-- ===== Sidebar ===== -->
-    <aside class="bg-tinta text-gata lg:min-h-screen lg:sticky lg:top-0 lg:h-screen flex flex-col on-dark">
-      <div class="flex items-center justify-between lg:block px-5 py-4 lg:py-6 border-b border-gata/15">
-        <a href="index.html" class="flex items-center gap-3">
-          <span class="bg-gata rounded-xl px-2 py-1"><img src="../img/logo/wordmark.png" alt="Kasalo Kape" class="h-9 w-[81px] object-cover mix-blend-multiply"></span>
-          <span class="font-label uppercase tracking-wider text-xs text-kalamansi">Admin</span>
-        </a>
-        <button id="nav-btn" type="button" aria-expanded="false" aria-controls="admin-nav" class="lg:hidden p-2 rounded-full hover:bg-gata/10" aria-label="Open admin menu">
-          <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
-        </button>
-      </div>
-      <nav id="admin-nav" aria-label="Admin" class="hidden lg:block flex-1 overflow-y-auto no-scrollbar px-3 py-4">
-        <ul id="modules" class="grid gap-1"></ul>
-      </nav>
-      <div class="hidden lg:block px-5 py-4 border-t border-gata/15 text-sm">
-        <p id="who" class="truncate"></p>
-        <div class="flex gap-4 mt-2 font-label uppercase tracking-wider text-xs">
-          <a href="../index.html" class="hover:text-kalamansi">View site</a>
-          <button type="button" data-logout class="hover:text-kalamansi">Log out</button>
-        </div>
-      </div>
-    </aside>
+    <aside id="sidebar"></aside>
 
     <!-- ===== Dashboard ===== -->
     <main id="main" class="px-4 sm:px-8 lg:px-12 py-8 lg:py-10">
@@ -101,36 +80,17 @@
     .kpi { border: 2px solid #141414; border-radius: 1.5rem; padding: 1.25rem 1.4rem; box-shadow: 4px 4px 0 #5B3A8C; }
     .kpi-l { font-family: 'MADE Sunflower', sans-serif; text-transform: uppercase; letter-spacing: .06em; font-size: .7rem; }
     .kpi-v { font-family: 'Provicali', 'Arial Black', sans-serif; font-size: clamp(1.6rem, 3vw, 2.4rem); margin-top: .35rem; }
-    .mod { display: flex; align-items: center; justify-content: space-between; gap: .5rem; padding: .6rem .9rem; border-radius: .9rem;
-      font-family: 'MADE Sunflower', sans-serif; text-transform: uppercase; letter-spacing: .05em; font-size: .8rem; }
-    .mod:hover { background: rgba(244, 235, 221, .08); }
-    .mod[aria-current="page"] { background: #F2B732; color: #141414; }
-    .mod .soon { font-family: Helvetica, Arial, sans-serif; text-transform: none; letter-spacing: 0; font-size: .7rem; opacity: .6; }
   </style>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.js"></script>
   <script src="../js/supabase.js"></script>
+  <script src="admin.js"></script>
   <script>
     const { sb, peso, orderLabel } = KK;
     const $ = s => document.querySelector(s);
     const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
-    // ERP modules; each arrives in the build phase noted.
-    const MODULES = [
-      ['Dashboard', 'index.html', 0], ['POS', 'pos.html', 5], ['Order queue', 'orders.html', 4], ['Menu', 'menu.html', 4],
-      ['Inventory', 'inventory.html', 6], ['Purchasing', 'purchasing.html', 6], ['Shifts & cash', 'shifts.html', 5],
-      ['Customers', 'customers.html', 7], ['Promotions', 'promotions.html', 7], ['Reports', 'reports.html', 7],
-      ['Audit log', 'audit.html', 4], ['Settings & users', 'settings.html', 7],
-    ];
-    $('#modules').innerHTML = MODULES.map(([name, href, phase]) => phase
-      ? `<li><span class="mod opacity-60 cursor-not-allowed">${name}<span class="soon">Phase ${phase}</span></span></li>`
-      : `<li><a class="mod" href="${href}" aria-current="page">${name}</a></li>`).join('');
 
-    $('#nav-btn').addEventListener('click', e => {
-      const open = $('#admin-nav').classList.toggle('hidden') === false;
-      e.currentTarget.setAttribute('aria-expanded', open);
-    });
-    document.querySelectorAll('[data-logout]').forEach(b => b.addEventListener('click', KK.signOut));
 
     const STATUS = { pending_payment: 'Awaiting payment', paid: 'Paid', preparing: 'Preparing', ready: 'Ready', completed: 'Picked up', cancelled: 'Cancelled', refunded: 'Refunded' };
     const manilaDate = () => new Date(Date.now() + 8 * 3600e3).toISOString().slice(0, 10);
@@ -245,12 +205,10 @@
     });
 
     (async () => {
-      const me = await KK.requireAdmin();
-      $('#gate').hidden = true; $('#app').hidden = false;
+      const me = await KKAdmin.start('dashboard');
       const h = Number(new Date().toLocaleString('en-US', { timeZone: 'Asia/Manila', hour: 'numeric', hour12: false }));
       $('#daypart').textContent = h < 12 ? 'morning' : h < 18 ? 'afternoon' : 'evening';
       $('#admin-name').textContent = (me.full_name || me.email).split(' ')[0];
-      $('#who').textContent = me.email;
       $('#today').textContent = new Date().toLocaleDateString('en-PH', { timeZone: 'Asia/Manila', weekday: 'long', month: 'long', day: 'numeric' });
       await load();
       // Live: refresh when any order changes

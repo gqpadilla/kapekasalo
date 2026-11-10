@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Shifts · Kasalo Kape Admin</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="../img/logo/cup-logo.png">
+  <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+  <script src="../js/tailwind.config.js"></script>
+  <link rel="stylesheet" href="../css/brand.css">
+</head>
+
+<body class="bg-gata-light text-tinta font-sans antialiased">
+  <div id="gate" class="min-h-screen grid place-items-center font-label uppercase tracking-wider text-sm">Checking access…</div>
+
+  <div id="app" hidden class="min-h-screen lg:grid lg:grid-cols-[16rem_1fr]">
+    <aside id="sidebar"></aside>
+
+    <main class="px-4 sm:px-8 lg:px-10 py-8 min-w-0 max-w-5xl">
+      <p class="font-label uppercase tracking-[0.25em] text-xs">Shifts &amp; cash</p>
+      <h1 class="font-serif text-4xl sm:text-5xl leading-tight mt-1">The register</h1>
+      <p id="msg" role="alert" hidden class="mt-4 rounded-2xl border-2 border-sili bg-sili-soft px-4 py-3 text-sm"></p>
+
+      <!-- Closed: open a shift -->
+      <form id="open" hidden class="mt-6 bg-papel border-2 border-tinta rounded-3xl p-6 shadow-ube-sm grid sm:grid-cols-[1fr_auto] gap-4 items-end" novalidate>
+        <label class="block"><span class="lbl">Cash in the drawer to start (₱)</span>
+          <input name="cash" type="number" min="0" step="1" inputmode="numeric" required class="inp" placeholder="e.g. 2000"></label>
+        <button class="bg-banga text-papel font-label uppercase tracking-wider px-8 py-3.5 rounded-full border-2 border-tinta">Open register</button>
+      </form>
+
+      <!-- Open: live totals and close -->
+      <section id="current" hidden class="mt-6 bg-papel border-2 border-tinta rounded-3xl p-6 shadow-ube-sm">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <h2 class="font-label uppercase tracking-wider text-sm flex items-center gap-2"><span class="live-dot w-2 h-2 rounded-full bg-sili"></span><span id="cur-title"></span></h2>
+          <a href="pos.html" class="text-sm underline underline-offset-4 hover:text-banga">Go to the counter</a>
+        </div>
+        <dl id="cur-stats" class="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-3"></dl>
+        <form id="close" class="mt-6 border-t-2 border-dashed border-tinta pt-5 grid sm:grid-cols-[1fr_1fr_auto] gap-4 items-end" novalidate>
+          <label class="block"><span class="lbl">Cash counted in the drawer (₱)</span>
+            <input name="counted" type="number" min="0" step="1" inputmode="numeric" required class="inp"></label>
+          <label class="block"><span class="lbl">Notes <span class="normal-case tracking-normal font-sans text-tinta/60">(optional)</span></span>
+            <input name="notes" class="inp" placeholder="e.g. ₱20 short, coins miscounted"></label>
+          <button class="bg-tinta text-gata font-label uppercase tracking-wider px-8 py-3.5 rounded-full">Close &amp; print Z</button>
+        </form>
+      </section>
+
+      <!-- Z-report -->
+      <section id="z" hidden class="mt-6"></section>
+
+      <h2 class="mt-10 font-label uppercase tracking-wider text-sm">Past shifts</h2>
+      <div class="mt-3 bg-papel border-2 border-tinta rounded-3xl overflow-x-auto">
+        <table class="w-full text-sm min-w-[40rem]">
+          <thead class="font-label uppercase tracking-wider text-xs text-left">
+            <tr class="border-b-2 border-tinta"><th class="py-3 pl-5 pr-3">Shift</th><th class="pr-3">Opened</th><th class="pr-3">Closed</th>
+              <th class="pr-3 text-right">Net sales</th><th class="pr-3 text-right">Over / short</th><th class="pr-5"></th></tr>
+          </thead>
+          <tbody id="history"></tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+
+  <style>
+    .lbl { display: block; font-family: 'MADE Sunflower', sans-serif; text-transform: uppercase; letter-spacing: .06em; font-size: .7rem; }
+    .inp { display: block; width: 100%; margin-top: .3rem; padding: .6rem .8rem; background: #FFFFFF; border: 2px solid #141414; border-radius: .75rem; }
+    .inp:focus { outline: none; box-shadow: 3px 3px 0 #5B3A8C; }
+    .zr { font-family: ui-monospace, Consolas, monospace; width: 80mm; max-width: 100%; background: #fff; border: 2px solid #141414; padding: 1rem; font-size: 12px; }
+    .zr dl { display: grid; grid-template-columns: 1fr auto; row-gap: 2px; }
+    .zr hr { border: 0; border-top: 1px dashed #141414; margin: .5rem 0; }
+    @media print {
+      body * { visibility: hidden; }
+      #z, #z * { visibility: visible; }
+      #z { position: absolute; inset: 0 auto auto 0; margin: 0; }
+      #z .no-print { display: none; }
+      .zr { border: 0; }
+    }
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.js"></script>
+  <script src="../js/supabase.js"></script>
+  <script src="admin.js"></script>
+  <script>
+    const { sb, peso } = KK;
+    const { esc, dateTime } = KKAdmin;
+    const $ = s => document.querySelector(s);
+    const fail = text => { $('#msg').hidden = false; $('#msg').textContent = text; };
+    let shifts = [];
+
+    const stat = (k, v) => `<div class="rounded-2xl border-2 border-tinta bg-gata p-3"><dt class="text-xs">${k}</dt><dd class="font-display text-2xl mt-1">${v}</dd></div>`;
+    const signed = n => (n > 0 ? '+' : n < 0 ? '−' : '') + peso(Math.abs(n));
+
+    function zReport(s) {
+      const z = s.z_report, row = (k, v) => `<dt>${k}</dt><dd class="text-right">${v}</dd>`;
+      const methods = Object.entries(z.by_method || {}).map(([m, v]) => row(`  ${m === 'gcash' ? 'GCash' : 'Cash'}`, peso(v))).join('');
+      return `
+        <div class="zr">
+          <p class="text-center font-bold">KASALO KAPE ATBP.</p>
+          <p class="text-center">Z-READING · SHIFT #${s.id}</p>
+          <hr>
+          <dl>${row('Opened', dateTime(s.opened_at))}${row('Closed', dateTime(s.closed_at))}
+            ${row('Receipts', z.first_receipt ? `${z.first_receipt}–${z.last_receipt}` : '—')}${row('Orders', z.orders)}</dl>
+          <hr>
+          <dl>${row('Gross sales', peso(z.gross_sales))}${row('Bundle discounts', '−' + peso(z.bundle_discounts))}
+            ${row('Senior/PWD discounts', '−' + peso(z.senior_pwd_discounts))}${row('<b>Net sales</b>', `<b>${peso(z.net_sales)}</b>`)}
+            ${row('VAT-exempt sales', peso(z.vat_exempt))}${row('Refunds', peso(z.refunds))}${row('Voids', z.voids)}</dl>
+          <hr>
+          <dl>${row('By payment', '')}${methods || row('  none', '')}</dl>
+          <hr>
+          <dl>${row('Opening cash', peso(z.opening_cash))}${row('Expected in drawer', peso(z.expected_cash))}
+            ${row('Counted', peso(z.counted_cash))}${row('<b>Over / short</b>', `<b>${signed(z.over_short)}</b>`)}</dl>
+          ${s.notes ? `<hr><p>Notes: ${esc(s.notes)}</p>` : ''}
+        </div>
+        <div class="no-print mt-3 flex gap-4 text-sm">
+          <button type="button" onclick="print()" class="underline underline-offset-4 hover:text-banga">Print</button>
+          <button type="button" onclick="this.closest('#z').hidden = true" class="underline underline-offset-4 hover:text-banga">Hide</button>
+        </div>`;
+    }
+    const showZ = s => { $('#z').innerHTML = zReport(s); $('#z').hidden = false; $('#z').scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+
+    async function load() {
+      const { data, error } = await sb.from('shifts').select('*').order('opened_at', { ascending: false }).limit(30);
+      if (error) return fail(KK.message(error));
+      shifts = data;
+      const cur = shifts.find(s => !s.closed_at);
+      $('#open').hidden = !!cur; $('#current').hidden = !cur;
+      if (cur) {
+        // Running totals; the closing Z-report is worked out by close_shift on the server.
+        const { data: orders } = await sb.from('orders').select('total, payment_method, status').eq('shift_id', cur.id);
+        const sold = (orders || []).filter(o => !['pending_payment', 'cancelled', 'refunded'].includes(o.status));
+        const sum = m => sold.filter(o => !m || o.payment_method === m).reduce((a, o) => a + o.total, 0);
+        const refundsCash = (orders || []).filter(o => o.status === 'refunded' && o.payment_method === 'cash').reduce((a, o) => a + o.total, 0);
+        $('#cur-title').textContent = `Shift #${cur.id} open since ${dateTime(cur.opened_at)}`;
+        $('#cur-stats').innerHTML = stat('Orders', sold.length) + stat('Cash sales', peso(sum('cash'))) + stat('GCash sales', peso(sum('gcash')))
+          + stat('Expected in drawer', peso(cur.opening_cash + sum('cash') - refundsCash));
+      }
+      $('#history').innerHTML = shifts.filter(s => s.closed_at).map(s => `
+        <tr class="border-b border-tinta/15">
+          <td class="py-3 pl-5 pr-3 font-bold">#${s.id}</td><td class="pr-3">${dateTime(s.opened_at)}</td><td class="pr-3">${dateTime(s.closed_at)}</td>
+          <td class="pr-3 text-right">${peso(s.z_report?.net_sales ?? 0)}</td>
+          <td class="pr-3 text-right ${s.z_report?.over_short < 0 ? 'text-sili font-bold' : ''}">${signed(s.z_report?.over_short ?? 0)}</td>
+          <td class="pr-5 text-right"><button type="button" data-z="${s.id}" class="font-label uppercase tracking-wider text-xs px-4 py-2 rounded-full border-2 border-tinta hover:bg-kalamansi">Z-report</button></td>
+        </tr>`).join('') || '<tr><td colspan="6" class="py-6 px-5 text-tinta/70">No closed shifts yet.</td></tr>';
+    }
+
+    $('#history').addEventListener('click', e => { const b = e.target.closest('[data-z]'); if (b) showZ(shifts.find(s => s.id == b.dataset.z)); });
+
+    $('#open').addEventListener('submit', async e => {
+      e.preventDefault(); $('#msg').hidden = true;
+      const cash = Number(e.target.elements.cash.value);
+      if (e.target.elements.cash.value === '' || !Number.isInteger(cash) || cash < 0) return fail('Type the starting cash in whole pesos (0 is fine).');
+      const { error } = await sb.rpc('open_shift', { p_opening_cash: cash });
+      if (error) return fail(KK.message(error));
+      e.target.reset(); await load();
+    });
+
+    $('#close').addEventListener('submit', async e => {
+      e.preventDefault(); $('#msg').hidden = true;
+      const el = e.target.elements, counted = Number(el.counted.value);
+      if (el.counted.value === '' || !Number.isInteger(counted) || counted < 0) return fail('Count the drawer and type the total in whole pesos.');
+      if (!confirm('Close the register? You can\'t sell at the counter until a new shift is opened.')) return;
+      const { data, error } = await sb.rpc('close_shift', { p_counted_cash: counted, p_notes: el.notes.value.trim() || null });
+      if (error) return fail(KK.message(error));
+      e.target.reset(); await load(); showZ(data);
+    });
+
+    (async () => {
+      await KKAdmin.start('shifts');
+      await load();
+    })();
+  </script>
+</body>
+</html>

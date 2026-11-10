@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Order queue · Kasalo Kape Admin</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="../img/logo/cup-logo.png">
+  <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+  <script src="../js/tailwind.config.js"></script>
+  <link rel="stylesheet" href="../css/brand.css">
+</head>
+
+<body class="bg-gata-light text-tinta font-sans antialiased">
+  <div id="gate" class="min-h-screen grid place-items-center font-label uppercase tracking-wider text-sm">Checking access…</div>
+
+  <div id="app" hidden class="min-h-screen lg:grid lg:grid-cols-[16rem_1fr]">
+    <aside id="sidebar"></aside>
+
+    <main id="main" class="px-4 sm:px-8 lg:px-10 py-8">
+      <div class="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p class="font-label uppercase tracking-[0.25em] text-xs flex items-center gap-2"><span class="live-dot w-2 h-2 rounded-full bg-sili"></span>Live</p>
+          <h1 class="font-serif text-4xl sm:text-5xl leading-tight mt-1">Order queue</h1>
+        </div>
+        <div role="radiogroup" aria-label="Show orders from" class="inline-flex p-1 rounded-full border-2 border-tinta bg-papel">
+          <button type="button" data-channel="all" class="chan px-4 py-1.5 rounded-full font-label uppercase tracking-wider text-xs">All</button>
+          <button type="button" data-channel="online" class="chan px-4 py-1.5 rounded-full font-label uppercase tracking-wider text-xs">Online</button>
+          <button type="button" data-channel="pos" class="chan px-4 py-1.5 rounded-full font-label uppercase tracking-wider text-xs">Counter</button>
+        </div>
+      </div>
+
+      <p id="msg" role="alert" hidden class="mt-6 rounded-2xl border-2 border-sili bg-sili-soft px-4 py-3 text-sm"></p>
+
+      <section id="unpaid-wrap" hidden class="mt-6 rounded-3xl border-2 border-dashed border-tinta bg-papel p-5" aria-labelledby="unpaid-title">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <h2 id="unpaid-title" class="font-label uppercase tracking-wider text-sm">Pay at pickup, not paid yet</h2>
+          <a href="index.html#pay-title" class="text-sm underline underline-offset-4 hover:text-banga">Mark paid on the dashboard</a>
+        </div>
+        <ul id="unpaid" class="mt-3 flex gap-3 overflow-x-auto no-scrollbar"></ul>
+      </section>
+
+      <div class="mt-6 grid md:grid-cols-2 2xl:grid-cols-4 gap-5 items-start">
+        <section class="col" aria-labelledby="h-paid"><h2 id="h-paid" class="col-h bg-kalamansi">New · paid <span data-count="paid"></span></h2><ol data-col="paid" class="grid gap-3"></ol></section>
+        <section class="col" aria-labelledby="h-prep"><h2 id="h-prep" class="col-h bg-jeepney-soft">Preparing <span data-count="preparing"></span></h2><ol data-col="preparing" class="grid gap-3"></ol></section>
+        <section class="col" aria-labelledby="h-ready"><h2 id="h-ready" class="col-h bg-banga-soft">Ready for pickup <span data-count="ready"></span></h2><ol data-col="ready" class="grid gap-3"></ol></section>
+        <section class="col" aria-labelledby="h-done"><h2 id="h-done" class="col-h bg-papel">Picked up today <span data-count="completed"></span></h2><ol data-col="completed" class="grid gap-3"></ol></section>
+      </div>
+    </main>
+  </div>
+
+  <style>
+    .col-h { display: flex; justify-content: space-between; align-items: center; border: 2px solid #141414; border-radius: 1rem; padding: .7rem 1rem;
+      font-family: 'MADE Sunflower', sans-serif; text-transform: uppercase; letter-spacing: .05em; font-size: .85rem; margin-bottom: .75rem; }
+    .chan[aria-checked="true"] { background: #141414; color: #F4EBDD; }
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.js"></script>
+  <script src="../js/supabase.js"></script>
+  <script src="admin.js"></script>
+  <script>
+    const { sb, peso, orderLabel } = KK;
+    const { esc, time, minutesAgo } = KKAdmin;
+    const $ = s => document.querySelector(s);
+    const NEXT = { paid: ['preparing', 'Start making'], preparing: ['ready', 'Mark ready'], ready: ['completed', 'Picked up'] };
+    let orders = [], unpaid = [], channel = 'all';
+
+    const who = o => esc(o.profiles?.full_name || o.guest_name || (o.channel === 'pos' ? 'Counter' : 'Online'));
+    const items = o => o.order_items.map(i => `<li><b>${i.qty}×</b> ${esc(i.name)}${i.variant ? `<span class="block text-xs text-tinta/70 pl-5">${esc(i.variant)}</span>` : ''}</li>`).join('');
+
+    function card(o) {
+      const age = minutesAgo(o.paid_at || o.created_at), late = o.status !== 'completed' && age >= 10;
+      const next = NEXT[o.status];
+      return `
+        <li class="bg-papel border-2 border-tinta rounded-2xl p-4 ${late ? 'shadow-[4px_4px_0_#E8453F]' : 'shadow-ube-sm'}" data-id="${o.id}">
+          <div class="flex items-start justify-between gap-2">
+            <div>
+              <p class="font-display text-xl leading-none">${orderLabel(o.order_no)}</p>
+              <p class="text-xs mt-1">${who(o)} · ${o.channel === 'pos' ? 'Counter' : 'Online pickup'}</p>
+            </div>
+            <span class="font-label uppercase tracking-wider text-xs px-2.5 py-1 rounded-full border-2 border-tinta ${late ? 'bg-sili text-papel' : 'bg-gata'}"
+                  title="Since ${time(o.paid_at || o.created_at)}">${o.status === 'completed' ? time(o.created_at) : age + ' min'}</span>
+          </div>
+          <ul class="mt-3 space-y-1 text-sm">${items(o)}</ul>
+          <p class="mt-3 text-sm font-bold">${peso(o.total)} <span class="font-normal text-tinta/70">· paid ${o.payment_method === 'cash' ? 'cash' : 'GCash'}</span></p>
+          ${next ? `<button type="button" data-next="${next[0]}" class="mt-3 w-full font-label uppercase tracking-wider text-sm py-3 rounded-xl border-2 border-tinta bg-tinta text-gata hover:bg-banga transition">${next[1]}</button>` : ''}
+          ${o.status !== 'completed' ? `
+            <details class="mt-2 text-sm">
+              <summary class="cursor-pointer text-tinta/70 hover:text-banga">Void or refund</summary>
+              <div class="mt-2 flex gap-2">
+                <input data-reason class="flex-1 min-w-0 px-3 py-2 rounded-xl border-2 border-tinta" placeholder="Reason, e.g. customer changed order">
+                <button type="button" data-void class="font-label uppercase tracking-wider text-xs px-3 rounded-xl border-2 border-sili hover:bg-sili-soft">Void</button>
+              </div>
+              <p class="mt-1 text-xs text-tinta/70">Refund GCash payments yourself in the GCash app. Ingredients go back into stock.</p>
+            </details>` : ''}
+        </li>`;
+    }
+
+    function render() {
+      const show = o => channel === 'all' || o.channel === channel;
+      for (const st of ['paid', 'preparing', 'ready', 'completed']) {
+        const list = orders.filter(o => o.status === st && show(o));
+        document.querySelector(`[data-col="${st}"]`).innerHTML = list.map(card).join('')
+          || `<li class="text-sm text-tinta/60 px-1">${st === 'paid' ? 'No new orders.' : 'Nothing here.'}</li>`;
+        document.querySelector(`[data-count="${st}"]`).textContent = list.length;
+      }
+      const up = unpaid.filter(show);
+      $('#unpaid-wrap').hidden = !up.length;
+      $('#unpaid').innerHTML = up.map(o => `
+        <li class="shrink-0 w-60 rounded-2xl border-2 border-tinta bg-kalamansi-soft p-3 text-sm">
+          <p class="font-bold">${orderLabel(o.order_no)} · ${peso(o.total)} <span class="font-normal">· ${minutesAgo(o.created_at)} min</span></p>
+          <p class="text-xs">${who(o)}</p>
+          <ul class="mt-2 space-y-0.5">${o.order_items.map(i => `<li>${i.qty}× ${esc(i.name)}</li>`).join('')}</ul>
+        </li>`).join('');
+      document.querySelectorAll('.chan').forEach(b => b.setAttribute('aria-checked', b.dataset.channel === channel));
+    }
+
+    async function load() {
+      const startOfDay = new Date(new Date(Date.now() + 8 * 3600e3).toISOString().slice(0, 10) + 'T00:00:00+08:00').toISOString();
+      const cols = 'id, order_no, status, channel, total, payment_method, pay_option, created_at, paid_at, guest_name, profiles:customer_id(full_name), order_items(qty, name, variant)';
+      const [active, done, waiting] = await Promise.all([
+        sb.from('orders').select(cols).in('status', ['paid', 'preparing', 'ready']).order('paid_at').limit(60),
+        sb.from('orders').select(cols).eq('status', 'completed').gte('created_at', startOfDay).order('created_at', { ascending: false }).limit(20),
+        sb.from('orders').select(cols).eq('status', 'pending_payment').eq('pay_option', 'pickup').order('created_at').limit(20),
+      ]);
+      const err = [active, done, waiting].find(r => r.error)?.error;
+      if (err) { $('#msg').hidden = false; $('#msg').textContent = KK.message(err); return; }
+      orders = [...active.data, ...done.data];
+      unpaid = waiting.data;
+      if (!document.querySelector('#main input:focus, #main details[open]')) render();   // don't redraw under someone typing a reason
+    }
+
+    document.addEventListener('click', async e => {
+      const ch = e.target.closest('[data-channel]');
+      if (ch) { channel = ch.dataset.channel; return render(); }
+      const row = e.target.closest('[data-id]');
+      if (!row) return;
+      const nextBtn = e.target.closest('[data-next]'), voidBtn = e.target.closest('[data-void]');
+      if (!nextBtn && !voidBtn) return;
+      $('#msg').hidden = true;
+      let res;
+      if (nextBtn) {
+        nextBtn.disabled = true;
+        res = await sb.rpc('set_order_status', { p_order: row.dataset.id, p_status: nextBtn.dataset.next });
+      } else {
+        const reason = row.querySelector('[data-reason]').value.trim();
+        if (!reason) { $('#msg').hidden = false; $('#msg').textContent = 'Type a reason before voiding.'; return; }
+        if (!confirm('Void this order? Paid orders are marked refunded.')) return;
+        res = await sb.rpc('void_order', { p_order: row.dataset.id, p_reason: reason });
+      }
+      if (res.error) { $('#msg').hidden = false; $('#msg').textContent = KK.message(res.error); }
+      row.querySelector('details')?.removeAttribute('open');
+      document.activeElement?.blur();
+      await load();
+    });
+
+    (async () => {
+      await KKAdmin.start('orders');
+      await load();
+      sb.channel('queue').on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, load).subscribe();
+      setInterval(load, 30000);   // also refreshes the "min waiting" counters
+    })();
+  </script>
+</body>
+</html>

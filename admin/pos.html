@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>POS · Kasalo Kape Admin</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="../img/logo/cup-logo.png">
+  <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+  <script src="../js/tailwind.config.js"></script>
+  <link rel="stylesheet" href="../css/brand.css">
+</head>
+
+<body class="bg-gata-light text-tinta font-sans antialiased">
+  <div id="gate" class="min-h-screen grid place-items-center font-label uppercase tracking-wider text-sm">Checking access…</div>
+
+  <div id="app" hidden class="min-h-screen lg:grid lg:grid-cols-[16rem_1fr]">
+    <aside id="sidebar"></aside>
+
+    <main class="min-w-0 xl:grid xl:grid-cols-[1fr_24rem] xl:h-screen">
+      <!-- Menu -->
+      <section class="px-4 sm:px-8 py-6 xl:overflow-y-auto" aria-labelledby="pos-title">
+        <div class="flex flex-wrap items-end justify-between gap-4">
+          <h1 id="pos-title" class="font-serif text-4xl leading-tight">Counter</h1>
+          <p id="shift-pill" class="font-label uppercase tracking-wider text-xs px-3 py-1.5 rounded-full border-2 border-tinta"></p>
+        </div>
+        <div id="no-shift" hidden class="mt-4 rounded-2xl border-2 border-sili bg-sili-soft px-4 py-3 text-sm">
+          The register is closed. <a href="shifts.html" class="underline underline-offset-4 font-bold">Open a shift</a> before selling.
+        </div>
+        <div role="radiogroup" aria-label="Category" class="mt-5 inline-flex flex-wrap p-1 rounded-full border-2 border-tinta bg-papel">
+          <button type="button" data-cat="coffee" class="cat px-4 py-1.5 rounded-full font-label uppercase tracking-wider text-xs">Coffee</button>
+          <button type="button" data-cat="coolers" class="cat px-4 py-1.5 rounded-full font-label uppercase tracking-wider text-xs">Coolers</button>
+          <button type="button" data-cat="pastries" class="cat px-4 py-1.5 rounded-full font-label uppercase tracking-wider text-xs">Pastries</button>
+        </div>
+        <ul id="grid" class="mt-5 grid grid-cols-2 sm:grid-cols-3 2xl:grid-cols-4 gap-3"></ul>
+      </section>
+
+      <!-- Ticket -->
+      <section class="bg-papel border-t-2 xl:border-t-0 xl:border-l-2 border-tinta flex flex-col xl:h-screen" aria-labelledby="ticket-title">
+        <div class="flex items-center justify-between px-5 h-14 border-b-2 border-tinta shrink-0">
+          <h2 id="ticket-title" class="font-label uppercase tracking-wider text-sm">Ticket</h2>
+          <button type="button" id="clear" class="text-xs underline underline-offset-4 hover:text-sili">Clear</button>
+        </div>
+        <ul id="lines" class="flex-1 overflow-y-auto px-5 py-3 divide-y divide-tinta/15 min-h-[8rem]"></ul>
+
+        <form id="pay" class="shrink-0 border-t-2 border-tinta bg-gata px-5 py-4 grid gap-3" novalidate>
+          <label class="flex items-center gap-3 text-sm cursor-pointer"><input type="checkbox" name="senior" class="kk-check"> Senior Citizen / PWD (20% off)</label>
+          <input name="senior_id" hidden placeholder="OSCA / PWD ID number" class="inp">
+          <dl id="sums" class="text-sm grid grid-cols-[1fr_auto] gap-y-1"></dl>
+
+          <div role="radiogroup" aria-label="Payment" class="grid grid-cols-2 gap-2">
+            <label class="pm"><input type="radio" name="method" value="cash" checked class="sr-only"> Cash</label>
+            <label class="pm"><input type="radio" name="method" value="gcash" class="sr-only"> GCash QR</label>
+          </div>
+          <div data-for="cash" class="grid gap-2">
+            <input name="tendered" type="number" min="0" step="1" inputmode="numeric" placeholder="Cash received (₱)" class="inp">
+            <div id="quick-cash" class="flex flex-wrap gap-2"></div>
+            <p id="change" class="text-sm"></p>
+          </div>
+          <div data-for="gcash" hidden>
+            <input name="reference" placeholder="GCash reference no. from the customer's screen" class="inp" autocomplete="off">
+          </div>
+          <p id="pay-msg" role="alert" class="text-sm text-sili min-h-[1.25rem]"></p>
+          <button id="charge" class="bg-banga text-papel font-label uppercase tracking-wider py-4 rounded-full border-2 border-tinta shadow-ube-sm disabled:opacity-50">Charge</button>
+        </form>
+      </section>
+    </main>
+  </div>
+
+  <!-- Options for one item -->
+  <dialog id="opts" class="opts" aria-labelledby="opts-title">
+    <form id="opts-form" method="dialog" class="p-6 grid gap-5">
+      <div class="flex items-start justify-between gap-4">
+        <h2 id="opts-title" class="font-display uppercase text-2xl leading-none"></h2>
+        <p id="opts-price" class="font-bold"></p>
+      </div>
+      <div id="opts-groups" class="grid gap-4"></div>
+      <div class="flex items-center gap-3">
+        <button type="button" data-step="-1" class="w-10 h-10 rounded-full border-2 border-tinta text-xl" aria-label="One less">−</button>
+        <output id="opts-qty" class="w-8 text-center font-bold text-lg">1</output>
+        <button type="button" data-step="1" class="w-10 h-10 rounded-full border-2 border-tinta text-xl" aria-label="One more">+</button>
+        <button value="add" class="ml-auto bg-tinta text-gata font-label uppercase tracking-wider px-6 py-3 rounded-full">Add</button>
+        <button value="cancel" formnovalidate class="font-label uppercase tracking-wider text-sm px-3">Cancel</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Done -->
+  <dialog id="done" class="opts" aria-labelledby="done-title">
+    <div class="p-6 grid gap-4 text-center">
+      <h2 id="done-title" class="font-display uppercase text-3xl"></h2>
+      <p id="done-body" class="text-lg"></p>
+      <div class="flex gap-3 justify-center">
+        <a id="done-receipt" target="_blank" class="font-label uppercase tracking-wider text-sm px-5 py-3 rounded-full border-2 border-tinta hover:bg-kalamansi">Print receipt</a>
+        <button type="button" id="done-next" class="bg-banga text-papel font-label uppercase tracking-wider px-6 py-3 rounded-full border-2 border-tinta">Next customer</button>
+      </div>
+    </div>
+  </dialog>
+
+  <style>
+    .inp { display: block; width: 100%; padding: .6rem .8rem; background: #FFFFFF; border: 2px solid #141414; border-radius: .75rem; }
+    .inp:focus { outline: none; box-shadow: 3px 3px 0 #5B3A8C; }
+    .cat[aria-checked="true"] { background: #141414; color: #F4EBDD; }
+    .pm { text-align: center; padding: .7rem; border: 2px solid #141414; border-radius: .9rem; background: #FFFFFF; cursor: pointer;
+      font-family: 'MADE Sunflower', sans-serif; text-transform: uppercase; letter-spacing: .05em; font-size: .8rem; }
+    .pm:has(:checked) { background: #F2B732; }
+    .pm:has(:focus-visible) { box-shadow: 3px 3px 0 #5B3A8C; }
+    .chip { display: inline-block; padding: .45rem .8rem; border: 2px solid #141414; border-radius: 999px; background: #FFFFFF; font-size: .85rem; cursor: pointer; }
+    .chip:has(:checked) { background: #141414; color: #F4EBDD; }
+    .opts { width: min(30rem, calc(100vw - 2rem)); border: 2px solid #141414; border-radius: 1.5rem; background: #FAF6EF; color: #141414; padding: 0; }
+    .opts::backdrop { background: rgba(20, 20, 20, .55); }
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.js"></script>
+  <script src="../js/supabase.js"></script>
+  <script src="../js/products.js"></script>
+  <script src="admin.js"></script>
+  <script>
+    const { sb, peso } = KK;
+    const { esc } = KKAdmin;
+    const $ = s => document.querySelector(s);
+    const form = $('#pay').elements;
+    let cat = 'coffee', ticket = [], quote = null, shift = null, picking = null;
+
+    const imgSrc = p => p.src ? (/^https?:/.test(p.src) ? p.src : '../' + p.src) : null;
+    // Same math as price_items on the server: (price + Σadd) × Πmult. The server total is what gets charged.
+    const unitPrice = (p, choices) => {
+      let add = 0, mult = 1;
+      for (const g of KASALO.optionsFor(p)) { const c = g.choices[choices[g.key] ?? 0] || {}; add += c.add || 0; mult *= c.mult || 1; }
+      return (p.price + add) * mult;
+    };
+    const label = (p, choices) => KASALO.optionsFor(p).map(g => g.choices[choices[g.key] ?? 0]?.label).filter(Boolean).join(' · ');
+
+    // ---------- Menu grid ----------
+    function renderGrid() {
+      $('#grid').innerHTML = KASALO.PRODUCTS.filter(p => p.cat === cat).map(p => `
+        <li><button type="button" data-pid="${esc(p.id)}" ${p.inStock === false ? 'disabled' : ''}
+              class="w-full h-full text-left bg-papel border-2 border-tinta rounded-2xl p-3 hover:-translate-y-0.5 hover:shadow-ube-sm transition disabled:opacity-50 disabled:grayscale disabled:hover:translate-y-0 disabled:hover:shadow-none">
+          <span class="block aspect-[4/3] rounded-xl bg-papel overflow-hidden">${imgSrc(p) ? `<img src="${esc(imgSrc(p))}" alt="" class="w-full h-full object-contain">` : ''}</span>
+          <span class="block mt-2 font-bold leading-tight">${esc(p.name)}</span>
+          <span class="block text-sm">${p.inStock === false ? 'Sold out' : peso(p.price)}</span>
+        </button></li>`).join('');
+      document.querySelectorAll('.cat').forEach(b => b.setAttribute('aria-checked', b.dataset.cat === cat));
+    }
+    document.querySelectorAll('.cat').forEach(b => b.addEventListener('click', () => { cat = b.dataset.cat; renderGrid(); }));
+
+    $('#grid').addEventListener('click', e => {
+      const b = e.target.closest('[data-pid]'); if (!b) return;
+      const p = KASALO.find(b.dataset.pid), groups = KASALO.optionsFor(p);
+      if (!groups.length) return addLine(p, {}, 1);
+      picking = p;
+      $('#opts-title').textContent = p.name;
+      $('#opts-qty').value = 1;
+      $('#opts-groups').innerHTML = groups.map(g => `
+        <fieldset><legend class="font-label uppercase tracking-wider text-xs mb-2">${esc(g.label)}</legend>
+          <div class="flex flex-wrap gap-2">${g.choices.map((c, i) => `
+            <label class="chip"><input type="radio" class="sr-only" name="${esc(g.key)}" value="${i}" ${i ? '' : 'checked'}>
+              ${esc(c.label)}${c.add ? ` <span class="opacity-70">+${peso(c.add)}</span>` : ''}</label>`).join('')}</div></fieldset>`).join('');
+      showPickPrice();
+      $('#opts').showModal();
+    });
+    const pickChoices = () => Object.fromEntries(KASALO.optionsFor(picking).map(g => [g.key, Number($('#opts-form').elements[g.key].value)]));
+    const showPickPrice = () => { $('#opts-price').textContent = peso(unitPrice(picking, pickChoices()) * Number($('#opts-qty').value)); };
+    $('#opts-form').addEventListener('change', showPickPrice);
+    $('#opts-form').addEventListener('click', e => {
+      const s = e.target.closest('[data-step]'); if (!s) return;
+      $('#opts-qty').value = Math.max(1, Number($('#opts-qty').value) + Number(s.dataset.step)); showPickPrice();
+    });
+    $('#opts-form').addEventListener('submit', e => { if (e.submitter?.value === 'add') addLine(picking, pickChoices(), Number($('#opts-qty').value)); });
+
+    // ---------- Ticket ----------
+    function addLine(p, choices, qty) {
+      const key = p.id + '|' + JSON.stringify(choices);
+      const line = ticket.find(l => l.key === key);
+      if (line) line.qty += qty; else ticket.push({ key, p, choices, qty });
+      renderTicket();
+    }
+
+    function renderTicket() {
+      $('#lines').innerHTML = ticket.map((l, i) => `
+        <li class="py-3 flex items-start gap-3">
+          <div class="flex-1 min-w-0"><p class="font-bold leading-tight">${esc(l.p.name)}</p>
+            ${label(l.p, l.choices) ? `<p class="text-xs text-tinta/70">${esc(label(l.p, l.choices))}</p>` : ''}</div>
+          <div class="flex items-center gap-1">
+            <button type="button" data-line="${i}" data-d="-1" class="w-7 h-7 rounded-full border-2 border-tinta leading-none" aria-label="One less ${esc(l.p.name)}">−</button>
+            <span class="w-6 text-center font-bold">${l.qty}</span>
+            <button type="button" data-line="${i}" data-d="1" class="w-7 h-7 rounded-full border-2 border-tinta leading-none" aria-label="One more ${esc(l.p.name)}">+</button>
+          </div>
+          <p class="w-16 text-right font-bold">${peso(unitPrice(l.p, l.choices) * l.qty)}</p>
+        </li>`).join('') || '<li class="py-6 text-sm text-tinta/60">Tap items on the menu to start a ticket.</li>';
+      requote();
+    }
+    $('#lines').addEventListener('click', e => {
+      const b = e.target.closest('[data-line]'); if (!b) return;
+      const l = ticket[b.dataset.line]; l.qty += Number(b.dataset.d);
+      if (l.qty < 1) ticket.splice(b.dataset.line, 1);
+      renderTicket();
+    });
+    $('#clear').addEventListener('click', () => { ticket = []; $('#pay').reset(); syncPay(); renderTicket(); });
+
+    const toServer = l => ({ product_id: l.p.id, choices: l.choices, qty: l.qty });
+    async function requote() {
+      quote = null; renderSums();
+      if (!ticket.length) return;
+      const asked = JSON.stringify(ticket.map(toServer));
+      const { data, error } = await sb.rpc('quote_order', { p_items: ticket.map(toServer) });
+      if (asked !== JSON.stringify(ticket.map(toServer))) return;   // ticket changed while we waited
+      if (error) return ($('#pay-msg').textContent = KK.message(error));
+      quote = { ...data, total: data.subtotal - data.bundle_discount }; renderSums();
+    }
+
+    // Senior/PWD: shown as an estimate; with vat_rate 0 it is simply 20% off. The server works out the exact amount.
+    const total = () => !quote ? 0 : form.senior.checked ? quote.total - Math.round(quote.total * 0.2) : quote.total;
+    function renderSums() {
+      const row = (k, v, cls = '') => `<dt class="${cls}">${k}</dt><dd class="text-right ${cls}">${v}</dd>`;
+      $('#sums').innerHTML = !quote ? row('Total', ticket.length ? '…' : peso(0), 'font-bold text-lg') :
+        row('Subtotal', peso(quote.subtotal)) +
+        (quote.bundle_discount ? row('Kasalo Bundle', '−' + peso(quote.bundle_discount), 'text-banga') : '') +
+        (form.senior.checked ? row('Senior / PWD', '−' + peso(quote.total - total()), 'text-banga') : '') +
+        row('Total', peso(total()), 'font-bold text-lg');
+      const cash = Number(form.tendered.value);
+      $('#change').textContent = form.method.value === 'cash' && quote && cash ? (cash >= total() ? `Change: ${peso(cash - total())}` : `Short by ${peso(total() - cash)}`) : '';
+      const t = total();
+      $('#quick-cash').innerHTML = !t ? '' : [...new Set([t, ...[100, 200, 500, 1000].filter(n => n > t), Math.ceil(t / 100) * 100])].sort((a, b) => a - b).slice(0, 4)
+        .map(n => `<button type="button" data-cash="${n}" class="chip">${n === t ? 'Exact' : peso(n)}</button>`).join('');
+      $('#charge').disabled = !quote || !shift;
+      $('#charge').textContent = quote ? `Charge ${peso(t)}` : 'Charge';
+    }
+    $('#quick-cash').addEventListener('click', e => { const b = e.target.closest('[data-cash]'); if (b) { form.tendered.value = b.dataset.cash; renderSums(); } });
+
+    function syncPay() {
+      form.senior_id.hidden = !form.senior.checked;
+      document.querySelectorAll('[data-for]').forEach(el => { el.hidden = el.dataset.for !== form.method.value; });
+      $('#pay-msg').textContent = '';
+      renderSums();
+    }
+    $('#pay').addEventListener('input', syncPay);
+
+    // ---------- Charge ----------
+    $('#pay').addEventListener('submit', async e => {
+      e.preventDefault();
+      const method = form.method.value, senior = form.senior.checked, ref = form.reference.value.trim().replace(/\s+/g, '').toUpperCase();
+      if (senior && !form.senior_id.value.trim()) return ($('#pay-msg').textContent = 'Type the Senior Citizen / PWD ID number.');
+      if (method === 'cash' && Number(form.tendered.value) < total()) return ($('#pay-msg').textContent = 'Cash received is less than the total.');
+      if (method === 'gcash' && !/^[0-9A-Z]{6,30}$/.test(ref)) return ($('#pay-msg').textContent = 'Type the GCash reference number shown on the customer\'s phone.');
+      $('#charge').disabled = true; $('#charge').textContent = 'Charging…';
+      let { data: o, error } = await sb.rpc('pos_sale', { p_items: ticket.map(toServer), p_method: method,
+        p_cash_tendered: method === 'cash' ? Number(form.tendered.value) : null, p_senior: senior, p_senior_id: senior ? form.senior_id.value.trim() : null });
+      if (!error && method === 'gcash') {
+        const r = await sb.rpc('confirm_payment', { p_order: o.id, p_method: 'gcash', p_cash_tendered: null, p_reference: ref });
+        if (r.error) error = { message: `${o.order_label} was saved but the GCash payment wasn't recorded: ${KK.message(r.error)} Confirm it on the dashboard.` };
+        else o = r.data;
+      }
+      renderSums();
+      if (error) return ($('#pay-msg').textContent = KK.message(error));
+      $('#done-title').textContent = o.order_label;
+      $('#done-body').innerHTML = method === 'cash'
+        ? `Paid ${peso(o.total)} cash.<br><b class="text-2xl">Change ${peso(o.change_due ?? 0)}</b>` : `Paid ${peso(o.total)} by GCash.`;
+      $('#done-receipt').href = `../receipt.html?order=${o.id}`;
+      $('#done').showModal();
+    });
+    $('#done-next').addEventListener('click', () => { $('#done').close(); $('#clear').click(); });
+
+    async function loadShift() {
+      const { data } = await sb.from('shifts').select('id, opened_at').is('closed_at', null).maybeSingle();
+      shift = data;
+      $('#no-shift').hidden = !!shift;
+      $('#shift-pill').textContent = shift ? `Shift #${shift.id} · since ${KKAdmin.time(shift.opened_at)}` : 'Register closed';
+      $('#shift-pill').className = `font-label uppercase tracking-wider text-xs px-3 py-1.5 rounded-full border-2 border-tinta ${shift ? 'bg-jeepney-soft' : 'bg-sili-soft'}`;
+      renderSums();
+    }
+
+    (async () => {
+      await KKAdmin.start('pos');
+      await KASALO.ready;
+      renderGrid(); renderTicket(); syncPay();
+      await loadShift();
+    })();
+  </script>
+</body>
+</html>

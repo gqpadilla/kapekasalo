@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Menu · Kasalo Kape Admin</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="../img/logo/cup-logo.png">
+  <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+  <script src="../js/tailwind.config.js"></script>
+  <link rel="stylesheet" href="../css/brand.css">
+</head>
+
+<body class="bg-gata-light text-tinta font-sans antialiased">
+  <div id="gate" class="min-h-screen grid place-items-center font-label uppercase tracking-wider text-sm">Checking access…</div>
+
+  <div id="app" hidden class="min-h-screen lg:grid lg:grid-cols-[16rem_1fr]">
+    <aside id="sidebar"></aside>
+
+    <main id="main" class="px-4 sm:px-8 lg:px-10 py-8 min-w-0">
+      <div class="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p class="font-label uppercase tracking-[0.25em] text-xs">Menu</p>
+          <h1 class="font-serif text-4xl sm:text-5xl leading-tight mt-1">What we're serving</h1>
+        </div>
+        <button type="button" id="add-item" class="bg-banga text-papel font-label uppercase tracking-wider px-6 py-3 rounded-full border-2 border-tinta shadow-ube-sm hover:-translate-y-0.5 transition">+ Add item</button>
+      </div>
+
+      <div class="mt-6 flex flex-wrap gap-3 items-center">
+        <input id="search" type="search" placeholder="Search items" class="px-4 py-2.5 rounded-full border-2 border-tinta bg-papel w-full sm:w-72">
+        <div role="radiogroup" aria-label="Category" class="inline-flex flex-wrap p-1 rounded-full border-2 border-tinta bg-papel">
+          <button type="button" data-cat="all" class="cat px-4 py-1.5 rounded-full font-label uppercase tracking-wider text-xs">All</button>
+          <button type="button" data-cat="coffee" class="cat px-4 py-1.5 rounded-full font-label uppercase tracking-wider text-xs">Coffee</button>
+          <button type="button" data-cat="coolers" class="cat px-4 py-1.5 rounded-full font-label uppercase tracking-wider text-xs">Coolers</button>
+          <button type="button" data-cat="pastries" class="cat px-4 py-1.5 rounded-full font-label uppercase tracking-wider text-xs">Pastries</button>
+        </div>
+      </div>
+
+      <p id="msg" role="status" hidden class="mt-4 rounded-2xl border-2 px-4 py-3 text-sm"></p>
+
+      <div class="mt-6 bg-papel border-2 border-tinta rounded-3xl overflow-x-auto">
+        <table class="w-full text-sm min-w-[46rem]">
+          <thead class="font-label uppercase tracking-wider text-xs text-left">
+            <tr class="border-b-2 border-tinta">
+              <th class="py-3 pl-5 pr-3">Item</th><th class="pr-3">Category</th><th class="pr-3 text-right">Price</th>
+              <th class="pr-3">Options</th><th class="pr-3 text-center">In stock</th><th class="pr-3 text-center">On menu</th><th class="pr-5"></th>
+            </tr>
+          </thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+
+  <!-- ===== Editor ===== -->
+  <dialog id="editor" class="editor" aria-labelledby="ed-title">
+    <form id="ed-form" class="flex flex-col h-full" novalidate>
+      <div class="flex items-center justify-between px-6 h-16 border-b-2 border-tinta shrink-0">
+        <h2 id="ed-title" class="font-display uppercase text-xl">Edit item</h2>
+        <button type="button" data-close aria-label="Close" class="w-10 h-10 grid place-items-center rounded-full hover:bg-gata">
+          <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+      </div>
+
+      <div class="flex-1 overflow-y-auto px-6 py-6 grid gap-6 content-start">
+        <div class="grid grid-cols-[7rem_1fr] gap-4 items-start">
+          <div>
+            <div class="aspect-square rounded-2xl border-2 border-tinta bg-papel overflow-hidden grid place-items-center">
+              <img id="ed-photo" alt="" class="w-full h-full object-contain p-1" hidden>
+              <span id="ed-nophoto" class="text-xs text-center px-2 text-tinta/60">No photo yet</span>
+            </div>
+            <label class="mt-2 block text-center text-xs underline underline-offset-4 cursor-pointer hover:text-banga">
+              <span id="ed-upload-label">Upload photo</span>
+              <input id="ed-file" type="file" accept="image/jpeg,image/png,image/webp" class="sr-only">
+            </label>
+            <button type="button" id="ed-remove-photo" class="mt-1 block w-full text-center text-xs text-tinta/60 hover:text-sili">Remove photo</button>
+          </div>
+          <div class="grid gap-4">
+            <label class="block"><span class="lbl">Name</span><input name="name" required class="inp"></label>
+            <div class="grid grid-cols-2 gap-3">
+              <label class="block"><span class="lbl">Category</span>
+                <select name="cat" class="inp"><option value="coffee">Coffee</option><option value="coolers">Coolers</option><option value="pastries">Rice Cakes &amp; Pastries</option></select></label>
+              <label class="block"><span class="lbl">Price (₱)</span><input name="price" type="number" min="1" step="1" required class="inp"></label>
+            </div>
+          </div>
+        </div>
+
+        <fieldset><legend class="lbl mb-2">Tags</legend><div id="ed-tags" class="flex flex-wrap gap-2"></div></fieldset>
+        <label class="block"><span class="lbl">Description</span><textarea name="description" rows="3" class="inp"></textarea></label>
+        <label class="block"><span class="lbl">Small note under the name <span class="normal-case tracking-normal font-sans text-tinta/60">(optional, e.g. "Per slice")</span></span><input name="note" class="inp"></label>
+
+        <fieldset>
+          <legend class="lbl mb-2">Tasting notes</legend>
+          <ul id="ed-notes" class="grid gap-2"></ul>
+          <button type="button" id="ed-add-note" class="mt-2 text-sm underline underline-offset-4 hover:text-banga">+ Add a note</button>
+        </fieldset>
+
+        <fieldset>
+          <div class="flex items-center justify-between mb-2">
+            <legend class="lbl">Options customers choose</legend>
+            <button type="button" id="ed-defaults" class="text-xs underline underline-offset-4 hover:text-banga">Use category defaults</button>
+          </div>
+          <p class="text-xs text-tinta/70 mb-3">The first choice in each group is the default. "+₱" adds to the price; "×" makes a pack (Box of 4 = ×4).</p>
+          <div id="ed-groups" class="grid gap-4"></div>
+          <button type="button" id="ed-add-group" class="mt-3 text-sm underline underline-offset-4 hover:text-banga">+ Add an option group</button>
+        </fieldset>
+
+        <div class="grid grid-cols-2 gap-3">
+          <label class="flex items-center gap-3 rounded-2xl border-2 border-tinta p-3 cursor-pointer"><input type="checkbox" name="in_stock" class="kk-check"> In stock</label>
+          <label class="flex items-center gap-3 rounded-2xl border-2 border-tinta p-3 cursor-pointer"><input type="checkbox" name="active" class="kk-check"> On the menu</label>
+        </div>
+        <label class="block"><span class="lbl">Position on the menu <span class="normal-case tracking-normal font-sans text-tinta/60">(lower shows first)</span></span><input name="sort_order" type="number" step="1" class="inp"></label>
+        <p id="ed-msg" role="alert" class="text-sm text-sili min-h-[1.25rem]"></p>
+      </div>
+
+      <div class="shrink-0 border-t-2 border-tinta bg-gata px-6 py-4 flex gap-3">
+        <button id="ed-save" class="flex-1 bg-banga text-papel font-label uppercase tracking-wider py-3.5 rounded-full border-2 border-tinta shadow-ube-sm disabled:opacity-60">Save</button>
+        <button type="button" data-close class="px-6 font-label uppercase tracking-wider text-sm rounded-full hover:bg-papel">Cancel</button>
+      </div>
+    </form>
+  </dialog>
+
+  <style>
+    .lbl { display: block; font-family: 'MADE Sunflower', sans-serif; text-transform: uppercase; letter-spacing: .06em; font-size: .7rem; }
+    .inp { display: block; width: 100%; margin-top: .3rem; padding: .6rem .8rem; background: #FFFFFF; border: 2px solid #141414; border-radius: .75rem; }
+    .inp:focus { outline: none; box-shadow: 3px 3px 0 #5B3A8C; }
+    .cat[aria-checked="true"] { background: #141414; color: #F4EBDD; }
+    .editor { margin: 0 0 0 auto; height: 100dvh; max-height: 100dvh; width: min(560px, 100vw); max-width: 100vw; padding: 0; border: 0;
+      border-left: 2px solid #141414; background: #FAF6EF; color: #141414; }
+    .editor::backdrop { background: rgba(20, 20, 20, .55); }
+    body:has(.editor[open]) { overflow: hidden; }
+    .switch { position: relative; width: 2.6rem; height: 1.5rem; border-radius: 999px; border: 2px solid #141414; background: #F4EBDD; transition: background .15s; }
+    .switch::after { content: ''; position: absolute; top: 2px; left: 2px; width: 1rem; height: 1rem; border-radius: 999px; background: #141414; transition: transform .15s; }
+    .switch[aria-checked="true"] { background: #F2B732; }
+    .switch[aria-checked="true"]::after { transform: translateX(1.1rem); }
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.js"></script>
+  <script src="../js/supabase.js"></script>
+  <script src="../js/products.js"></script>
+  <script src="admin.js"></script>
+  <script>
+    const { sb, peso } = KK;
+    const { esc } = KKAdmin;
+    const $ = s => document.querySelector(s);
+    const CATS = KASALO.CATS, TAGS = ['Hot', 'Iced', 'Best Seller', 'Seasonal', 'Pastry', 'Rice Cake'];
+    const COLORS = { banga: 'Banga (brown)', kalamansi: 'Kalamansi (yellow)', jeepney: 'Jeepney (blue)', sili: 'Sili (red)', ube: 'Ube (purple)', tinta: 'Tinta (black)' };
+    let products = [], cat = 'all', editing = null, photo = null;
+
+    const thumbSrc = img => KASALO.photo(img) ? (/^https?:/.test(img) ? img : '../' + KASALO.photo(img)) : null;
+    const flash = (text, ok = true) => {
+      const m = $('#msg'); m.hidden = false; m.textContent = text;
+      m.className = `mt-4 rounded-2xl border-2 px-4 py-3 text-sm ${ok ? 'border-jeepney bg-jeepney-soft' : 'border-sili bg-sili-soft'}`;
+      clearTimeout(flash.t); flash.t = setTimeout(() => { m.hidden = true; }, 4000);
+    };
+
+    // ---------- List ----------
+    async function load() {
+      const { data, error } = await sb.from('products').select('*').order('sort_order').order('name');
+      if (error) return flash(KK.message(error), false);
+      products = data; render();
+    }
+
+    function render() {
+      const q = $('#search').value.trim().toLowerCase();
+      const list = products.filter(p => (cat === 'all' || p.cat === cat) && (!q || p.name.toLowerCase().includes(q)));
+      $('#rows').innerHTML = list.map(p => `
+        <tr class="border-b border-tinta/15 ${p.active ? '' : 'opacity-50'}" data-id="${esc(p.id)}">
+          <td class="py-3 pl-5 pr-3">
+            <div class="flex items-center gap-3">
+              <span class="w-12 h-12 shrink-0 rounded-xl border-2 border-tinta bg-papel overflow-hidden grid place-items-center">
+                ${thumbSrc(p.img) ? `<img src="${esc(thumbSrc(p.img))}" alt="" class="w-full h-full object-contain">` : '<span class="text-[10px] text-tinta/50">No photo</span>'}</span>
+              <span><b>${esc(p.name)}</b>${p.tags.length ? `<span class="block text-xs text-tinta/70">${p.tags.map(esc).join(' · ')}</span>` : ''}</span>
+            </div>
+          </td>
+          <td class="pr-3">${CATS[p.cat]}</td>
+          <td class="pr-3 text-right font-bold">${peso(p.price)}</td>
+          <td class="pr-3 text-xs text-tinta/70">${p.options.map(g => esc(g.label)).join(', ') || '—'}</td>
+          <td class="pr-3 text-center"><button type="button" role="switch" aria-checked="${p.in_stock}" data-toggle="in_stock" class="switch" aria-label="${esc(p.name)} in stock"></button></td>
+          <td class="pr-3 text-center"><button type="button" role="switch" aria-checked="${p.active}" data-toggle="active" class="switch" aria-label="${esc(p.name)} on the menu"></button></td>
+          <td class="pr-5 text-right"><button type="button" data-edit class="font-label uppercase tracking-wider text-xs px-4 py-2 rounded-full border-2 border-tinta hover:bg-kalamansi">Edit</button></td>
+        </tr>`).join('') || '<tr><td colspan="7" class="py-6 px-5 text-tinta/70">No items match.</td></tr>';
+      document.querySelectorAll('.cat').forEach(b => b.setAttribute('aria-checked', b.dataset.cat === cat));
+    }
+
+    $('#search').addEventListener('input', render);
+    document.querySelectorAll('.cat').forEach(b => b.addEventListener('click', () => { cat = b.dataset.cat; render(); }));
+
+    $('#rows').addEventListener('click', async e => {
+      const row = e.target.closest('[data-id]'); if (!row) return;
+      const p = products.find(x => x.id === row.dataset.id);
+      const t = e.target.closest('[data-toggle]');
+      if (t) {
+        const field = t.dataset.toggle, value = !p[field];
+        t.setAttribute('aria-checked', value);
+        const { error } = await sb.from('products').update({ [field]: value }).eq('id', p.id);
+        if (error) { t.setAttribute('aria-checked', !value); return flash(KK.message(error), false); }
+        p[field] = value; render();
+        flash(field === 'in_stock' ? `${p.name} is ${value ? 'back in stock' : 'marked sold out'}.` : `${p.name} is ${value ? 'back on' : 'hidden from'} the menu.`);
+      }
+      if (e.target.closest('[data-edit]')) openEditor(p);
+    });
+
+    // ---------- Editor ----------
+    const f = () => $('#ed-form').elements;
+    const noteRow = (label = '', color = 'banga') => `
+      <li class="flex gap-2"><input class="inp !mt-0 flex-1" data-note-label value="${esc(label)}" placeholder="e.g. Dark chocolate">
+        <select class="inp !mt-0 w-40" data-note-color>${Object.entries(COLORS).map(([k, v]) => `<option value="${k}" ${k === color ? 'selected' : ''}>${v}</option>`).join('')}</select>
+        <button type="button" data-remove-li class="px-2 text-tinta/60 hover:text-sili" aria-label="Remove note">✕</button></li>`;
+    const choiceRow = (c = {}) => `
+      <li class="grid grid-cols-[1fr_5rem_4.5rem_auto] gap-2 items-center">
+        <input class="inp !mt-0" data-c-label value="${esc(c.label || '')}" placeholder="Choice, e.g. 16 oz">
+        <input class="inp !mt-0" data-c-add type="number" step="1" value="${c.add || ''}" placeholder="+₱" title="Adds to the price">
+        <input class="inp !mt-0" data-c-mult type="number" min="1" step="1" value="${c.mult || ''}" placeholder="×" title="Pack size (Box of 4 = 4)">
+        <button type="button" data-remove-li class="px-2 text-tinta/60 hover:text-sili" aria-label="Remove choice">✕</button></li>`;
+    const groupBox = (g = { label: '', choices: [{}] }) => `
+      <div class="rounded-2xl border-2 border-tinta bg-papel p-4" data-group>
+        <div class="flex gap-2 items-center">
+          <input class="inp !mt-0 flex-1 font-bold" data-g-label value="${esc(g.label)}" placeholder="Group, e.g. Size">
+          <button type="button" data-remove-group class="text-xs underline underline-offset-4 hover:text-sili">Remove group</button>
+        </div>
+        <ul class="mt-3 grid gap-2" data-choices>${g.choices.map(choiceRow).join('')}</ul>
+        <button type="button" data-add-choice class="mt-2 text-xs underline underline-offset-4 hover:text-banga">+ Add a choice</button>
+      </div>`;
+
+    function setPhoto(img) {
+      photo = img || null;
+      const src = thumbSrc(photo);
+      $('#ed-photo').hidden = !src; $('#ed-nophoto').hidden = !!src;
+      if (src) $('#ed-photo').src = src;
+      $('#ed-remove-photo').hidden = !src;
+    }
+
+    function openEditor(p) {
+      editing = p || null;
+      const d = p || { name: '', cat: 'coffee', price: '', tags: [], description: '', note: '', notes: [], options: KASALO.OPTIONS.coffee,
+                       in_stock: true, active: true, sort_order: (Math.max(0, ...products.map(x => x.sort_order)) + 1), img: null };
+      $('#ed-title').textContent = p ? 'Edit item' : 'New item';
+      f().name.value = d.name; f().cat.value = d.cat; f().price.value = d.price; f().description.value = d.description || '';
+      f().note.value = d.note || ''; f().in_stock.checked = d.in_stock; f().active.checked = d.active; f().sort_order.value = d.sort_order;
+      $('#ed-tags').innerHTML = TAGS.map(t => `<label class="flex items-center gap-2 rounded-full border-2 border-tinta px-3 py-1.5 cursor-pointer text-sm has-[:checked]:bg-kalamansi-soft">
+        <input type="checkbox" class="kk-check" data-tag value="${t}" ${d.tags.includes(t) ? 'checked' : ''}> ${t}</label>`).join('');
+      $('#ed-notes').innerHTML = d.notes.map(([l, c]) => noteRow(l, c)).join('');
+      $('#ed-groups').innerHTML = d.options.map(groupBox).join('');
+      setPhoto(d.img);
+      $('#ed-msg').textContent = '';
+      $('#editor').showModal();
+      f().name.focus();
+    }
+
+    $('#add-item').addEventListener('click', () => openEditor(null));
+    $('#editor').addEventListener('click', e => {
+      if (e.target.closest('[data-close]') || e.target === $('#editor')) return $('#editor').close();
+      if (e.target.closest('[data-remove-li]')) return e.target.closest('li').remove();
+      if (e.target.closest('[data-remove-group]')) return e.target.closest('[data-group]').remove();
+      if (e.target.closest('[data-add-choice]')) return e.target.closest('[data-group]').querySelector('[data-choices]').insertAdjacentHTML('beforeend', choiceRow());
+    });
+    $('#ed-add-note').addEventListener('click', () => $('#ed-notes').insertAdjacentHTML('beforeend', noteRow()));
+    $('#ed-add-group').addEventListener('click', () => $('#ed-groups').insertAdjacentHTML('beforeend', groupBox()));
+    $('#ed-defaults').addEventListener('click', () => {
+      if ($('#ed-groups').children.length && !confirm('Replace the current options with the category defaults?')) return;
+      $('#ed-groups').innerHTML = KASALO.OPTIONS[f().cat.value].map(groupBox).join('');
+    });
+    $('#ed-remove-photo').addEventListener('click', () => setPhoto(null));
+
+    // Uploads go to the public "menu" bucket; the row keeps the photo's public URL.
+    $('#ed-file').addEventListener('change', async e => {
+      const file = e.target.files[0]; e.target.value = '';
+      if (!file) return;
+      if (file.size > 5 * 1024 * 1024) return ($('#ed-msg').textContent = 'That photo is over 5 MB. Please use a smaller one.');
+      $('#ed-upload-label').textContent = 'Uploading…';
+      const ext = (file.type.split('/')[1] || 'jpg').replace('jpeg', 'jpg');
+      const path = `${slug(f().name.value || 'item')}-${Date.now()}.${ext}`;
+      const { error } = await sb.storage.from('menu').upload(path, file, { contentType: file.type });
+      $('#ed-upload-label').textContent = 'Upload photo';
+      if (error) return ($('#ed-msg').textContent = KK.message(error));
+      setPhoto(sb.storage.from('menu').getPublicUrl(path).data.publicUrl);
+    });
+
+    const slug = s => s.toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'item';
+    const keyFor = (label, used) => { let k = slug(label).replace(/-/g, '_'), n = 2; const base = k; while (used.has(k)) k = `${base}_${n++}`; used.add(k); return k; };
+
+    // Read the form into a products row; returns an error message instead when something is missing.
+    function readForm() {
+      const name = f().name.value.trim(), price = Number(f().price.value);
+      if (!name) return 'Give the item a name.';
+      if (!Number.isInteger(price) || price < 1) return 'Price must be a whole number of pesos, at least ₱1.';
+      const notes = [...document.querySelectorAll('#ed-notes li')].map(li => [li.querySelector('[data-note-label]').value.trim(), li.querySelector('[data-note-color]').value]).filter(([l]) => l);
+      const used = new Set(), options = [];
+      for (const box of document.querySelectorAll('#ed-groups [data-group]')) {
+        const label = box.querySelector('[data-g-label]').value.trim();
+        const choices = [...box.querySelectorAll('[data-choices] li')].map(li => {
+          const c = { label: li.querySelector('[data-c-label]').value.trim() };
+          const add = Number(li.querySelector('[data-c-add]').value), mult = Number(li.querySelector('[data-c-mult]').value);
+          if (add) c.add = Math.round(add);
+          if (mult > 1) c.mult = Math.round(mult);
+          return c;
+        }).filter(c => c.label);
+        if (!label && !choices.length) continue;
+        if (!label) return 'Every option group needs a name (e.g. Size).';
+        if (!choices.length) return `Add at least one choice to "${label}".`;
+        const existing = editing?.options.find(g => g.label === label);   // keep old keys so saved carts and orders still match
+        const key = existing && !used.has(existing.key) ? (used.add(existing.key), existing.key) : keyFor(label, used);
+        options.push({ key, label, choices });
+      }
+      const flavor = options.find(g => g.key === 'flavor');
+      return {
+        name, price, cat: f().cat.value, tags: [...document.querySelectorAll('[data-tag]:checked')].map(c => c.value),
+        description: f().description.value.trim() || null, note: f().note.value.trim() || null, notes, options,
+        variants: flavor ? flavor.choices.map(c => ({ label: c.label, price: price + (c.add || 0) })) : null,   // flavor pills on shop cards
+        img: photo, in_stock: f().in_stock.checked, active: f().active.checked, sort_order: Number(f().sort_order.value) || 0,
+      };
+    }
+
+    $('#ed-form').addEventListener('submit', async e => {
+      e.preventDefault();
+      const row = readForm();
+      if (typeof row === 'string') return ($('#ed-msg').textContent = row);
+      const btn = $('#ed-save'); btn.disabled = true; btn.textContent = 'Saving…';
+      let res;
+      if (editing) res = await sb.from('products').update(row).eq('id', editing.id);
+      else {
+        let id = slug(row.name), n = 2;
+        while (products.some(p => p.id === id)) id = `${slug(row.name)}-${n++}`;
+        res = await sb.from('products').insert({ id, ...row });
+      }
+      btn.disabled = false; btn.textContent = 'Save';
+      if (res.error) return ($('#ed-msg').textContent = KK.message(res.error));
+      $('#editor').close();
+      flash(`${row.name} ${editing ? 'saved' : 'added to the menu'}.`);
+      await load();
+    });
+
+    (async () => {
+      await KKAdmin.start('menu');
+      await load();
+    })();
+  </script>
+</body>
+</html>

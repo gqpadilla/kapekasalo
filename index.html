@@ -477,6 +477,8 @@
   <script src="js/chat.js"></script>
   <script src="js/products.js"></script>
   <script>
+    // Draw once the live menu has loaded (KASALO.ready); everything below runs after that.
+    KASALO.ready.then(() => {
     const { CATS, PRODUCTS } = KASALO;
     const TAGS = ['Hot', 'Iced', 'Best Seller', 'Seasonal', 'Pastry', 'Rice Cake'];
     const PRICES = [
@@ -591,14 +593,17 @@
       const sub = [CATS[p.cat], p.tags.find(t => t === 'Hot' || t === 'Iced'), p.note].filter(Boolean).join(' · ');
       const sel = state.variant[p.id] || 0;
       const href = `product.html?id=${p.id}${p.variants ? '&v=' + sel : ''}`;
+      const soldOut = p.inStock === false;
       return `
-      <li><article class="group">
+      <li><article class="group ${soldOut ? 'opacity-60' : ''}">
         <div class="relative transition duration-200 group-hover:-translate-y-1">
-          <a href="${href}" tabindex="-1" aria-hidden="true" class="relative block aspect-square rounded-2xl overflow-hidden bg-papel transition duration-200 group-hover:shadow-ube">${photo(p)}</a>
-          <button type="button" data-add="${p.id}" aria-label="Add ${p.name}${p.variants ? ', ' + p.variants[sel].label : ''} to bag"
+          <a href="${href}" tabindex="-1" aria-hidden="true" class="relative block aspect-square rounded-2xl overflow-hidden bg-papel transition duration-200 group-hover:shadow-ube ${soldOut ? 'grayscale' : ''}">${photo(p)}</a>
+          ${soldOut
+            ? `<span class="absolute bottom-2.5 right-2.5 font-label uppercase tracking-wider text-xs px-3 py-1.5 rounded-full bg-tinta text-gata">Sold out</span>`
+            : `<button type="button" data-add="${p.id}" aria-label="Add ${p.name}${p.variants ? ', ' + p.variants[sel].label : ''} to bag"
             class="absolute bottom-2.5 right-2.5 w-11 h-11 rounded-full bg-kalamansi border-2 border-tinta grid place-items-center shadow-ube-sm hover:scale-110 transition">
             <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
-          </button>
+          </button>`}
         </div>
         <div class="pt-3">
           ${flag ? `<p class="text-banga font-bold text-sm">${flag}</p>` : ''}
@@ -664,6 +669,7 @@
       e.preventDefault();
       e.target.querySelector('.news-msg').textContent = "Thanks! You're on the list.";
       e.target.reset();
+    });
     });
   </script>
 </body>

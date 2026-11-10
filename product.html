@@ -195,6 +195,8 @@
   <script src="js/chat.js"></script>
   <script src="js/products.js"></script>
   <script>
+    // Draw once the live menu has loaded (KASALO.ready); everything below runs after that.
+    KASALO.ready.then(() => {
     const { CATS, DOT, GALLERY, PRODUCTS, optionsFor, find, peso } = KASALO;
     const params = new URLSearchParams(location.search);
     const p = find(params.get('id'));
@@ -297,8 +299,8 @@
                   </div>
                 </div>
 
-                <button type="submit" id="add" class="w-full mt-6 bg-banga text-papel font-label uppercase tracking-wider text-lg py-4 rounded-2xl border-2 border-tinta shadow-ube hover:-translate-y-0.5 transition">
-                  <span id="add-label">Add to Cart</span> · <span id="total"></span>
+                <button type="submit" id="add" ${p.inStock === false ? 'disabled' : ''} class="w-full mt-6 bg-banga text-papel font-label uppercase tracking-wider text-lg py-4 rounded-2xl border-2 border-tinta shadow-ube hover:-translate-y-0.5 transition disabled:bg-tinta disabled:shadow-none disabled:hover:translate-y-0 disabled:cursor-not-allowed">
+                  <span id="add-label">${p.inStock === false ? 'Sold out for now' : 'Add to Cart'}</span>${p.inStock === false ? '' : ' · <span id="total"></span>'}
                 </button>
                 <ul class="mt-5 grid gap-1.5 text-sm">
                   <li class="flex items-center gap-2"><svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="#5B3A8C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12l5 5L20 6"/></svg>Ready for pickup in about 15 minutes</li>
@@ -340,7 +342,7 @@
         document.getElementById('unit-price').textContent = peso(unit);
         document.getElementById('price-note').textContent = mult > 1 ? `${mult} pieces` : (p.note || '');
         document.getElementById('qty').textContent = qty;
-        document.getElementById('total').textContent = peso(unit * qty);
+        const totalEl = document.getElementById('total'); if (totalEl) totalEl.textContent = peso(unit * qty);   // absent when sold out
         return unit;
       }
       form.addEventListener('change', price);
@@ -389,6 +391,7 @@
       e.preventDefault();
       e.target.querySelector('.news-msg').textContent = "Thanks! You're on the list.";
       e.target.reset();
+    });
     });
   </script>
 </body>

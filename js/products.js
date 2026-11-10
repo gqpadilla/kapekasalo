@@ -1,5 +1,7 @@
-// Shared mock catalog for index.html and product.html.
-// img: file in img/products/ (white-background copies of PRODUCTS/), or null for the "coming soon" placeholder.
+// Shared catalog for the shop, product and account pages. The live menu is loaded from Supabase (edited in admin/menu.html);
+// pages wait for KASALO.ready before drawing. The built-in list below is the offline fallback and the source for
+// supabase/make-seed.js.
+// img: file in img/products/ (white-background copies of assets-src/products/), a full photo URL, or null for "coming soon".
 // notes: [label, dot color]; dot colors come from the brand palette.
 window.KASALO = (() => {
   const CATS = { coffee: 'Coffee', coolers: 'Coolers', pastries: 'Rice Cakes & Pastries' };
@@ -95,14 +97,30 @@ window.KASALO = (() => {
       options: [{ key: 'pack', label: 'Size', choices: [{ label: 'Slice' }, { label: 'Whole cake (8 slices)', mult: 8 }] }] },
   ].map((p, i) => ({ ...p, id: p.name.toLowerCase().replace(/[^a-z0-9]+/g, '-'), order: i, src: p.img && 'img/products/' + p.img }));
 
-  // Option groups for one product: flavor variants first, then its own options or its category defaults.
-  const optionsFor = p => [
+  // Option groups for one product. Database rows already hold the full, resolved list;
+  // built-in rows add flavor variants first, then their own options or their category defaults.
+  const optionsFor = p => p.resolved ? p.options : [
     ...(p.variants ? [{ key: 'flavor', label: 'Flavor', choices: p.variants.map(v => ({ label: v.label, add: v.price - p.price })) }] : []),
     ...(p.options || OPTIONS[p.cat]),
   ];
 
+  const photo = img => !img ? null : /^https?:\/\//.test(img) ? img : 'img/products/' + img;
+  const fromDb = r => ({
+    id: r.id, name: r.name, cat: r.cat, price: r.price, tags: r.tags || [], img: r.img, src: photo(r.img),
+    desc: r.description || '', note: r.note, notes: r.notes || [], variants: r.variants, options: r.options || [],
+    order: r.sort_order, inStock: r.in_stock, resolved: true,
+  });
+
+  // Replace the built-in list with the live menu (same array, so pages holding PRODUCTS see the update).
+  const ready = (async () => {
+    if (!window.KK?.configured) return;
+    const { data, error } = await KK.sb.from('products').select('*').eq('active', true).order('sort_order').order('name');
+    if (error || !data?.length) { console.warn('Menu: using the built-in list', error?.message || ''); return; }
+    PRODUCTS.splice(0, PRODUCTS.length, ...data.map(fromDb));
+  })();
+
   return {
-    CATS, DOT, GALLERY, PRODUCTS, optionsFor,
+    CATS, DOT, GALLERY, PRODUCTS, OPTIONS, optionsFor, ready, photo,
     find: id => PRODUCTS.find(p => p.id === id),
     peso: n => '₱' + n.toLocaleString('en-PH'),
   };
