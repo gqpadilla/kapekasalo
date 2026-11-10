@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Audit log · Kasalo Kape Admin</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="../img/logo/cup-logo.png">
+  <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+  <script src="../js/tailwind.config.js"></script>
+  <link rel="stylesheet" href="../css/brand.css">
+</head>
+
+<body class="bg-gata-light text-tinta font-sans antialiased">
+  <div id="gate" class="min-h-screen grid place-items-center font-label uppercase tracking-wider text-sm">Checking access…</div>
+
+  <div id="app" hidden class="min-h-screen lg:grid lg:grid-cols-[16rem_1fr]">
+    <aside id="sidebar"></aside>
+
+    <main class="px-4 sm:px-8 lg:px-10 py-8 min-w-0">
+      <p class="font-label uppercase tracking-[0.25em] text-xs">Audit log</p>
+      <h1 class="font-serif text-4xl sm:text-5xl leading-tight mt-1">Who changed what</h1>
+      <p class="mt-2 text-sm text-tinta/70">Every change to prices, stock, orders, payments, roles and settings is recorded here. Nobody can edit or delete these entries.</p>
+
+      <form id="filters" class="mt-6 grid sm:grid-cols-2 xl:grid-cols-5 gap-3 items-end">
+        <label class="block"><span class="lbl">Area</span>
+          <select name="table" class="inp"><option value="">Everything</option></select></label>
+        <label class="block"><span class="lbl">Action</span>
+          <select name="action" class="inp"><option value="">Any</option><option value="INSERT">Added</option><option value="UPDATE">Changed</option><option value="DELETE">Deleted</option><option value="event">Events (payments…)</option></select></label>
+        <label class="block"><span class="lbl">By</span><input name="actor" type="search" class="inp" placeholder="Email"></label>
+        <label class="block"><span class="lbl">From</span><input name="from" type="date" class="inp"></label>
+        <label class="block"><span class="lbl">To</span><input name="to" type="date" class="inp"></label>
+      </form>
+      <p id="msg" role="alert" hidden class="mt-4 rounded-2xl border-2 border-sili bg-sili-soft px-4 py-3 text-sm"></p>
+
+      <ol id="list" class="mt-6 bg-papel border-2 border-tinta rounded-3xl divide-y divide-tinta/15 text-sm"></ol>
+      <button type="button" id="more" hidden class="mt-4 font-label uppercase tracking-wider text-sm px-6 py-3 rounded-full border-2 border-tinta hover:bg-kalamansi">Load more</button>
+    </main>
+  </div>
+
+  <style>
+    .lbl { display: block; font-family: 'MADE Sunflower', sans-serif; text-transform: uppercase; letter-spacing: .06em; font-size: .7rem; }
+    .inp { display: block; width: 100%; margin-top: .3rem; padding: .55rem .8rem; background: #FFFFFF; border: 2px solid #141414; border-radius: .75rem; }
+    .inp:focus { outline: none; box-shadow: 3px 3px 0 #5B3A8C; }
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.js"></script>
+  <script src="../js/supabase.js"></script>
+  <script src="admin.js"></script>
+  <script>
+    const { sb } = KK;
+    const { esc, dateTime } = KKAdmin;
+    const $ = s => document.querySelector(s);
+    const PAGE = 50;
+    const AREA = { orders: 'Orders', order_items: 'Order items', payments: 'Payments', products: 'Menu', profiles: 'Users & roles', settings: 'Settings',
+      ingredients: 'Ingredients', recipes: 'Recipes', suppliers: 'Suppliers', purchase_orders: 'Purchase orders', shifts: 'Shifts', expenses: 'Expenses',
+      promotions: 'Promotions', subscriptions: 'Subscriptions', plans: 'Plans', lots: 'Coffee lots' };
+    const VERB = { INSERT: ['Added', 'bg-jeepney-soft'], UPDATE: ['Changed', 'bg-kalamansi-soft'], DELETE: ['Deleted', 'bg-sili-soft'] };
+    const SKIP = new Set(['updated_at']);
+    let offset = 0;
+
+    $('#filters').elements.table.insertAdjacentHTML('beforeend', Object.entries(AREA).map(([k, v]) => `<option value="${k}">${v}</option>`).join(''));
+
+    const show = v => v === null || v === undefined ? '<i class="text-tinta/50">empty</i>'
+      : esc(typeof v === 'object' ? JSON.stringify(v) : String(v)).slice(0, 300);
+    const name = d => d && (d.name || d.full_name || d.email || (d.order_no ? 'KK-' + String(d.order_no).padStart(4, '0') : null) || d.key);
+
+    function detail(e) {
+      if (e.action === 'UPDATE' && e.old_data && e.new_data) {
+        const keys = Object.keys(e.new_data).filter(k => !SKIP.has(k) && JSON.stringify(e.old_data[k]) !== JSON.stringify(e.new_data[k]));
+        return keys.length ? `<dl class="mt-2 grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-xs">${keys.map(k => `
+            <dt class="font-bold">${esc(k)}</dt><dd class="break-all"><span class="line-through text-tinta/60">${show(e.old_data[k])}</span> → ${show(e.new_data[k])}</dd>`).join('')}</dl>`
+          : '<p class="mt-2 text-xs text-tinta/60">No visible fields changed.</p>';
+      }
+      const data = e.new_data || e.old_data;
+      return data ? `<details class="mt-1 text-xs"><summary class="cursor-pointer text-tinta/70 hover:text-banga">Show details</summary>
+        <pre class="mt-2 p-3 rounded-xl bg-gata overflow-x-auto whitespace-pre-wrap break-all">${esc(JSON.stringify(data, null, 2))}</pre></details>` : '';
+    }
+
+    function row(e) {
+      const verb = VERB[e.action], label = name(e.new_data) || name(e.old_data);
+      return `<li class="px-5 py-3">
+        <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
+          <span class="font-label uppercase tracking-wider text-[11px] px-2 py-0.5 rounded-full border-2 border-tinta ${verb ? verb[1] : 'bg-gata'}">${verb ? verb[0] : esc(e.action.replace(/_/g, ' ').toLowerCase())}</span>
+          <b>${esc(AREA[e.table_name] || e.table_name || 'Event')}</b>${label ? `<span>${esc(label)}</span>` : e.row_id ? `<span class="text-tinta/60">#${esc(e.row_id.slice(0, 8))}</span>` : ''}
+          <span class="ml-auto text-xs text-tinta/70">${esc(e.actor)} · ${dateTime(e.at)}</span>
+        </div>${detail(e)}</li>`;
+    }
+
+    async function load(reset) {
+      if (reset) { offset = 0; $('#list').innerHTML = ''; }
+      const f = $('#filters').elements;
+      let q = sb.from('audit_log').select('*').order('at', { ascending: false }).range(offset, offset + PAGE - 1);
+      if (f.table.value) q = q.eq('table_name', f.table.value);
+      if (f.action.value === 'event') q = q.not('action', 'in', '(INSERT,UPDATE,DELETE)');
+      else if (f.action.value) q = q.eq('action', f.action.value);
+      if (f.actor.value.trim()) q = q.ilike('actor', `%${f.actor.value.trim()}%`);
+      if (f.from.value) q = q.gte('at', `${f.from.value}T00:00:00+08:00`);
+      if (f.to.value) q = q.lte('at', `${f.to.value}T23:59:59.999+08:00`);
+      const { data, error } = await q;
+      if (error) { $('#msg').hidden = false; $('#msg').textContent = KK.message(error); return; }
+      $('#msg').hidden = true;
+      $('#list').insertAdjacentHTML('beforeend', data.map(row).join(''));
+      if (!offset && !data.length) $('#list').innerHTML = '<li class="px-5 py-6 text-tinta/70">Nothing matches these filters.</li>';
+      offset += data.length;
+      $('#more').hidden = data.length < PAGE;
+    }
+
+    let t;
+    $('#filters').addEventListener('input', () => { clearTimeout(t); t = setTimeout(() => load(true), 300); });
+    $('#filters').addEventListener('submit', e => e.preventDefault());
+    $('#more').addEventListener('click', () => load(false));
+
+    (async () => {
+      await KKAdmin.start('audit');
+      await load(true);
+    })();
+  </script>
+</body>
+</html>

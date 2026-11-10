@@ -6,8 +6,8 @@ window.KKAdmin = (() => {
     ['dashboard', 'Dashboard', 'index.html', 0], ['orders', 'Order queue', 'orders.html', 0], ['menu', 'Menu', 'menu.html', 0],
     ['pos', 'POS', 'pos.html', 0], ['shifts', 'Shifts & cash', 'shifts.html', 0],
     ['inventory', 'Inventory', 'inventory.html', 0], ['purchasing', 'Purchasing', 'purchasing.html', 0],
-    ['customers', 'Customers', 'customers.html', 7], ['promotions', 'Promotions', 'promotions.html', 7],
-    ['reports', 'Reports', 'reports.html', 7], ['audit', 'Audit log', 'audit.html', 0], ['settings', 'Settings & users', 'settings.html', 7],
+    ['customers', 'Customers', 'customers.html', 0],
+    ['reports', 'Reports', 'reports.html', 0], ['audit', 'Audit log', 'audit.html', 0], ['settings', 'Settings & users', 'settings.html', 0],
   ];
 
   document.head.insertAdjacentHTML('beforeend', `<style>

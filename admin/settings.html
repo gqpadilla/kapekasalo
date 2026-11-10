@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Settings · Kasalo Kape Admin</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="../img/logo/cup-logo.png">
+  <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+  <script src="../js/tailwind.config.js"></script>
+  <link rel="stylesheet" href="../css/brand.css">
+</head>
+
+<body class="bg-gata-light text-tinta font-sans antialiased">
+  <div id="gate" class="min-h-screen grid place-items-center font-label uppercase tracking-wider text-sm">Checking access…</div>
+
+  <div id="app" hidden class="min-h-screen lg:grid lg:grid-cols-[16rem_1fr]">
+    <aside id="sidebar"></aside>
+
+    <main class="px-4 sm:px-8 lg:px-10 py-8 min-w-0 max-w-4xl">
+      <p class="font-label uppercase tracking-[0.25em] text-xs">Settings &amp; users</p>
+      <h1 class="font-serif text-4xl sm:text-5xl leading-tight mt-1">House rules</h1>
+      <p id="msg" role="status" hidden class="mt-4 rounded-2xl border-2 px-4 py-3 text-sm"></p>
+
+      <div class="mt-6 grid gap-6">
+        <form id="store" class="card" novalidate>
+          <h2 class="card-h">Store</h2>
+          <div class="grid sm:grid-cols-2 gap-4">
+            <label class="block sm:col-span-2"><span class="lbl">Address</span><input name="address" class="inp"></label>
+            <label class="block"><span class="lbl">Email</span><input name="email" type="email" class="inp"></label>
+            <span></span>
+            <label class="block"><span class="lbl">Hours Mon–Fri</span><input name="weekday" class="inp" placeholder="6AM-10PM"></label>
+            <label class="block"><span class="lbl">Hours Sat–Sun</span><input name="weekend" class="inp" placeholder="7AM-10PM"></label>
+          </div>
+          <button class="save">Save store</button>
+        </form>
+
+        <form id="bundle" class="card" novalidate>
+          <h2 class="card-h">Kasalo Bundle</h2>
+          <p class="text-sm text-tinta/70 mb-4">Discount for each drink paired with a pastry, online and at the counter.</p>
+          <div class="flex flex-wrap items-end gap-4">
+            <label class="flex items-center gap-3 rounded-2xl border-2 border-tinta p-3 cursor-pointer"><input type="checkbox" name="active" class="kk-check"> Turned on</label>
+            <label class="block"><span class="lbl">₱ off per pair</span><input name="value" type="number" min="1" step="1" class="inp w-32"></label>
+          </div>
+          <button class="save">Save bundle</button>
+        </form>
+
+        <form id="invoice" class="card" novalidate>
+          <h2 class="card-h">Receipts</h2>
+          <div class="grid sm:grid-cols-2 gap-4">
+            <label class="block"><span class="lbl">Registered name</span><input name="registered_name" class="inp"></label>
+            <label class="block"><span class="lbl">Trade name</span><input name="trade_name" class="inp"></label>
+            <label class="block sm:col-span-2"><span class="lbl">Address on receipts</span><input name="address" class="inp"></label>
+            <label class="block"><span class="lbl">TIN</span><input name="tin" class="inp" placeholder="000-000-000-00000"></label>
+            <label class="block"><span class="lbl">GCash account name</span><input name="gcash_name" class="inp" placeholder="GA****L P."></label>
+          </div>
+          <div class="mt-4 grid gap-2">
+            <label class="flex items-start gap-3 text-sm cursor-pointer"><input type="checkbox" name="bir_registered" class="kk-check mt-0.5">
+              <span>BIR registered <span class="block text-xs text-tinta/70">Receipts say "Sales Invoice" and show the TIN and permit numbers. Leave off until the café is registered.</span></span></label>
+            <label class="flex items-start gap-3 text-sm cursor-pointer"><input type="checkbox" name="vat_registered" class="kk-check mt-0.5">
+              <span>VAT registered (12%) <span class="block text-xs text-tinta/70">Splits VAT out of every sale. Leave off for a non-VAT business.</span></span></label>
+          </div>
+          <button class="save">Save receipts</button>
+        </form>
+
+        <section class="card" aria-labelledby="users-h">
+          <h2 id="users-h" class="card-h">Admins</h2>
+          <ul id="admins" class="grid gap-2 text-sm"></ul>
+          <form id="promote" class="mt-4 grid sm:grid-cols-[1fr_auto] gap-2" novalidate>
+            <label class="sr-only" for="promote-email">Email of the account to make admin</label>
+            <input id="promote-email" name="email" type="email" class="inp !mt-0" placeholder="Email of an existing account">
+            <button class="font-label uppercase tracking-wider text-xs px-5 py-3 rounded-full border-2 border-tinta hover:bg-kalamansi">Make admin</button>
+          </form>
+          <p class="mt-2 text-xs text-tinta/70">They need to sign up on the site first. Admins can see every order and change prices, stock and settings.</p>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <style>
+    .lbl { display: block; font-family: 'MADE Sunflower', sans-serif; text-transform: uppercase; letter-spacing: .06em; font-size: .7rem; }
+    .inp { display: block; width: 100%; margin-top: .3rem; padding: .6rem .8rem; background: #FFFFFF; border: 2px solid #141414; border-radius: .75rem; }
+    .inp:focus { outline: none; box-shadow: 3px 3px 0 #5B3A8C; }
+    .card { background: #FFFFFF; border: 2px solid #141414; border-radius: 1.5rem; padding: 1.5rem; box-shadow: 4px 4px 0 #5B3A8C; }
+    .card-h { font-family: 'MADE Sunflower', sans-serif; text-transform: uppercase; letter-spacing: .05em; font-size: .9rem; margin-bottom: 1rem; }
+    .save { margin-top: 1.25rem; background: #141414; color: #F4EBDD; font-family: 'MADE Sunflower', sans-serif; text-transform: uppercase; letter-spacing: .05em;
+      font-size: .8rem; padding: .8rem 1.6rem; border-radius: 999px; }
+    .save:hover { background: #A84A2A; }
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.js"></script>
+  <script src="../js/supabase.js"></script>
+  <script src="admin.js"></script>
+  <script>
+    const { sb } = KK;
+    const { esc } = KKAdmin;
+    const $ = s => document.querySelector(s);
+    let S = {}, bundle = null, me = null;
+
+    const flash = (text, ok = true) => {
+      const m = $('#msg'); m.hidden = false; m.textContent = text;
+      m.className = `mt-4 rounded-2xl border-2 px-4 py-3 text-sm ${ok ? 'border-jeepney bg-jeepney-soft' : 'border-sili bg-sili-soft'}`;
+      m.scrollIntoView({ block: 'nearest' });
+      clearTimeout(flash.t); flash.t = setTimeout(() => { m.hidden = true; }, 4000);
+    };
+    const saveSetting = (key, value) => sb.from('settings').upsert({ key, value });
+
+    async function load() {
+      const [a, b, c] = await Promise.all([
+        sb.from('settings').select('*'),
+        sb.from('promotions').select('*').eq('kind', 'bundle').limit(1).maybeSingle(),
+        sb.from('profiles').select('id, email, full_name').eq('role', 'admin').order('email'),
+      ]);
+      const err = [a, b, c].find(r => r.error)?.error;
+      if (err) return flash(KK.message(err), false);
+      S = Object.fromEntries(a.data.map(r => [r.key, r.value]));
+      bundle = b.data;
+
+      const st = $('#store').elements, store = S.store || {};
+      st.address.value = store.address || ''; st.email.value = store.email || '';
+      st.weekday.value = store.hours?.['Mon-Fri'] || ''; st.weekend.value = store.hours?.['Sat-Sun'] || '';
+
+      const bu = $('#bundle').elements;
+      $('#bundle').hidden = !bundle;
+      if (bundle) { bu.active.checked = bundle.active; bu.value.value = bundle.value; }
+
+      const iv = $('#invoice').elements, inv = S.invoice || {};
+      for (const k of ['registered_name', 'trade_name', 'address', 'tin']) iv[k].value = inv[k] || '';
+      iv.bir_registered.checked = !!inv.bir_registered; iv.vat_registered.checked = !!inv.vat_registered;
+      iv.gcash_name.value = S.gcash?.account_name || '';
+
+      $('#admins').innerHTML = c.data.map(p => `
+        <li class="flex items-center gap-3 rounded-xl border-2 border-tinta px-4 py-2.5">
+          <span class="flex-1 min-w-0"><b>${esc(p.full_name || p.email)}</b><span class="block text-xs text-tinta/70 break-all">${esc(p.email)}</span></span>
+          ${p.id === me.id ? '<span class="text-xs text-tinta/60">You</span>'
+            : `<button type="button" data-demote="${p.id}" data-email="${esc(p.email)}" class="text-xs underline underline-offset-4 hover:text-sili">Remove admin</button>`}
+        </li>`).join('');
+    }
+
+    $('#store').addEventListener('submit', async e => {
+      e.preventDefault();
+      const f = e.target.elements;
+      if (f.email.value && !f.email.checkValidity()) return flash('That email doesn\'t look right.', false);
+      const { error } = await saveSetting('store', { ...S.store, address: f.address.value.trim(), email: f.email.value.trim(),
+        hours: { 'Mon-Fri': f.weekday.value.trim(), 'Sat-Sun': f.weekend.value.trim() } });
+      if (error) return flash(KK.message(error), false);
+      flash('Store details saved.'); load();
+    });
+
+    $('#bundle').addEventListener('submit', async e => {
+      e.preventDefault();
+      const f = e.target.elements, value = Number(f.value.value);
+      if (!Number.isInteger(value) || value < 1) return flash('The bundle discount must be a whole number of pesos.', false);
+      const { error } = await sb.from('promotions').update({ active: f.active.checked, value }).eq('id', bundle.id);
+      if (error) return flash(KK.message(error), false);
+      flash(f.active.checked ? `Kasalo Bundle is on: ₱${value} off each pair.` : 'Kasalo Bundle is off.'); load();
+    });
+
+    $('#invoice').addEventListener('submit', async e => {
+      e.preventDefault();
+      const f = e.target.elements, vat = f.vat_registered.checked;
+      if (vat !== !!S.invoice?.vat_registered && !confirm(vat ? 'Turn on 12% VAT? New sales will show VAT on receipts.' : 'Turn off VAT? New sales will be non-VAT.')) return;
+      const invoice = { ...S.invoice, registered_name: f.registered_name.value.trim(), trade_name: f.trade_name.value.trim(),
+        address: f.address.value.trim(), tin: f.tin.value.trim(), bir_registered: f.bir_registered.checked, vat_registered: vat };
+      const results = await Promise.all([saveSetting('invoice', invoice), saveSetting('vat_rate', vat ? 0.12 : 0),
+        saveSetting('gcash', { ...S.gcash, account_name: f.gcash_name.value.trim() })]);
+      const err = results.find(r => r.error)?.error;
+      if (err) return flash(KK.message(err), false);
+      flash('Receipt settings saved.'); load();
+    });
+
+    $('#promote').addEventListener('submit', async e => {
+      e.preventDefault();
+      const email = e.target.elements.email.value.trim().toLowerCase();
+      if (!email) return;
+      const { data: p, error } = await sb.from('profiles').select('id, role').eq('email', email).maybeSingle();
+      if (error) return flash(KK.message(error), false);
+      if (!p) return flash('No account with that email. Ask them to sign up first.', false);
+      if (p.role === 'admin') return flash('They\'re already an admin.', false);
+      if (!confirm(`Make ${email} an admin? They will see every order and can change prices, stock and settings.`)) return;
+      const r = await sb.rpc('set_user_role', { p_user: p.id, p_role: 'admin' });
+      if (r.error) return flash(KK.message(r.error), false);
+      e.target.reset(); flash(`${email} is now an admin.`); load();
+    });
+
+    $('#admins').addEventListener('click', async e => {
+      const b = e.target.closest('[data-demote]'); if (!b) return;
+      if (!confirm(`Remove admin access from ${b.dataset.email}?`)) return;
+      const { error } = await sb.rpc('set_user_role', { p_user: b.dataset.demote, p_role: 'customer' });
+      if (error) return flash(KK.message(error), false);
+      flash(`${b.dataset.email} is a customer again.`); load();
+    });
+
+    (async () => {
+      me = await KKAdmin.start('settings');
+      await load();
+    })();
+  </script>
+</body>
+</html>

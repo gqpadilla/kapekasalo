@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Customers · Kasalo Kape Admin</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="../img/logo/cup-logo.png">
+  <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+  <script src="../js/tailwind.config.js"></script>
+  <link rel="stylesheet" href="../css/brand.css">
+</head>
+
+<body class="bg-gata-light text-tinta font-sans antialiased">
+  <div id="gate" class="min-h-screen grid place-items-center font-label uppercase tracking-wider text-sm">Checking access…</div>
+
+  <div id="app" hidden class="min-h-screen lg:grid lg:grid-cols-[16rem_1fr]">
+    <aside id="sidebar"></aside>
+
+    <main class="px-4 sm:px-8 lg:px-10 py-8 min-w-0">
+      <p class="font-label uppercase tracking-[0.25em] text-xs">Customers</p>
+      <h1 class="font-serif text-4xl sm:text-5xl leading-tight mt-1">Our regulars</h1>
+      <dl id="kpis" class="mt-6 grid grid-cols-2 md:grid-cols-4 gap-3"></dl>
+      <p id="msg" role="alert" hidden class="mt-4 rounded-2xl border-2 border-sili bg-sili-soft px-4 py-3 text-sm"></p>
+
+      <div class="mt-6 flex flex-wrap gap-3 items-center justify-between">
+        <input id="search" type="search" placeholder="Search name or email" class="px-4 py-2.5 rounded-full border-2 border-tinta bg-papel w-full sm:w-72">
+        <label class="text-sm flex items-center gap-2">Sort by
+          <select id="sort" class="px-3 py-2 rounded-xl border-2 border-tinta bg-papel">
+            <option value="spent">Most spent</option><option value="last">Last order</option><option value="points">Points</option><option value="joined">Newest</option>
+          </select></label>
+      </div>
+
+      <div class="mt-4 bg-papel border-2 border-tinta rounded-3xl overflow-x-auto">
+        <table class="w-full text-sm min-w-[46rem]">
+          <thead class="font-label uppercase tracking-wider text-xs text-left">
+            <tr class="border-b-2 border-tinta"><th class="py-3 pl-5 pr-3">Customer</th><th class="pr-3 text-right">Orders</th><th class="pr-3 text-right">Spent</th>
+              <th class="pr-3">Last order</th><th class="pr-3 text-right">Points</th><th class="pr-5">The Fix</th></tr>
+          </thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+
+      <div class="mt-10 flex flex-wrap items-center justify-between gap-3">
+        <h2 class="font-label uppercase tracking-wider text-sm">Newsletter <span id="nl-count" class="normal-case tracking-normal font-sans text-tinta/70"></span></h2>
+        <button type="button" id="nl-csv" class="font-label uppercase tracking-wider text-xs px-4 py-2 rounded-full border-2 border-tinta bg-papel hover:bg-kalamansi">Download emails (CSV)</button>
+      </div>
+      <ul id="nl" class="mt-3 bg-papel border-2 border-tinta rounded-3xl divide-y divide-tinta/15 text-sm max-h-80 overflow-y-auto"></ul>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.js"></script>
+  <script src="../js/supabase.js"></script>
+  <script src="admin.js"></script>
+  <script>
+    const { sb, peso } = KK;
+    const { esc, dateTime } = KKAdmin;
+    const $ = s => document.querySelector(s);
+    const SOLD = new Set(['paid', 'preparing', 'ready', 'completed']);
+    const SUB = { active: 'bg-jeepney-soft', paused: 'bg-kalamansi-soft', cancelled: 'bg-gata' };
+    let people = [], subscribers = [];
+
+    const kpi = (k, v) => `<div class="rounded-2xl border-2 border-tinta bg-papel p-4"><dt class="text-xs">${k}</dt><dd class="font-display text-3xl mt-1">${v}</dd></div>`;
+
+    async function load() {
+      const [a, b] = await Promise.all([
+        sb.from('profiles').select('id, email, full_name, phone, loyalty_points, created_at, orders!customer_id(total, status, created_at), subscriptions(plan_id, status, grind)')
+          .eq('role', 'customer').limit(1000),
+        sb.from('newsletter_subscribers').select('*').order('created_at', { ascending: false }),
+      ]);
+      const err = [a, b].find(r => r.error)?.error;
+      if (err) { $('#msg').hidden = false; $('#msg').textContent = KK.message(err); return; }
+      people = a.data.map(p => {
+        const sold = p.orders.filter(o => SOLD.has(o.status));
+        return { ...p, count: sold.length, spent: sold.reduce((s, o) => s + o.total, 0),
+                 last: sold.map(o => o.created_at).sort().pop() || null, sub: p.subscriptions.find(s => s.status !== 'cancelled') };
+      });
+      subscribers = b.data;
+      const buyers = people.filter(p => p.count);
+      $('#kpis').innerHTML = kpi('Accounts', people.length) + kpi('Have ordered', buyers.length)
+        + kpi('Came back (2+ orders)', buyers.filter(p => p.count > 1).length) + kpi('On The Fix', people.filter(p => p.sub?.status === 'active').length);
+      $('#nl-count').textContent = `· ${subscribers.length} signed up`;
+      $('#nl').innerHTML = subscribers.map(s => `<li class="px-5 py-2.5 flex justify-between gap-3"><span class="break-all">${esc(s.email)}</span><span class="text-tinta/60 shrink-0">${dateTime(s.created_at)}</span></li>`).join('')
+        || '<li class="px-5 py-4 text-tinta/70">Nobody has signed up yet.</li>';
+      render();
+    }
+
+    function render() {
+      const q = $('#search').value.trim().toLowerCase(), by = $('#sort').value;
+      const key = { spent: p => p.spent, last: p => p.last || '', points: p => p.loyalty_points, joined: p => p.created_at }[by];
+      const list = people.filter(p => !q || (p.full_name || '').toLowerCase().includes(q) || p.email.toLowerCase().includes(q))
+        .sort((x, y) => key(x) < key(y) ? 1 : key(x) > key(y) ? -1 : 0);
+      $('#rows').innerHTML = list.map(p => `
+        <tr class="border-b border-tinta/15">
+          <td class="py-3 pl-5 pr-3"><b>${esc(p.full_name || '—')}</b><span class="block text-xs text-tinta/70 break-all">${esc(p.email)}${p.phone ? ' · ' + esc(p.phone) : ''}</span></td>
+          <td class="pr-3 text-right">${p.count}</td>
+          <td class="pr-3 text-right font-bold">${peso(p.spent)}</td>
+          <td class="pr-3">${p.last ? dateTime(p.last) : '<span class="text-tinta/50">Never</span>'}</td>
+          <td class="pr-3 text-right">${p.loyalty_points}</td>
+          <td class="pr-5">${p.sub ? `<span class="text-xs px-2 py-0.5 rounded-full border-2 border-tinta ${SUB[p.sub.status]}">${esc(p.sub.plan_id)} · ${p.sub.status}</span>` : '—'}</td>
+        </tr>`).join('') || '<tr><td colspan="6" class="py-6 px-5 text-tinta/70">No customers match.</td></tr>';
+    }
+    $('#search').addEventListener('input', render);
+    $('#sort').addEventListener('change', render);
+
+    $('#nl-csv').addEventListener('click', () => {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob(['email,signed_up\r\n' + subscribers.map(s => `${s.email},${s.created_at}`).join('\r\n')], { type: 'text/csv' }));
+      a.download = 'kasalo-newsletter.csv'; a.click(); URL.revokeObjectURL(a.href);
+    });
+
+    (async () => {
+      await KKAdmin.start('customers');
+      await load();
+    })();
+  </script>
+</body>
+</html>

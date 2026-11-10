@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Reports · Kasalo Kape Admin</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="../img/logo/cup-logo.png">
+  <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+  <script src="../js/tailwind.config.js"></script>
+  <link rel="stylesheet" href="../css/brand.css">
+</head>
+
+<body class="bg-gata-light text-tinta font-sans antialiased">
+  <div id="gate" class="min-h-screen grid place-items-center font-label uppercase tracking-wider text-sm">Checking access…</div>
+
+  <div id="app" hidden class="min-h-screen lg:grid lg:grid-cols-[16rem_1fr]">
+    <aside id="sidebar"></aside>
+
+    <main class="px-4 sm:px-8 lg:px-10 py-8 min-w-0">
+      <div class="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p class="font-label uppercase tracking-[0.25em] text-xs">Reports</p>
+          <h1 class="font-serif text-4xl sm:text-5xl leading-tight mt-1">How the café is doing</h1>
+        </div>
+        <button type="button" id="csv" class="font-label uppercase tracking-wider text-sm px-6 py-3 rounded-full border-2 border-tinta bg-papel hover:bg-kalamansi">Download CSV</button>
+      </div>
+
+      <form id="range" class="mt-6 flex flex-wrap gap-3 items-end">
+        <div role="radiogroup" aria-label="Period" class="inline-flex flex-wrap p-1 rounded-full border-2 border-tinta bg-papel">
+          <button type="button" data-days="1" class="per px-4 py-1.5 rounded-full font-label uppercase tracking-wider text-xs">Today</button>
+          <button type="button" data-days="7" class="per px-4 py-1.5 rounded-full font-label uppercase tracking-wider text-xs">7 days</button>
+          <button type="button" data-days="30" class="per px-4 py-1.5 rounded-full font-label uppercase tracking-wider text-xs">30 days</button>
+          <button type="button" data-days="month" class="per px-4 py-1.5 rounded-full font-label uppercase tracking-wider text-xs">This month</button>
+        </div>
+        <label class="text-sm">From <input name="from" type="date" class="inp"></label>
+        <label class="text-sm">To <input name="to" type="date" class="inp"></label>
+      </form>
+      <p id="msg" role="alert" hidden class="mt-4 rounded-2xl border-2 border-sili bg-sili-soft px-4 py-3 text-sm"></p>
+
+      <dl id="kpis" class="mt-6 grid grid-cols-2 md:grid-cols-4 gap-3"></dl>
+
+      <div class="mt-6 grid xl:grid-cols-2 gap-5">
+        <section class="card"><h2 class="card-h">Sales by day</h2><div id="by-day" class="bars"></div></section>
+        <section class="card"><h2 class="card-h">Busiest hours</h2><div id="by-hour" class="bars"></div></section>
+        <section class="card"><h2 class="card-h">Best sellers</h2>
+          <table class="w-full text-sm"><thead class="text-left text-xs font-label uppercase tracking-wider"><tr><th class="pb-2">Item</th><th class="pb-2 text-right">Sold</th><th class="pb-2 text-right">Sales</th></tr></thead>
+            <tbody id="best"></tbody></table></section>
+        <section class="card"><h2 class="card-h">Where sales come from</h2><div id="mix" class="grid gap-5"></div></section>
+      </div>
+    </main>
+  </div>
+
+  <style>
+    .inp { display: block; margin-top: .2rem; padding: .45rem .7rem; background: #FFFFFF; border: 2px solid #141414; border-radius: .75rem; }
+    .per[aria-checked="true"] { background: #141414; color: #F4EBDD; }
+    .card { background: #FFFFFF; border: 2px solid #141414; border-radius: 1.5rem; padding: 1.25rem; box-shadow: 4px 4px 0 #5B3A8C; min-width: 0; }
+    .card-h { font-family: 'MADE Sunflower', sans-serif; text-transform: uppercase; letter-spacing: .05em; font-size: .85rem; margin-bottom: 1rem; }
+    .bars { display: flex; align-items: flex-end; gap: 4px; height: 12rem; overflow-x: auto; }
+    .bar { flex: 1 0 1.25rem; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; height: 100%; font-size: 10px; }
+    .bar i { display: block; width: 100%; background: #F2B732; border: 2px solid #141414; border-bottom: 0; border-radius: 6px 6px 0 0; min-height: 2px; }
+    .bar:hover i { background: #A84A2A; }
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.js"></script>
+  <script src="../js/supabase.js"></script>
+  <script src="admin.js"></script>
+  <script>
+    const { sb, peso } = KK;
+    const { esc } = KKAdmin;
+    const $ = s => document.querySelector(s);
+    const f = $('#range').elements;
+    const CAT = { coffee: 'Coffee', coolers: 'Coolers', pastries: 'Pastries', subscriptions: 'The Fix' };
+    const METHOD = { cash: 'Cash', gcash: 'GCash' }, CHANNEL = { online: 'Online', pos: 'Counter' };
+    let report = null;
+
+    const manilaDay = (d = new Date()) => new Date(d.getTime() + 8 * 3600e3).toISOString().slice(0, 10);
+    const addDays = (day, n) => manilaDay(new Date(new Date(day + 'T12:00:00+08:00').getTime() + n * 864e5));
+
+    function setPeriod(p) {
+      const today = manilaDay();
+      f.to.value = today;
+      f.from.value = p === 'month' ? today.slice(0, 8) + '01' : addDays(today, 1 - Number(p));
+      document.querySelectorAll('.per').forEach(b => b.setAttribute('aria-checked', b.dataset.days === String(p)));
+      load();
+    }
+    document.querySelectorAll('.per').forEach(b => b.addEventListener('click', () => setPeriod(b.dataset.days)));
+    $('#range').addEventListener('change', () => { document.querySelectorAll('.per').forEach(b => b.setAttribute('aria-checked', false)); load(); });
+
+    const kpi = (k, v, note = '') => `<div class="rounded-2xl border-2 border-tinta bg-papel p-4"><dt class="text-xs">${k}</dt>
+      <dd class="font-display text-3xl mt-1">${v}</dd>${note ? `<p class="text-xs text-tinta/70 mt-1">${note}</p>` : ''}</div>`;
+    const pct = (a, b) => b ? Math.round(a / b * 100) + '%' : '—';
+
+    function bars(points, label) {
+      const max = Math.max(1, ...points.map(p => p.v));
+      return points.map(p => `<div class="bar" title="${esc(p.k)}: ${peso(p.v)}"><span class="mb-1">${p.v ? peso(p.v).replace('₱', '') : ''}</span>
+        <i style="height:${p.v / max * 80}%"></i><span class="mt-1 whitespace-nowrap">${esc(label(p.k))}</span></div>`).join('');
+    }
+    function split(title, obj, names) {
+      const total = Object.values(obj).reduce((a, b) => a + b, 0);
+      const rows = Object.entries(obj).sort((a, b) => b[1] - a[1]);
+      return `<div><h3 class="text-xs font-bold mb-2">${title}</h3>${rows.map(([k, v]) => `
+        <div class="flex items-center gap-3 text-sm mb-1.5"><span class="w-20">${esc(names[k] || k)}</span>
+          <span class="flex-1 h-3 rounded-full border-2 border-tinta overflow-hidden bg-gata"><span class="block h-full bg-banga" style="width:${v / total * 100}%"></span></span>
+          <span class="w-24 text-right">${peso(v)} · ${pct(v, total)}</span></div>`).join('') || '<p class="text-sm text-tinta/60">No sales.</p>'}</div>`;
+    }
+
+    async function load() {
+      if (!f.from.value || !f.to.value || f.from.value > f.to.value) return;
+      const { data: r, error } = await sb.rpc('sales_report', { p_from: f.from.value, p_to: f.to.value });
+      if (error) { $('#msg').hidden = false; $('#msg').textContent = KK.message(error); return; }
+      $('#msg').hidden = true; report = r;
+
+      $('#kpis').innerHTML = kpi('Net sales', peso(r.net_sales), `${r.orders} orders · avg ${peso(r.average_order)}`)
+        + kpi('Food cost', pct(r.food_cost, r.net_sales), `${peso(r.food_cost)} in ingredients`)
+        + kpi('Gross margin', peso(r.gross_margin), `${pct(r.gross_margin, r.net_sales)} of sales`)
+        + kpi('After expenses', peso(r.profit), `${peso(r.expenses)} expenses · ${peso(r.refunds)} refunded`);
+
+      // Fill missing days so quiet days show as gaps, not as nothing.
+      const byDay = Object.fromEntries(r.by_day.map(d => [d.day, d.sales])), days = [];
+      for (let d = f.from.value; d <= f.to.value && days.length < 62; d = addDays(d, 1)) days.push({ k: d, v: byDay[d] || 0 });
+      $('#by-day').innerHTML = bars(days, d => new Date(d + 'T12:00:00+08:00').toLocaleDateString('en-PH', { month: 'short', day: 'numeric' }));
+      const byHour = Object.fromEntries(r.by_hour.map(h => [h.hour, h.sales])), hours = [];
+      for (let h = 6; h <= 22; h++) hours.push({ k: h, v: byHour[h] || 0 });   // store hours 6 AM–10 PM
+      $('#by-hour').innerHTML = bars(hours, h => (h % 12 || 12) + (h < 12 ? 'a' : 'p'));
+
+      $('#best').innerHTML = r.best_sellers.map(b => `<tr class="border-t border-tinta/15"><td class="py-2">${esc(b.name)}</td><td class="text-right">${b.qty}</td><td class="text-right">${peso(b.sales)}</td></tr>`).join('')
+        || '<tr><td colspan="3" class="py-3 text-tinta/60">No sales in this period.</td></tr>';
+      $('#mix').innerHTML = split('Category', r.by_category, CAT) + split('Payment', r.by_method, METHOD) + split('Channel', r.by_channel, CHANNEL)
+        + `<p class="text-xs text-tinta/70">Discounts given: ${peso(r.bundle_discounts)} Kasalo Bundle · ${peso(r.senior_pwd_discounts)} Senior/PWD</p>`;
+    }
+
+    $('#csv').addEventListener('click', () => {
+      if (!report) return;
+      const q = v => `"${String(v).replace(/"/g, '""')}"`;
+      const lines = [['Kasalo Kape sales report', `${f.from.value} to ${f.to.value}`], [],
+        ['Net sales', report.net_sales], ['Orders', report.orders], ['Average order', report.average_order], ['Food cost', report.food_cost],
+        ['Gross margin', report.gross_margin], ['Expenses', report.expenses], ['After expenses', report.profit], ['Refunds', report.refunds],
+        ['Bundle discounts', report.bundle_discounts], ['Senior/PWD discounts', report.senior_pwd_discounts], [],
+        ['Day', 'Orders', 'Sales'], ...report.by_day.map(d => [d.day, d.orders, d.sales]), [],
+        ['Best seller', 'Qty', 'Sales'], ...report.best_sellers.map(b => [b.name, b.qty, b.sales])];
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob(['﻿' + lines.map(l => l.map(q).join(',')).join('\r\n')], { type: 'text/csv' }));
+      a.download = `kasalo-sales-${f.from.value}-to-${f.to.value}.csv`;
+      a.click(); URL.revokeObjectURL(a.href);
+    });
+
+    (async () => {
+      await KKAdmin.start('reports');
+      setPeriod(7);
+    })();
+  </script>
+</body>
+</html>
