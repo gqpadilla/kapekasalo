@@ -5,7 +5,7 @@ window.KKAdmin = (() => {
   const MODULES = [
     ['dashboard', 'Dashboard', 'index.html', 0], ['orders', 'Order queue', 'orders.html', 0], ['menu', 'Menu', 'menu.html', 0],
     ['pos', 'POS', 'pos.html', 0], ['shifts', 'Shifts & cash', 'shifts.html', 0],
-    ['inventory', 'Inventory', 'inventory.html', 6], ['purchasing', 'Purchasing', 'purchasing.html', 6],
+    ['inventory', 'Inventory', 'inventory.html', 0], ['purchasing', 'Purchasing', 'purchasing.html', 0],
     ['customers', 'Customers', 'customers.html', 7], ['promotions', 'Promotions', 'promotions.html', 7],
     ['reports', 'Reports', 'reports.html', 7], ['audit', 'Audit log', 'audit.html', 0], ['settings', 'Settings & users', 'settings.html', 7],
   ];
