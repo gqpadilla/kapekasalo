@@ -30,8 +30,8 @@
         <span class="hidden sm:inline">Padre Faura St., Ermita</span><span class="sm:hidden">Find us</span>
       </a>
       <ul class="flex items-center gap-4">
-        <li class="hidden sm:block">Open daily until 10PM</li>
-        <li><a href="mailto:kasalokape@gmail.com" class="hover:text-kalamansi">Help</a></li>
+        <li class="hidden sm:block">Open daily until <span data-hours="close">10PM</span></li>
+        <li><a href="help.html" class="hover:text-kalamansi">Help</a></li>
         <li><a href="the-fix.html#get-your-fix" class="hover:text-kalamansi">Join The Fix</a></li>
       </ul>
     </div>
@@ -97,10 +97,6 @@
           <h2 class="font-label font-bold uppercase tracking-wider">Shop</h2>
           <ul class="mt-3 space-y-2">
             <li><a href="index.html#menu" class="hover:text-banga hover:underline underline-offset-4">Coffee</a></li>
-            <li><a href="#" class="hover:text-banga hover:underline underline-offset-4">Tea</a></li>
-            <li><a href="#" class="hover:text-banga hover:underline underline-offset-4">Syrup</a></li>
-            <li><a href="#" class="hover:text-banga hover:underline underline-offset-4">Equipment</a></li>
-            <li><a href="#" class="hover:text-banga hover:underline underline-offset-4">Merch</a></li>
           </ul>
         </div>
         <div>
@@ -108,7 +104,7 @@
           <ul class="mt-3 space-y-2">
             <li><a href="the-fix.html" class="hover:text-banga hover:underline underline-offset-4">The Fix</a></li>
             <li><a href="the-fix.html#get-your-fix" class="hover:text-banga hover:underline underline-offset-4">Subscriptions</a></li>
-            <li><a href="#" class="hover:text-banga hover:underline underline-offset-4">Account</a></li>
+            <li><a href="account.html" class="hover:text-banga hover:underline underline-offset-4">Account</a></li>
           </ul>
         </div>
         <div>
@@ -116,15 +112,13 @@
           <ul class="mt-3 space-y-2">
             <li><a href="index.html#about" class="hover:text-banga hover:underline underline-offset-4">About Us</a></li>
             <li><a href="the-fix.html#visit" class="hover:text-banga hover:underline underline-offset-4">Wholesale</a></li>
-            <li><a href="#" class="hover:text-banga hover:underline underline-offset-4">Giving Back</a></li>
           </ul>
         </div>
         <div>
           <h2 class="font-label font-bold uppercase tracking-wider">More Info</h2>
           <ul class="mt-3 space-y-2">
             <li><a href="the-fix.html#archive" class="hover:text-banga hover:underline underline-offset-4">Coffee Archive</a></li>
-            <li><a href="#" class="hover:text-banga hover:underline underline-offset-4">Tours</a></li>
-            <li><a href="#" class="hover:text-banga hover:underline underline-offset-4">FAQs</a></li>
+            <li><a href="help.html#faq" class="hover:text-banga hover:underline underline-offset-4">FAQs</a></li>
           </ul>
         </div>
       </nav>
@@ -134,13 +128,13 @@
         <div class="grid sm:grid-cols-2 gap-6 mt-4">
           <div>
             <h3 class="font-label font-bold uppercase tracking-wider text-sm">Café</h3>
-            <address class="not-italic mt-2 leading-relaxed">Padre Faura St., Ermita,<br>Manila, 1000 Metro Manila,<br>Philippines</address>
+            <address class="not-italic mt-2 leading-relaxed" data-store="address">Padre Faura St., Ermita, Manila, 1000 Metro Manila, Philippines</address>
           </div>
           <div>
             <h3 class="font-label font-bold uppercase tracking-wider text-sm">Hours</h3>
             <dl class="mt-2 grid grid-cols-[auto_1fr] gap-x-3 gap-y-1">
-              <dt class="whitespace-nowrap">Mon–Fri</dt><dd class="whitespace-nowrap">6AM – 10PM</dd>
-              <dt class="whitespace-nowrap">Sat–Sun</dt><dd class="whitespace-nowrap">7AM – 10PM</dd>
+              <dt class="whitespace-nowrap">Mon–Fri</dt><dd class="whitespace-nowrap" data-hours="weekday">6AM – 10PM</dd>
+              <dt class="whitespace-nowrap">Sat–Sun</dt><dd class="whitespace-nowrap" data-hours="weekend">7AM – 10PM</dd>
             </dl>
           </div>
           <div class="sm:col-span-2">
@@ -157,32 +151,26 @@
           <img src="img/icons/facebook.png" alt="" class="w-6 h-6 object-contain brightness-0">Facebook</a></li>
         <li><a href="https://www.instagram.com/kasalokape/" target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-banga font-bold hover:underline underline-offset-4">
           <img src="img/icons/instagram.png" alt="" class="w-6 h-6 object-contain brightness-0">@kasalokape</a></li>
-        <li><a href="#" class="inline-flex items-center gap-2 text-banga font-bold hover:underline underline-offset-4">
-          <svg class="w-6 h-6" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="4" fill="#141414"/><path d="M10 9l5 3-5 3z" fill="#FFFFFF"/></svg>YouTube</a></li>
       </ul>
 
       <form class="newsletter" aria-label="Newsletter">
         <label for="news-email" class="font-label font-bold uppercase tracking-wider text-sm">Get new drops by email</label>
         <div class="mt-2 flex gap-2">
-          <input id="news-email" type="email" required autocomplete="email" placeholder="you@email.com" class="flex-1 min-w-0 bg-papel border-2 border-tinta rounded-full px-4 py-2.5 placeholder:text-tinta/60">
+          <input id="news-email" type="email" required autocomplete="email" placeholder="you@email.com" class="flex-1 min-w-0 bg-papel border-2 border-tinta rounded-full px-4 py-2.5 placeholder:text-tinta/70">
           <button type="submit" class="bg-banga text-papel font-label font-bold uppercase tracking-wider px-5 py-2.5 rounded-full border-2 border-tinta hover:shadow-ube-sm transition">Join</button>
         </div>
         <p class="news-msg mt-2 text-sm min-h-[1.25rem]" aria-live="polite"></p>
       </form>
 
-      <p class="inline-flex items-center gap-3 justify-self-start lg:justify-self-end bg-kalamansi border-2 border-tinta rounded-full pl-3 pr-5 py-2 shadow-ube-sm">
-        <svg class="w-7 h-7 shrink-0" viewBox="0 0 24 24" fill="none" stroke="#141414" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l5 7h-3l4 6h-5v7h-2v-7H6l4-6H7z"/></svg>
-        <span class="font-label font-bold uppercase tracking-wider text-sm">1,248 trees planted since 2024</span>
-      </p>
     </div>
 
     <div class="border-t-2 border-tinta">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 py-5 flex flex-col md:flex-row md:items-center md:justify-between gap-3 text-sm">
         <p>© 2026 Kasalo Kape. Made to be shared.</p>
         <ul class="flex flex-wrap gap-x-5 gap-y-2">
-          <li><a href="#" class="hover:text-banga hover:underline underline-offset-4">Privacy Policy</a></li>
-          <li><a href="#" class="hover:text-banga hover:underline underline-offset-4">Terms of Service</a></li>
-          <li><a href="#" class="hover:text-banga hover:underline underline-offset-4">Accessibility</a></li>
+          <li><a href="help.html#privacy" class="hover:text-banga hover:underline underline-offset-4">Privacy Policy</a></li>
+          <li><a href="help.html#terms" class="hover:text-banga hover:underline underline-offset-4">Terms of Service</a></li>
+          <li><a href="help.html#accessibility" class="hover:text-banga hover:underline underline-offset-4">Accessibility</a></li>
         </ul>
         <p>Site by the Kasalo Kape team</p>
       </div>
@@ -305,12 +293,13 @@
                 <ul class="mt-5 grid gap-1.5 text-sm">
                   <li class="flex items-center gap-2"><svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="#5B3A8C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12l5 5L20 6"/></svg>Ready for pickup in about 15 minutes</li>
                   <li class="flex items-center gap-2"><svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="#5B3A8C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12l5 5L20 6"/></svg>Free pickup at Padre Faura St., Ermita</li>
-                  <li class="flex items-center gap-2"><svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="#5B3A8C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12l5 5L20 6"/></svg>Open Mon–Fri 6AM–10PM, Sat–Sun 7AM–10PM</li>
+                  <li class="flex items-center gap-2"><svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="#5B3A8C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12l5 5L20 6"/></svg>Open Mon–Fri <span data-hours="weekday">6AM – 10PM</span>, Sat–Sun <span data-hours="weekend">7AM – 10PM</span></li>
                 </ul>
               </form>
             </div>
           </div>
         </section>`;
+      KK.fillStore(root);
 
       // --- Gallery ---
       let shown = 0;
@@ -387,11 +376,6 @@
     mobileNav.addEventListener('click', e => { if (e.target.closest('a')) setNav(false); });
 
     // shortcut: newsletter has no backend yet, it only confirms in the page; wire to a real endpoint before launch.
-    document.querySelector('.newsletter').addEventListener('submit', e => {
-      e.preventDefault();
-      e.target.querySelector('.news-msg').textContent = "Thanks! You're on the list.";
-      e.target.reset();
-    });
     });
   </script>
 </body>

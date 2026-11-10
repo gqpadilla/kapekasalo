@@ -61,7 +61,7 @@
 
     $('#filters').elements.table.insertAdjacentHTML('beforeend', Object.entries(AREA).map(([k, v]) => `<option value="${k}">${v}</option>`).join(''));
 
-    const show = v => v === null || v === undefined ? '<i class="text-tinta/50">empty</i>'
+    const show = v => v === null || v === undefined ? '<i class="text-tinta/70">empty</i>'
       : esc(typeof v === 'object' ? JSON.stringify(v) : String(v)).slice(0, 300);
     const name = d => d && (d.name || d.full_name || d.email || (d.order_no ? 'KK-' + String(d.order_no).padStart(4, '0') : null) || d.key);
 
@@ -69,8 +69,8 @@
       if (e.action === 'UPDATE' && e.old_data && e.new_data) {
         const keys = Object.keys(e.new_data).filter(k => !SKIP.has(k) && JSON.stringify(e.old_data[k]) !== JSON.stringify(e.new_data[k]));
         return keys.length ? `<dl class="mt-2 grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-xs">${keys.map(k => `
-            <dt class="font-bold">${esc(k)}</dt><dd class="break-all"><span class="line-through text-tinta/60">${show(e.old_data[k])}</span> → ${show(e.new_data[k])}</dd>`).join('')}</dl>`
-          : '<p class="mt-2 text-xs text-tinta/60">No visible fields changed.</p>';
+            <dt class="font-bold">${esc(k)}</dt><dd class="break-all"><span class="line-through text-tinta/70">${show(e.old_data[k])}</span> → ${show(e.new_data[k])}</dd>`).join('')}</dl>`
+          : '<p class="mt-2 text-xs text-tinta/70">No visible fields changed.</p>';
       }
       const data = e.new_data || e.old_data;
       return data ? `<details class="mt-1 text-xs"><summary class="cursor-pointer text-tinta/70 hover:text-banga">Show details</summary>
@@ -82,7 +82,7 @@
       return `<li class="px-5 py-3">
         <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
           <span class="font-label uppercase tracking-wider text-[11px] px-2 py-0.5 rounded-full border-2 border-tinta ${verb ? verb[1] : 'bg-gata'}">${verb ? verb[0] : esc(e.action.replace(/_/g, ' ').toLowerCase())}</span>
-          <b>${esc(AREA[e.table_name] || e.table_name || 'Event')}</b>${label ? `<span>${esc(label)}</span>` : e.row_id ? `<span class="text-tinta/60">#${esc(e.row_id.slice(0, 8))}</span>` : ''}
+          <b>${esc(AREA[e.table_name] || e.table_name || 'Event')}</b>${label ? `<span>${esc(label)}</span>` : e.row_id ? `<span class="text-tinta/70">#${esc(e.row_id.slice(0, 8))}</span>` : ''}
           <span class="ml-auto text-xs text-tinta/70">${esc(e.actor)} · ${dateTime(e.at)}</span>
         </div>${detail(e)}</li>`;
     }

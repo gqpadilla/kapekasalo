@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Help · Kasalo Kape</title>
+  <meta name="description" content="Answers about ordering, pickup and payment at Kasalo Kape, plus our privacy policy, terms and accessibility statement.">
+  <link rel="icon" href="img/logo/cup-logo.png">
+
+  <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+  <script src="js/tailwind.config.js"></script>
+  <link rel="stylesheet" href="css/brand.css">
+</head>
+
+<body id="top" class="bg-gata text-tinta font-sans antialiased">
+  <a href="#help" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:bg-kalamansi focus:px-4 focus:py-2 focus:rounded-full font-label font-bold">Skip to content</a>
+
+  <!-- ===== Utility bar ===== -->
+  <div class="on-dark bg-tinta text-gata font-label font-bold uppercase tracking-wider text-xs">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 h-9 flex items-center justify-between gap-4">
+      <a href="index.html#visit-cafe" class="inline-flex items-center gap-1.5 hover:text-kalamansi">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M12 21s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>
+        <span class="hidden sm:inline">Padre Faura St., Ermita</span><span class="sm:hidden">Find us</span>
+      </a>
+      <ul class="flex items-center gap-4">
+        <li class="hidden sm:block">Open daily until <span data-hours="close">10PM</span></li>
+        <li><a href="help.html" class="hover:text-kalamansi">Help</a></li>
+        <li><a href="the-fix.html#get-your-fix" class="hover:text-kalamansi">Join The Fix</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ===== Header ===== -->
+  <header class="sticky top-0 z-40 bg-gata/95 backdrop-blur border-b-2 border-tinta">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+      <a href="index.html" class="shrink-0">
+        <img src="img/logo/wordmark.png" alt="Kasalo Kape home" class="h-14 w-[126px] object-cover mix-blend-multiply">
+      </a>
+
+      <nav aria-label="Main" class="hidden lg:block">
+        <ul class="flex gap-7 font-label font-bold uppercase tracking-wider text-sm">
+          <li><a href="index.html#menu" class="py-2 border-b-2 border-transparent hover:text-banga hover:border-ube transition">Shop</a></li>
+          <li><a href="the-fix.html#get-your-fix" class="py-2 border-b-2 border-transparent hover:text-banga hover:border-ube transition">Subscribe</a></li>
+          <li><a href="the-fix.html" class="py-2 border-b-2 border-transparent hover:text-banga hover:border-ube transition">The Fix</a></li>
+          <li><a href="index.html#about" class="py-2 border-b-2 border-transparent hover:text-banga hover:border-ube transition">About Us</a></li>
+          <li><a href="the-fix.html#visit" class="py-2 border-b-2 border-transparent hover:text-banga hover:border-ube transition">Wholesale</a></li>
+        </ul>
+      </nav>
+
+      <div class="flex items-center gap-1 sm:gap-2">
+        <a id="account-link" href="login.html" aria-label="Log in" class="p-2 rounded-full hover:bg-papel transition">
+          <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>
+        </a>
+        <button id="cart-btn" type="button" aria-haspopup="dialog" class="relative inline-flex items-center gap-2 whitespace-nowrap font-label font-bold uppercase tracking-wider text-sm px-3 sm:px-4 py-2 rounded-full border-2 border-tinta bg-papel hover:shadow-ube-sm transition">
+          <span>Cart (<span id="cart-count">0</span>)</span>
+          <span id="cart-dot" class="hidden absolute -top-1 -right-1 w-3 h-3 rounded-full bg-sili border-2 border-gata" aria-hidden="true"></span>
+        </button>
+        <button id="menu-btn" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="mobile-nav" class="lg:hidden p-2 rounded-full hover:bg-papel transition">
+          <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <nav id="mobile-nav" aria-label="Mobile" class="lg:hidden hidden border-t-2 border-tinta bg-gata">
+      <ul class="px-4 py-2 font-label font-bold uppercase tracking-wider">
+        <li><a href="index.html#menu" class="block py-3 border-b border-tinta/20 hover:text-banga">Shop</a></li>
+        <li><a href="the-fix.html#get-your-fix" class="block py-3 border-b border-tinta/20 hover:text-banga">Subscribe</a></li>
+        <li><a href="the-fix.html" class="block py-3 border-b border-tinta/20 hover:text-banga">The Fix</a></li>
+        <li><a href="index.html#about" class="block py-3 border-b border-tinta/20 hover:text-banga">About Us</a></li>
+        <li><a href="the-fix.html#visit" class="block py-3 hover:text-banga">Wholesale</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="help" class="mx-auto max-w-7xl px-4 sm:px-6 py-12 md:py-16">
+    <p class="font-label font-bold uppercase tracking-[0.2em] text-sm">Help</p>
+    <h1 class="font-serif text-5xl sm:text-6xl leading-tight mt-1">How can we help?</h1>
+    <nav aria-label="On this page" class="mt-6 flex flex-wrap gap-2 font-label font-bold uppercase tracking-wider text-xs">
+      <a href="#faq" class="px-4 py-2 rounded-full border-2 border-tinta bg-papel hover:bg-kalamansi">FAQs</a>
+      <a href="#privacy" class="px-4 py-2 rounded-full border-2 border-tinta bg-papel hover:bg-kalamansi">Privacy</a>
+      <a href="#terms" class="px-4 py-2 rounded-full border-2 border-tinta bg-papel hover:bg-kalamansi">Terms</a>
+      <a href="#accessibility" class="px-4 py-2 rounded-full border-2 border-tinta bg-papel hover:bg-kalamansi">Accessibility</a>
+    </nav>
+
+      <section id="faq" class="scroll-mt-24 py-12 border-t-2 border-tinta first:border-t-0" aria-labelledby="faq-title">
+        <p class="font-label font-bold uppercase tracking-[0.2em] text-sm">FAQs</p>
+        <h2 id="faq-title" class="font-display uppercase text-banga text-3xl sm:text-4xl mt-2">Good to know</h2>
+        <div class="mt-6 grid gap-4 max-w-3xl leading-relaxed">
+          <details class="group bg-papel border-2 border-tinta rounded-2xl px-5 py-4 open:shadow-ube-sm">
+            <summary class="cursor-pointer list-none flex justify-between gap-4 font-bold">How does ordering online work?<span class="font-label text-banga group-open:rotate-45 transition" aria-hidden="true">+</span></summary>
+            <div class="mt-3 leading-relaxed">Add drinks and pastries to your bag, check out, then pay by GCash QR or choose to pay at pickup. We start making your order once it is paid.</div>
+          </details>
+          <details class="group bg-papel border-2 border-tinta rounded-2xl px-5 py-4 open:shadow-ube-sm">
+            <summary class="cursor-pointer list-none flex justify-between gap-4 font-bold">Where do I pick up?<span class="font-label text-banga group-open:rotate-45 transition" aria-hidden="true">+</span></summary>
+            <div class="mt-3 leading-relaxed">At our café on <span data-store="address">Padre Faura St., Ermita, Manila, 1000 Metro Manila</span>. Show your order number (like KK-0012) at the counter. Pickup is always free; we don't deliver yet.</div>
+          </details>
+          <details class="group bg-papel border-2 border-tinta rounded-2xl px-5 py-4 open:shadow-ube-sm">
+            <summary class="cursor-pointer list-none flex justify-between gap-4 font-bold">How do I pay with GCash?<span class="font-label text-banga group-open:rotate-45 transition" aria-hidden="true">+</span></summary>
+            <div class="mt-3 leading-relaxed">After checkout you'll see our QR code. Scan it with GCash, Maya or any bank app, send the exact amount, then type the reference number from your payment receipt. We check it and mark your order paid.</div>
+          </details>
+          <details class="group bg-papel border-2 border-tinta rounded-2xl px-5 py-4 open:shadow-ube-sm">
+            <summary class="cursor-pointer list-none flex justify-between gap-4 font-bold">What if my GCash payment isn't confirmed?<span class="font-label text-banga group-open:rotate-45 transition" aria-hidden="true">+</span></summary>
+            <div class="mt-3 leading-relaxed">Make sure you typed the reference number exactly as shown in your app. If we can't match it, your order page tells you why and lets you send it again. You can also email us.</div>
+          </details>
+          <details class="group bg-papel border-2 border-tinta rounded-2xl px-5 py-4 open:shadow-ube-sm">
+            <summary class="cursor-pointer list-none flex justify-between gap-4 font-bold">Can I change or cancel my order?<span class="font-label text-banga group-open:rotate-45 transition" aria-hidden="true">+</span></summary>
+            <div class="mt-3 leading-relaxed">Unpaid orders can be cancelled from your account. Once an order is paid, email us or tell the counter right away and we'll sort it out.</div>
+          </details>
+          <details class="group bg-papel border-2 border-tinta rounded-2xl px-5 py-4 open:shadow-ube-sm">
+            <summary class="cursor-pointer list-none flex justify-between gap-4 font-bold">What is the Kasalo Bundle?<span class="font-label text-banga group-open:rotate-45 transition" aria-hidden="true">+</span></summary>
+            <div class="mt-3 leading-relaxed">Pair any drink with a pastry or rice cake and save on each pair. The discount is applied automatically in your bag.</div>
+          </details>
+          <details class="group bg-papel border-2 border-tinta rounded-2xl px-5 py-4 open:shadow-ube-sm">
+            <summary class="cursor-pointer list-none flex justify-between gap-4 font-bold">Do you give the Senior Citizen and PWD discount?<span class="font-label text-banga group-open:rotate-45 transition" aria-hidden="true">+</span></summary>
+            <div class="mt-3 leading-relaxed">Yes, 20% off at the counter. Please show your OSCA or PWD ID when you order.</div>
+          </details>
+          <details class="group bg-papel border-2 border-tinta rounded-2xl px-5 py-4 open:shadow-ube-sm">
+            <summary class="cursor-pointer list-none flex justify-between gap-4 font-bold">How do points work?<span class="font-label text-banga group-open:rotate-45 transition" aria-hidden="true">+</span></summary>
+            <div class="mt-3 leading-relaxed">Log in when you order and you earn 1 point for every ₱50 you spend. Your points show on your account page.</div>
+          </details>
+          <details class="group bg-papel border-2 border-tinta rounded-2xl px-5 py-4 open:shadow-ube-sm">
+            <summary class="cursor-pointer list-none flex justify-between gap-4 font-bold">What are your hours?<span class="font-label text-banga group-open:rotate-45 transition" aria-hidden="true">+</span></summary>
+            <div class="mt-3 leading-relaxed">Monday to Friday <span data-hours="weekday">6AM – 10PM</span>, Saturday and Sunday <span data-hours="weekend">7AM – 10PM</span>.</div>
+          </details>
+          <details class="group bg-papel border-2 border-tinta rounded-2xl px-5 py-4 open:shadow-ube-sm">
+            <summary class="cursor-pointer list-none flex justify-between gap-4 font-bold">I have an allergy. What's in your food?<span class="font-label text-banga group-open:rotate-45 transition" aria-hidden="true">+</span></summary>
+            <div class="mt-3 leading-relaxed">Many of our rice cakes and pastries use coconut, milk, eggs, wheat or nuts. Ask the counter or email us before you order and we'll tell you what's in each item.</div>
+          </details>
+        <p>Still stuck? Email <a href="mailto:kasalokape@gmail.com" class="underline underline-offset-4 hover:text-banga">kasalokape@gmail.com</a>.</p></div>
+      </section>
+
+      <section id="privacy" class="scroll-mt-24 py-12 border-t-2 border-tinta first:border-t-0" aria-labelledby="privacy-title">
+        <p class="font-label font-bold uppercase tracking-[0.2em] text-sm">Privacy policy</p>
+        <h2 id="privacy-title" class="font-display uppercase text-banga text-3xl sm:text-4xl mt-2">Your information</h2>
+        <div class="mt-6 grid gap-4 max-w-3xl leading-relaxed">
+        <p>We collect only what we need to run your orders: your name, email address, your orders, and the GCash reference number you send us. If you create an account we also keep your points and any The Fix subscription. If you join our newsletter we keep your email address.</p>
+        <p>We use this to make and hand over your order, send receipts and account emails, answer your questions, and, if you joined the newsletter, tell you about new drinks. We don't sell your information or share it with advertisers.</p>
+        <p>Your data is stored with our database provider, Supabase. Only Kasalo Kape staff can see orders, and every change they make is logged.</p>
+        <p>Under the Data Privacy Act of 2012 (Republic Act No. 10173) you can ask to see, correct or delete your information. Email <a href="mailto:kasalokape@gmail.com" class="underline underline-offset-4 hover:text-banga">kasalokape@gmail.com</a> and we'll reply within a few days.</p></div>
+      </section>
+
+      <section id="terms" class="scroll-mt-24 py-12 border-t-2 border-tinta first:border-t-0" aria-labelledby="terms-title">
+        <p class="font-label font-bold uppercase tracking-[0.2em] text-sm">Terms of service</p>
+        <h2 id="terms-title" class="font-display uppercase text-banga text-3xl sm:text-4xl mt-2">The fine print</h2>
+        <div class="mt-6 grid gap-4 max-w-3xl leading-relaxed">
+        <p>Prices are in Philippine pesos and may change. The price you see at checkout is the price you pay.</p>
+        <p>An order is confirmed once it is paid. Online orders are for pickup at our café only. Please pick up within the day; drinks are best fresh.</p>
+        <p>If something is wrong with your order, tell us at the counter or by email and we'll make it right, by remaking it or refunding you. GCash refunds are sent back to the number that paid.</p>
+        <p>The Fix subscriptions renew on the schedule you chose until you pause or cancel them from your account.</p></div>
+      </section>
+
+      <section id="accessibility" class="scroll-mt-24 py-12 border-t-2 border-tinta first:border-t-0" aria-labelledby="accessibility-title">
+        <p class="font-label font-bold uppercase tracking-[0.2em] text-sm">Accessibility</p>
+        <h2 id="accessibility-title" class="font-display uppercase text-banga text-3xl sm:text-4xl mt-2">Made for everyone</h2>
+        <div class="mt-6 grid gap-4 max-w-3xl leading-relaxed">
+        <p>We want everyone to be able to order from Kasalo Kape. This site is built to work with a keyboard and screen readers, with clear labels, visible focus outlines, readable color contrast, and reduced motion when your device asks for it.</p>
+        <p>If something on the site is hard to use, please tell us at <a href="mailto:kasalokape@gmail.com" class="underline underline-offset-4 hover:text-banga">kasalokape@gmail.com</a> and we'll fix it. You can always order at the counter too.</p></div>
+      </section>
+  </main>
+
+  <!-- ===== Footer ===== -->
+  <footer class="bg-papel border-t-2 border-tinta">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 py-14 grid lg:grid-cols-12 gap-12">
+      <nav class="lg:col-span-7 grid grid-cols-2 sm:grid-cols-4 gap-8" aria-label="Footer">
+        <div>
+          <h2 class="font-label font-bold uppercase tracking-wider">Shop</h2>
+          <ul class="mt-3 space-y-2">
+            <li><a href="index.html#menu" class="hover:text-banga hover:underline underline-offset-4">Coffee</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2 class="font-label font-bold uppercase tracking-wider">Subscribe</h2>
+          <ul class="mt-3 space-y-2">
+            <li><a href="the-fix.html" class="hover:text-banga hover:underline underline-offset-4">The Fix</a></li>
+            <li><a href="the-fix.html#get-your-fix" class="hover:text-banga hover:underline underline-offset-4">Subscriptions</a></li>
+            <li><a href="account.html" class="hover:text-banga hover:underline underline-offset-4">Account</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2 class="font-label font-bold uppercase tracking-wider">Company</h2>
+          <ul class="mt-3 space-y-2">
+            <li><a href="index.html#about" class="hover:text-banga hover:underline underline-offset-4">About Us</a></li>
+            <li><a href="the-fix.html#visit" class="hover:text-banga hover:underline underline-offset-4">Wholesale</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2 class="font-label font-bold uppercase tracking-wider">More Info</h2>
+          <ul class="mt-3 space-y-2">
+            <li><a href="the-fix.html#archive" class="hover:text-banga hover:underline underline-offset-4">Coffee Archive</a></li>
+            <li><a href="help.html#faq" class="hover:text-banga hover:underline underline-offset-4">FAQs</a></li>
+          </ul>
+        </div>
+      </nav>
+
+      <section class="lg:col-span-5 bg-gata border-2 border-tinta rounded-3xl p-6 sm:p-8 shadow-ube" aria-labelledby="visit-title">
+        <h2 id="visit-title" class="font-display uppercase text-banga text-2xl">Visit us</h2>
+        <div class="grid sm:grid-cols-2 gap-6 mt-4">
+          <div>
+            <h3 class="font-label font-bold uppercase tracking-wider text-sm">Café</h3>
+            <address class="not-italic mt-2 leading-relaxed" data-store="address">Padre Faura St., Ermita, Manila, 1000 Metro Manila, Philippines</address>
+          </div>
+          <div>
+            <h3 class="font-label font-bold uppercase tracking-wider text-sm">Hours</h3>
+            <dl class="mt-2 grid grid-cols-[auto_1fr] gap-x-3 gap-y-1">
+              <dt class="whitespace-nowrap">Mon–Fri</dt><dd class="whitespace-nowrap" data-hours="weekday">6AM – 10PM</dd>
+              <dt class="whitespace-nowrap">Sat–Sun</dt><dd class="whitespace-nowrap" data-hours="weekend">7AM – 10PM</dd>
+            </dl>
+          </div>
+          <div class="sm:col-span-2">
+            <h3 class="font-label font-bold uppercase tracking-wider text-sm">Contact &amp; wholesale</h3>
+            <p class="mt-2"><a href="mailto:kasalokape@gmail.com" class="underline underline-offset-4 hover:text-banga">kasalokape@gmail.com</a></p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 pb-12 grid lg:grid-cols-3 gap-8 items-center">
+      <ul class="flex flex-wrap gap-x-6 gap-y-3" aria-label="Social media">
+        <li><a href="https://www.facebook.com/kasalokape" target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-banga font-bold hover:underline underline-offset-4">
+          <img src="img/icons/facebook.png" alt="" class="w-6 h-6 object-contain brightness-0">Facebook</a></li>
+        <li><a href="https://www.instagram.com/kasalokape/" target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-banga font-bold hover:underline underline-offset-4">
+          <img src="img/icons/instagram.png" alt="" class="w-6 h-6 object-contain brightness-0">@kasalokape</a></li>
+      </ul>
+
+      <form class="newsletter" aria-label="Newsletter">
+        <label for="news-email" class="font-label font-bold uppercase tracking-wider text-sm">Get new drops by email</label>
+        <div class="mt-2 flex gap-2">
+          <input id="news-email" type="email" required autocomplete="email" placeholder="you@email.com" class="flex-1 min-w-0 bg-papel border-2 border-tinta rounded-full px-4 py-2.5 placeholder:text-tinta/70">
+          <button type="submit" class="bg-banga text-papel font-label font-bold uppercase tracking-wider px-5 py-2.5 rounded-full border-2 border-tinta hover:shadow-ube-sm transition">Join</button>
+        </div>
+        <p class="news-msg mt-2 text-sm min-h-[1.25rem]" aria-live="polite"></p>
+      </form>
+
+    </div>
+
+    <div class="border-t-2 border-tinta">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 py-5 flex flex-col md:flex-row md:items-center md:justify-between gap-3 text-sm">
+        <p>© 2026 Kasalo Kape. Made to be shared.</p>
+        <ul class="flex flex-wrap gap-x-5 gap-y-2">
+          <li><a href="help.html#privacy" class="hover:text-banga hover:underline underline-offset-4">Privacy Policy</a></li>
+          <li><a href="help.html#terms" class="hover:text-banga hover:underline underline-offset-4">Terms of Service</a></li>
+          <li><a href="help.html#accessibility" class="hover:text-banga hover:underline underline-offset-4">Accessibility</a></li>
+        </ul>
+        <p>Site by the Kasalo Kape team</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.js"></script>
+  <script src="js/supabase.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/chat.js"></script>
+  <script>
+    const menuBtn = document.getElementById('menu-btn');
+    const mobileNav = document.getElementById('mobile-nav');
+    const setNav = open => {
+      mobileNav.classList.toggle('hidden', !open);
+      menuBtn.setAttribute('aria-expanded', open);
+      menuBtn.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
+    };
+    menuBtn.addEventListener('click', () => setNav(mobileNav.classList.contains('hidden')));
+    mobileNav.addEventListener('click', e => { if (e.target.closest('a')) setNav(false); });
+  </script>
+</body>
+</html>

@@ -45,7 +45,7 @@
 
         <form id="pay" class="shrink-0 border-t-2 border-tinta bg-gata px-5 py-4 grid gap-3" novalidate>
           <label class="flex items-center gap-3 text-sm cursor-pointer"><input type="checkbox" name="senior" class="kk-check"> Senior Citizen / PWD (20% off)</label>
-          <input name="senior_id" hidden placeholder="OSCA / PWD ID number" class="inp">
+          <input name="senior_id" hidden aria-label="Senior Citizen or PWD ID number" placeholder="OSCA / PWD ID number" class="inp">
           <dl id="sums" class="text-sm grid grid-cols-[1fr_auto] gap-y-1"></dl>
 
           <div role="radiogroup" aria-label="Payment" class="grid grid-cols-2 gap-2">
@@ -53,12 +53,12 @@
             <label class="pm"><input type="radio" name="method" value="gcash" class="sr-only"> GCash QR</label>
           </div>
           <div data-for="cash" class="grid gap-2">
-            <input name="tendered" type="number" min="0" step="1" inputmode="numeric" placeholder="Cash received (₱)" class="inp">
+            <input name="tendered" aria-label="Cash received in pesos" type="number" min="0" step="1" inputmode="numeric" placeholder="Cash received (₱)" class="inp">
             <div id="quick-cash" class="flex flex-wrap gap-2"></div>
             <p id="change" class="text-sm"></p>
           </div>
           <div data-for="gcash" hidden>
-            <input name="reference" placeholder="GCash reference no. from the customer's screen" class="inp" autocomplete="off">
+            <input name="reference" aria-label="GCash reference number" placeholder="GCash reference no. from the customer's screen" class="inp" autocomplete="off">
           </div>
           <p id="pay-msg" role="alert" class="text-sm text-sili min-h-[1.25rem]"></p>
           <button id="charge" class="bg-banga text-papel font-label uppercase tracking-wider py-4 rounded-full border-2 border-tinta shadow-ube-sm disabled:opacity-50">Charge</button>
@@ -187,7 +187,7 @@
             <button type="button" data-line="${i}" data-d="1" class="w-7 h-7 rounded-full border-2 border-tinta leading-none" aria-label="One more ${esc(l.p.name)}">+</button>
           </div>
           <p class="w-16 text-right font-bold">${peso(unitPrice(l.p, l.choices) * l.qty)}</p>
-        </li>`).join('') || '<li class="py-6 text-sm text-tinta/60">Tap items on the menu to start a ticket.</li>';
+        </li>`).join('') || '<li class="py-6 text-sm text-tinta/70">Tap items on the menu to start a ticket.</li>';
       requote();
     }
     $('#lines').addEventListener('click', e => {

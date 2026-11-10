@@ -132,7 +132,7 @@
       $('#admins').innerHTML = c.data.map(p => `
         <li class="flex items-center gap-3 rounded-xl border-2 border-tinta px-4 py-2.5">
           <span class="flex-1 min-w-0"><b>${esc(p.full_name || p.email)}</b><span class="block text-xs text-tinta/70 break-all">${esc(p.email)}</span></span>
-          ${p.id === me.id ? '<span class="text-xs text-tinta/60">You</span>'
+          ${p.id === me.id ? '<span class="text-xs text-tinta/70">You</span>'
             : `<button type="button" data-demote="${p.id}" data-email="${esc(p.email)}" class="text-xs underline underline-offset-4 hover:text-sili">Remove admin</button>`}
         </li>`).join('');
     }

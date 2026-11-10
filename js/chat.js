@@ -18,7 +18,7 @@
       <form id="chat-form" class="flex gap-2 p-3 border-t-2 border-tinta bg-gata shrink-0">
         <label for="chat-input" class="sr-only">Message</label>
         <input id="chat-input" autocomplete="off" maxlength="500" placeholder="Ask about the menu, bundle, The Fix…"
-          class="flex-1 min-w-0 bg-papel border-2 border-tinta rounded-full px-4 py-2.5 placeholder:text-tinta/60">
+          class="flex-1 min-w-0 bg-papel border-2 border-tinta rounded-full px-4 py-2.5 placeholder:text-tinta/70">
         <button type="submit" class="bg-banga text-papel font-label font-bold uppercase tracking-wider text-sm px-4 rounded-full border-2 border-tinta hover:shadow-ube-sm transition">Send</button>
       </form>
     </section>`);

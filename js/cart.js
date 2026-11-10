@@ -50,7 +50,10 @@
   console.assert(bundlesIn([{ key: 'a', cat: 'coffee', qty: 2 }, { key: 'b', cat: 'pastries', qty: 1 }, { key: 'the-fix-1-year', qty: 1 }]) === 1
     && bundlesIn([{ key: 'a', cat: 'coolers', qty: 3 }, { key: 'b', cat: 'pastries', qty: 2 }]) === 2
     && bundlesIn([{ key: 'b', cat: 'pastries', qty: 4 }]) === 0, 'Kasalo Bundle pairing');
-  const discount = () => bundlesIn(items) * BUNDLE_OFF;
+  // The server's quote (current prices, bundle setting, stock) replaces the local estimate once it arrives.
+  let quote = null;
+  const discount = () => quote && !quote.error ? quote.bundle_discount : bundlesIn(items) * BUNDLE_OFF;
+  const soldOut = i => window.KASALO?.find(i.pid || i.key.split('|')[0])?.inStock === false;
   const total = () => subtotal() - discount();
   const thumb = src => src
     ? `<img src="${esc(src)}" alt="" class="w-full h-full object-contain">`
@@ -73,15 +76,17 @@
       return;
     }
 
-    body.innerHTML = `<ul>${items.map(i => `
-      <li class="flex gap-4 py-5 border-b border-tinta/15">
-        <div class="w-20 h-20 shrink-0 rounded-xl bg-gata overflow-hidden p-1">${thumb(i.img)}</div>
+    body.innerHTML = `${quote?.error ? `<p role="alert" class="mt-5 rounded-2xl border-2 border-sili bg-sili-soft px-4 py-3 text-sm">${esc(quote.error)}. Remove it to check out.</p>` : ''}
+      <ul>${items.map(i => `
+      <li class="flex gap-4 py-5 border-b border-tinta/15 ${soldOut(i) ? 'opacity-60' : ''}">
+        <div class="w-20 h-20 shrink-0 rounded-xl bg-gata overflow-hidden p-1 ${soldOut(i) ? 'grayscale' : ''}">${thumb(i.img)}</div>
         <div class="flex-1 min-w-0">
           <div class="flex justify-between gap-3">
             <p class="font-bold leading-snug">${esc(i.name)}</p>
             <p class="font-bold whitespace-nowrap">${peso(i.price * i.qty)}</p>
           </div>
           ${i.variant ? `<p class="text-sm text-tinta/70">${esc(i.variant)}</p>` : ''}
+          ${soldOut(i) ? '<p class="text-sm font-bold text-sili">Sold out for now</p>' : ''}
           <div class="mt-3 flex items-center justify-between">
             <div class="inline-flex items-center border-2 border-tinta rounded-full">
               <button type="button" data-qty="-1" data-key="${esc(i.key)}" aria-label="Remove one ${esc(i.name)}" class="w-9 h-9 grid place-items-center text-lg hover:text-banga">−</button>
@@ -100,7 +105,7 @@
         <div class="flex justify-between text-sm"><dt>Pickup at Padre Faura St.</dt><dd>Free</dd></div>
         <div class="flex justify-between font-bold text-lg pt-2 border-t-2 border-dashed border-ube mt-2"><dt>Total</dt><dd>${peso(total())}</dd></div>
       </dl>
-      <button type="button" data-checkout class="mt-4 w-full bg-banga text-papel font-label font-bold uppercase tracking-wider py-4 rounded-full border-2 border-tinta shadow-ube hover:-translate-y-0.5 transition">Checkout</button>
+      <button type="button" data-checkout ${quote?.error ? 'disabled' : ''} class="mt-4 w-full bg-banga text-papel font-label font-bold uppercase tracking-wider py-4 rounded-full border-2 border-tinta shadow-ube hover:-translate-y-0.5 transition disabled:opacity-50 disabled:hover:translate-y-0">Checkout</button>
       <button type="button" data-cart-close class="mt-2 w-full font-label font-bold uppercase tracking-wider text-sm py-3 rounded-full hover:bg-papel transition">Continue shopping</button>`;
   }
 
@@ -110,6 +115,17 @@
     const id = i.pid || i.key.split('|')[0];
     return id.startsWith('the-fix-') ? { plan_id: id.slice(8), qty: i.qty } : { product_id: id, choices: i.choices || {}, qty: i.qty };
   };
+  // Ask the server for today's prices; updates each line's price and flags sold-out or removed items.
+  async function refresh() {
+    quote = null;
+    if (!items.length || !window.KK?.configured) return;
+    const asked = JSON.stringify(items.map(toServer));
+    const { data, error } = await KK.sb.rpc('quote_order', { p_items: items.map(toServer) });
+    if (asked !== JSON.stringify(items.map(toServer))) return;   // bag changed meanwhile; a newer refresh is coming
+    if (error) quote = { error: KK.message(error).replace(/\.$/, '') };
+    else { data.lines.forEach((l, n) => { items[n].price = l.unit_price; }); save(); quote = data; }
+    if (!document.getElementById('checkout-form')) render();
+  }
   const hasPlan = () => items.some(i => (i.pid || i.key).startsWith('the-fix-'));
   const rootPath = () => (location.pathname.includes('/admin/') ? '../' : '');
   let guestSaved = {};
@@ -122,8 +138,9 @@
     body.innerHTML = `
       <form id="checkout-form" class="py-6 grid gap-6" novalidate>
         <div>
-          <p class="font-label uppercase tracking-wider text-xs">Step 2 of 2</p>
-          <p class="font-serif text-3xl leading-tight mt-1">Almost yours.</p>
+          <p class="font-label uppercase tracking-wider text-xs">Checkout</p>
+          <p id="checkout-title" tabindex="-1" class="font-serif text-3xl leading-tight mt-1 focus:outline-none">Almost yours.</p>
+          <p class="text-sm mt-1">${count()} item${count() > 1 ? 's' : ''} · pickup at Padre Faura St.</p>
         </div>
         ${me ? `
           <div class="rounded-2xl border-2 border-tinta bg-gata-light p-4">
@@ -155,7 +172,7 @@
       <div class="flex justify-between font-bold text-lg"><span>Total</span><span>${peso(total())}</span></div>
       <button type="submit" form="checkout-form" id="place-order" class="mt-4 w-full bg-banga text-papel font-label font-bold uppercase tracking-wider py-4 rounded-full border-2 border-tinta shadow-ube hover:-translate-y-0.5 transition disabled:opacity-60">Place order</button>
       <button type="button" data-cart-back class="mt-2 w-full font-label font-bold uppercase tracking-wider text-sm py-3 rounded-full hover:bg-papel transition">Back to bag</button>`;
-    body.querySelector('input[name="name"]')?.focus();
+    (body.querySelector('input[name="name"]') || document.getElementById('checkout-title')).focus();
 
     document.getElementById('checkout-form').addEventListener('submit', async e => {
       e.preventDefault();
@@ -173,7 +190,7 @@
         p_items: items.map(toServer), p_guest_name: me ? null : name, p_guest_email: me ? null : email,
         p_pay_option: form.elements.pay.value,
       });
-      if (error) return fail(KK.message(error));
+      if (error) { refresh(); return fail(KK.message(error)); }
       items = []; save();
       location.href = `${rootPath()}receipt.html?order=${data.id}&t=${data.access_token}`;
     });
@@ -202,6 +219,7 @@
     hideToast();
     render();
     dialog.showModal();
+    refresh();
   }
 
   // item: { id, name, price, cat?, img?, variant?, choices? }
@@ -212,7 +230,7 @@
     if (found) found.qty += qty;
     else items.push({ key, pid: item.id, choices: item.choices || {}, name: item.name, price: item.price, cat: item.cat || '',
                       img: item.img || null, variant: item.variant || '', qty });
-    save(); render(); showToast(item);
+    quote = null; save(); render(); showToast(item); refresh();
   }
 
   document.addEventListener('click', e => {
@@ -227,10 +245,10 @@
       const i = items.find(x => x.key === qtyBtn.dataset.key);
       i.qty += Number(qtyBtn.dataset.qty);
       if (i.qty < 1) items = items.filter(x => x !== i);
-      save(); return render();
+      quote = null; save(); render(); return refresh();
     }
     const rm = t.closest('[data-remove]');
-    if (rm) { items = items.filter(x => x.key !== rm.dataset.remove); save(); render(); }
+    if (rm) { items = items.filter(x => x.key !== rm.dataset.remove); quote = null; save(); render(); refresh(); }
   });
 
   window.addEventListener('storage', e => {

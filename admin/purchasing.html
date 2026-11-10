@@ -142,7 +142,7 @@
       $('#sups').innerHTML = sups.map(s => `
         <li class="bg-papel border-2 border-tinta rounded-2xl p-4 text-sm">
           <div class="flex justify-between gap-2"><b>${esc(s.name)}</b><button type="button" data-sup="${s.id}" class="text-xs underline underline-offset-4 hover:text-banga">Edit</button></div>
-          ${[s.contact, s.phone, s.email].filter(Boolean).map(esc).join(' · ') || '<span class="text-tinta/60">No contact details</span>'}
+          ${[s.contact, s.phone, s.email].filter(Boolean).map(esc).join(' · ') || '<span class="text-tinta/70">No contact details</span>'}
           ${s.notes ? `<p class="text-xs text-tinta/70 mt-1">${esc(s.notes)}</p>` : ''}
         </li>`).join('') || '<li class="text-sm text-tinta/70">No suppliers yet.</li>';
     }
@@ -153,7 +153,7 @@
         <select data-ing class="inp !mt-0" aria-label="Ingredient">${ings.map(i => `<option value="${i.id}">${esc(i.name)} (${UNIT[i.unit]})</option>`).join('')}</select>
         <input data-qty type="number" min="0" step="any" class="inp !mt-0" aria-label="Quantity">
         <input data-cost type="number" min="0" step="any" class="inp !mt-0" aria-label="Cost per unit">
-        <button type="button" data-remove class="px-2 text-tinta/60 hover:text-sili" aria-label="Remove line">✕</button>
+        <button type="button" data-remove class="px-2 text-tinta/70 hover:text-sili" aria-label="Remove line">✕</button>
       </li>`;
     const lines = () => [...document.querySelectorAll('#po-lines li')].map(li => ({
       ingredient_id: Number(li.querySelector('[data-ing]').value), qty: Number(li.querySelector('[data-qty]').value), unit_cost: Number(li.querySelector('[data-cost]').value) }));

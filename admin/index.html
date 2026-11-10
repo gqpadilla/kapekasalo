@@ -39,6 +39,53 @@
         <div class="kpi bg-banga-soft"><p class="kpi-l">Bundles + SC/PWD off</p><p id="k-disc" class="kpi-v">—</p></div>
       </section>
 
+      <section aria-label="How the café is doing" class="mt-6 grid xl:grid-cols-3 gap-6">
+        <div class="chart xl:col-span-2">
+          <div class="flex flex-wrap items-baseline justify-between gap-2">
+            <h2 class="font-display uppercase text-xl">Today so far</h2>
+            <p id="pace" class="text-sm"></p>
+          </div>
+          <ul class="legend mt-2" aria-hidden="true"><li><i class="sw-line"></i>Today</li><li><i class="sw-dash"></i>Usual day (last 6 days)</li></ul>
+          <div id="c-today" class="line mt-3"></div>
+          <details class="mt-3 text-sm"><summary class="cursor-pointer text-tinta/70 hover:text-banga">Show as table</summary><table id="t-today" class="tbl mt-2 w-full"></table></details>
+        </div>
+        <div class="chart">
+          <h2 class="font-display uppercase text-xl">Best sellers</h2>
+          <p class="text-sm text-tinta/70">Cups and pieces sold, last 7 days</p>
+          <ol id="c-best" class="hbars mt-4 grid gap-3"></ol>
+        </div>
+
+        <div class="chart xl:col-span-2">
+          <div class="flex flex-wrap items-baseline justify-between gap-2">
+            <h2 class="font-display uppercase text-xl">Profit picture</h2>
+            <p id="fc" class="text-sm"></p>
+          </div>
+          <ul class="legend mt-2" aria-hidden="true"><li><i class="sw-margin"></i>Gross margin</li><li><i class="sw-cost"></i>Food cost</li></ul>
+          <div id="c-profit" class="cols mt-3" role="list" aria-label="Sales per day split into food cost and gross margin"></div>
+          <div id="x-profit" class="ticks" aria-hidden="true"></div>
+          <details class="mt-3 text-sm"><summary class="cursor-pointer text-tinta/70 hover:text-banga">Show as table</summary><table id="t-profit" class="tbl mt-2 w-full"></table></details>
+        </div>
+        <div class="chart">
+          <div class="flex flex-wrap items-baseline justify-between gap-2">
+            <h2 class="font-display uppercase text-xl">Sales, 7 days</h2>
+            <p id="w-total" class="text-sm"></p>
+          </div>
+          <div id="c-days" class="cols mt-4" role="list" aria-label="Net sales per day"></div>
+          <div id="x-days" class="ticks" aria-hidden="true"></div>
+          <details class="mt-3 text-sm"><summary class="cursor-pointer text-tinta/70 hover:text-banga">Show as table</summary><table id="t-days" class="tbl mt-2 w-full"></table></details>
+        </div>
+
+        <div class="chart xl:col-span-3">
+          <div class="flex flex-wrap items-baseline justify-between gap-2">
+            <h2 class="font-display uppercase text-xl">Busiest hours</h2>
+            <p id="w-peak" class="text-sm"></p>
+          </div>
+          <div id="c-hours" class="cols cols-short mt-4" role="list" aria-label="Net sales per hour of the day, last 7 days"></div>
+          <div id="x-hours" class="ticks" aria-hidden="true"></div>
+          <details class="mt-3 text-sm"><summary class="cursor-pointer text-tinta/70 hover:text-banga">Show as table</summary><table id="t-hours" class="tbl mt-2 w-full"></table></details>
+        </div>
+      </section>
+
       <section class="mt-6 bg-papel border-2 border-tinta rounded-3xl p-6 shadow-ube" aria-labelledby="pay-title">
         <div class="flex flex-wrap items-center justify-between gap-2">
           <h2 id="pay-title" class="font-display uppercase text-xl">Payments to check</h2>
@@ -79,7 +126,57 @@
   <style>
     .kpi { border: 2px solid #141414; border-radius: 1.5rem; padding: 1.25rem 1.4rem; box-shadow: 4px 4px 0 #5B3A8C; }
     .kpi-l { font-family: 'MADE Sunflower', sans-serif; text-transform: uppercase; letter-spacing: .06em; font-size: .7rem; }
-    .kpi-v { font-family: 'Provicali', 'Arial Black', sans-serif; font-size: clamp(1.6rem, 3vw, 2.4rem); margin-top: .35rem; }
+    .kpi-v { font-family: 'Provicali', 'Arial Black', sans-serif; font-size: clamp(1.6rem, 3vw, 2.4rem); margin-top: .35rem; font-variant-numeric: tabular-nums; }
+
+    /* Charts. Bars and lines are drawn at full size; the grow-in is an extra (see animateIn), so they always show.
+       Kalamansi is light on white (validator: lightness/contrast), so every Kalamansi mark has a 2px ink outline,
+       a legend and a table view. Banga and Kalamansi stay far apart for colour-blind readers (ΔE 29). */
+    .chart { background: #FFFFFF; border: 2px solid #141414; border-radius: 1.5rem; padding: 1.5rem; box-shadow: 4px 4px 0 #5B3A8C; min-width: 0; }
+    .cols { display: flex; align-items: flex-end; gap: 8px; height: 13rem; padding-top: 2rem; border-bottom: 2px solid #141414;
+      background: repeating-linear-gradient(to top, transparent 0 calc(25% - 1px), rgba(20, 20, 20, .08) calc(25% - 1px) 25%); }
+    .cols-short { height: 9rem; gap: 4px; }
+    .col { position: relative; flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; gap: 2px; outline-offset: 2px; }
+    .col i { display: block; width: 100%; background: #F2B732; border: 2px solid #141414; border-bottom: 0; border-radius: 6px 6px 0 0;
+      transform-origin: bottom; transition: background-color .15s; }
+    .stack { display: flex; flex-direction: column; gap: 2px; width: 100%; min-height: 4px; transform-origin: bottom; }
+    .col i.cost { background: #A84A2A; border-radius: 0; }
+    .col.zero i { border: 0; height: 2px; background: #141414; }
+    .col.today .stack i:only-child { background: #A84A2A; }   /* single-series charts only; stacked parts keep their colours */
+    .col:hover i:not(.cost), .col:focus-visible i:not(.cost) { background: #141414; }
+    .col::after { content: attr(data-tip); position: absolute; left: 50%; bottom: calc(var(--h) + 10px); transform: translate(-50%, 4px);
+      background: #141414; color: #F4EBDD; font-size: 12px; line-height: 1.3; padding: 5px 9px; border-radius: 8px; white-space: nowrap;
+      opacity: 0; pointer-events: none; transition: opacity .15s, transform .15s; z-index: 5; }
+    .col:first-child::after { left: 0; transform: translate(0, 4px); }
+    .col:last-child::after { left: auto; right: 0; transform: translate(0, 4px); }
+    .col:hover::after, .col:focus-visible::after { opacity: 1; transform: translate(-50%, 0); }
+    .col:first-child:hover::after, .col:first-child:focus-visible::after, .col:last-child:hover::after, .col:last-child:focus-visible::after { transform: none; }
+    .ticks { display: flex; gap: 8px; margin-top: 6px; font-size: 11px; }
+    #x-hours { gap: 4px; }
+    .ticks span { flex: 1; text-align: center; white-space: nowrap; }
+    .hbars .bar { height: .9rem; border: 2px solid #141414; border-radius: 999px; background: #F4EBDD; overflow: hidden; margin-top: .3rem; }
+    .hbars .bar i { display: block; height: 100%; background: #F2B732; border-right: 2px solid #141414; transform-origin: left; }
+    .hbars li:first-child .bar i { background: #A84A2A; }
+    .legend { display: flex; flex-wrap: wrap; gap: .4rem 1.2rem; font-size: 12px; }
+    .legend li { display: flex; align-items: center; gap: .45rem; }
+    .legend i { display: inline-block; }
+    .sw-line { width: 1.4rem; height: 3px; background: #A84A2A; border-radius: 2px; }
+    .sw-dash { width: 1.4rem; height: 0; border-top: 2px dashed #141414; }
+    .sw-margin { width: .8rem; height: .8rem; background: #F2B732; border: 2px solid #141414; border-radius: 3px; }
+    .sw-cost { width: .8rem; height: .8rem; background: #A84A2A; border: 2px solid #141414; border-radius: 3px; }
+    .line { position: relative; }
+    .line svg { display: block; width: 100%; height: 13rem; overflow: visible; }
+    .line .hit { position: absolute; inset: 0 0 1.5rem 2.5rem; display: flex; }
+    .line .hit span { flex: 1; position: relative; outline-offset: -2px; }
+    .line .hit span:hover, .line .hit span:focus-visible { background: rgba(20, 20, 20, .05); }
+    .line .hit span::after { content: attr(data-tip); position: absolute; top: -.5rem; left: 50%; transform: translate(-50%, -100%);
+      background: #141414; color: #F4EBDD; font-size: 12px; padding: 5px 9px; border-radius: 8px; white-space: nowrap; opacity: 0; pointer-events: none; z-index: 5; }
+    .line .hit span:first-child::after { left: 0; transform: translate(0, -100%); }
+    .line .hit span:last-child::after { left: auto; right: 0; transform: translate(0, -100%); }
+    .line .hit span:hover::after, .line .hit span:focus-visible::after { opacity: 1; }
+    .tbl { font-variant-numeric: tabular-nums; }
+    .tbl th { text-align: left; font-weight: 700; padding: 2px 0; }
+    .tbl td { padding: 2px 0; border-top: 1px solid rgba(20, 20, 20, .12); }
+    @media (prefers-reduced-motion: reduce) { .col::after, .col i { transition: none; } }
   </style>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.js"></script>
@@ -95,6 +192,162 @@
     const STATUS = { pending_payment: 'Awaiting payment', paid: 'Paid', preparing: 'Preparing', ready: 'Ready', completed: 'Picked up', cancelled: 'Cancelled', refunded: 'Refunded' };
     const manilaDate = () => new Date(Date.now() + 8 * 3600e3).toISOString().slice(0, 10);
     const time = d => new Date(d).toLocaleTimeString('en-PH', { timeZone: 'Asia/Manila', hour: 'numeric', minute: '2-digit' });
+
+    const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const hr = h => `${h % 12 || 12}${h < 12 ? 'am' : 'pm'}`;
+    const manilaNow = () => { const d = new Date(Date.now() + 8 * 3600e3); return d.getUTCHours() + d.getUTCMinutes() / 60; };
+    const addDays = (day, n) => new Date(new Date(day + 'T12:00:00+08:00').getTime() + n * 864e5 + 8 * 3600e3).toISOString().slice(0, 10);
+
+    // KPI numbers roll from their last value to the new one (timers, so the final number always lands).
+    function countUp(el, to, fmt) {
+      const from = Number(el.dataset.v || 0), steps = 24;
+      el.dataset.v = to;
+      clearInterval(el._t);
+      if (still || from === to) { el.textContent = fmt(to); return; }
+      let k = 0;
+      el._t = setInterval(() => {
+        k++; const ease = 1 - (1 - k / steps) ** 3;
+        el.textContent = fmt(Math.round(from + (to - from) * ease));
+        if (k >= steps) { clearInterval(el._t); el.textContent = fmt(to); }
+      }, 35);
+    }
+
+    // Charts are drawn at full size; this only adds the grow-in. finish() lands the end state even if the
+    // browser pauses animations (hidden tabs do), so a chart can never be left empty.
+    function animateIn(scope) {
+      if (still || !scope.animate) return;
+      const run = (el, frames, delay, ms) => {
+        const a = el.animate(frames, { duration: ms, delay, easing: 'cubic-bezier(.2, .8, .2, 1)', fill: 'backwards' });
+        setTimeout(() => { try { a.finish(); } catch {} }, delay + ms + 300);
+      };
+      scope.querySelectorAll('.stack').forEach((el, i) => run(el, [{ transform: 'scaleY(0)' }, { transform: 'none' }], i * 45, 800));
+      scope.querySelectorAll('.bar i').forEach((el, i) => run(el, [{ transform: 'scaleX(0)' }, { transform: 'none' }], i * 90, 1000));
+      scope.querySelectorAll('[data-draw]').forEach(el => run(el, [{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], 150, 1400));
+      scope.querySelectorAll('[data-fade]').forEach(el => run(el, [{ opacity: 0 }, { opacity: 1 }], 0, 600));
+    }
+
+    // Column chart; a point can be split into stacked parts [{ v, cls }] (top first).
+    function columns(el, ticks, table, points, { label, tip, today, head, row }) {
+      const max = Math.max(1, ...points.map(p => p.v));
+      el.innerHTML = points.map(p => {
+        const h = (p.v / max * 100).toFixed(1), parts = (p.parts || [{ v: p.v }]).filter(s => s.v > 0);
+        return `<div class="col ${p.v ? '' : 'zero'} ${p.k === today ? 'today' : ''}" role="listitem" tabindex="0" style="--h:${h}%"
+                     data-tip="${esc(tip(p))}" aria-label="${esc(tip(p))}">${p.v
+          ? `<b class="stack" style="height:${h}%">${parts.map(s => `<i class="${s.cls || ''}" style="flex:${s.v} 1 0"></i>`).join('')}</b>` : '<i></i>'}</div>`;
+      }).join('');
+      ticks.innerHTML = points.map(p => `<span class="${p.k === today ? 'font-bold' : ''}">${esc(label(p.k))}</span>`).join('');
+      table.innerHTML = `<tr>${head.map(c => `<th>${c}</th>`).join('')}</tr>` + points.map(p => `<tr>${row(p).map((c, i) => `<td class="${i ? 'text-right' : ''}">${c}</td>`).join('')}</tr>`).join('');
+      animateIn(el);
+    }
+
+    // Today's running total by hour against the average of the last 6 days.
+    function todayChart(todayByHour, usualByHour) {
+      const H0 = 6, SPAN = 16;   // 6AM to 10PM
+      // sales rung up before 6AM count toward the starting point, so the line ends at today's real total
+      const cum = byHour => { let s = Object.entries(byHour).reduce((a, [h, v]) => +h < H0 ? a + v : a, 0); return [s, ...Array.from({ length: SPAN }, (_, i) => (s += byHour[H0 + i] || 0))]; };
+      const tc = cum(todayByHour), uc = cum(usualByHour);
+      const nowX = Math.min(SPAN, Math.max(0, manilaNow() - H0)), full = Math.min(SPAN - 1, Math.floor(nowX));
+      const soFar = tc[full + 1], usualNow = uc[full] + (uc[full + 1] - uc[full]) * (nowX - full);
+      const top = Math.max(500, Math.ceil(Math.max(uc[SPAN], soFar) * 1.08 / 500) * 500);
+      const X = x => (x / SPAN * 600).toFixed(1), Y = v => (200 - v / top * 200).toFixed(1);
+      const todayPts = [...tc.slice(0, full + 1).map((v, i) => [i, v]), [nowX, soFar]];
+      const path = pts => 'M' + pts.map(([x, v]) => `${X(x)},${Y(v)}`).join(' L');
+      const grid = [.25, .5, .75, 1].map(f => `<line x1="0" x2="600" y1="${Y(top * f)}" y2="${Y(top * f)}" stroke="#141414" stroke-opacity=".1" vector-effect="non-scaling-stroke"/>`).join('');
+
+      $('#c-today').innerHTML = `
+        <div class="absolute left-0 top-0 w-9 h-[13rem] text-[11px] text-right" aria-hidden="true">${[1, .75, .5, .25].map(f =>
+          `<span class="absolute right-1 -translate-y-1/2" style="top:${(1 - f) * 100}%">${(top * f / 1000).toFixed(top * f % 1000 ? 1 : 0)}k</span>`).join('')}</div>
+        <div class="ml-10 relative">
+          <svg viewBox="0 0 600 200" preserveAspectRatio="none" role="img"
+               aria-label="Today ${peso(soFar)} so far; a usual day is at ${peso(Math.round(usualNow))} by now and ends at ${peso(Math.round(uc[SPAN]))}">
+            ${grid}
+            <line x1="0" x2="600" y1="200" y2="200" stroke="#141414" stroke-width="2" vector-effect="non-scaling-stroke"/>
+            <path data-fade d="${path(uc.map((v, i) => [i, v]))}" fill="none" stroke="#141414" stroke-width="2" stroke-dasharray="6 5" vector-effect="non-scaling-stroke"/>
+            <line x1="${X(nowX)}" x2="${X(nowX)}" y1="0" y2="200" stroke="#A84A2A" stroke-opacity=".35" stroke-dasharray="3 4" vector-effect="non-scaling-stroke"/>
+            <path data-draw d="${path(todayPts)}" pathLength="1" stroke-dasharray="1" stroke-dashoffset="0" fill="none" stroke="#A84A2A" stroke-width="3.5"
+                  stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+          </svg>
+          <span data-fade class="absolute w-3.5 h-3.5 rounded-full bg-banga border-2 border-papel ring-2 ring-tinta -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+                style="left:${nowX / SPAN * 100}%;top:calc(13rem * ${(1 - soFar / top).toFixed(4)})"></span>
+          <span class="absolute -translate-x-1/2 text-[11px] font-bold text-banga bg-papel px-1 pointer-events-none" style="left:${nowX / SPAN * 100}%;top:-1.1rem">Now</span>
+          <div class="hit">${Array.from({ length: SPAN }, (_, i) => {
+            const tip = `By ${hr(H0 + i + 1)}: today ${i <= full ? peso(tc[i + 1]) : '—'} · usual ${peso(Math.round(uc[i + 1]))}`;
+            return `<span tabindex="0" data-tip="${esc(tip)}" aria-label="${esc(tip)}"></span>`;
+          }).join('')}</div>
+          <div class="relative h-5 mt-1 text-[11px]" aria-hidden="true">${[6, 9, 12, 15, 18, 21].map(h =>
+            `<span class="absolute -translate-x-1/2" style="left:${(h - H0) / SPAN * 100}%">${hr(h)}</span>`).join('')}</div>
+        </div>`;
+      $('#c-today').style.minHeight = '14.5rem';
+      $('#t-today').innerHTML = '<tr><th>By</th><th class="text-right">Today</th><th class="text-right">Usual</th></tr>'
+        + Array.from({ length: SPAN }, (_, i) => `<tr><td>${hr(H0 + i + 1)}</td><td class="text-right">${i <= full ? peso(tc[i + 1]) : '—'}</td><td class="text-right">${peso(Math.round(uc[i + 1]))}</td></tr>`).join('');
+
+      const diff = usualNow ? Math.round((soFar - usualNow) / usualNow * 100) : 0;
+      $('#pace').innerHTML = !usualNow ? `<b>${peso(soFar)}</b> so far`
+        : `<b>${peso(soFar)}</b> so far · <b class="${diff >= 0 ? 'text-jeepney' : 'text-sili'}">${diff >= 0 ? '▲' : '▼'} ${Math.abs(diff)}% ${diff >= 0 ? 'ahead of' : 'behind'}</b> a usual day by now`;
+      animateIn($('#c-today'));
+    }
+
+    let weekSig = '', weekAt = 0;
+    async function loadWeek(today) {
+      if (Date.now() - weekAt < 55000 && weekSig) return;   // charts refresh once a minute; the live parts above refresh faster
+      weekAt = Date.now();
+      const from = addDays(today, -6), days = Array.from({ length: 7 }, (_, i) => addDays(from, i));
+      const calls = await Promise.all([
+        sb.rpc('sales_report', { p_from: from, p_to: today }),
+        sb.rpc('sales_report', { p_from: from, p_to: addDays(today, -1) }),
+        ...days.map(d => sb.rpc('sales_report', { p_from: d, p_to: d })),
+      ]);
+      if (calls.some(c => c.error)) return;
+      const [w, past, ...daily] = calls.map(c => c.data);
+      const sig = JSON.stringify(calls.map(c => c.data));
+      if (sig === weekSig) return;   // nothing new: don't replay the animation
+      weekSig = sig;
+
+      // Today so far vs usual
+      const byHour = list => Object.fromEntries(list.map(h => [h.hour, h.sales]));
+      const usual = Object.fromEntries(Object.entries(byHour(past.by_hour)).map(([h, v]) => [h, v / 6]));
+      todayChart(byHour(daily[6].by_hour), usual);
+
+      // Profit picture: each day's sales split into food cost and gross margin
+      const dayName = k => new Date(k + 'T12:00:00+08:00').toLocaleDateString('en-PH', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'Asia/Manila' });
+      const short = k => k === today ? 'Today' : new Date(k + 'T12:00:00+08:00').toLocaleDateString('en-PH', { weekday: 'short', timeZone: 'Asia/Manila' });
+      const pct = (a, b) => b ? Math.round(a / b * 100) : 0;
+      const profit = days.map((k, i) => {
+        const r = daily[i], cost = Math.min(r.food_cost, r.net_sales);
+        return { k, v: r.net_sales, cost, margin: r.net_sales - cost, parts: [{ v: r.net_sales - cost }, { v: cost, cls: 'cost' }] };
+      });
+      columns($('#c-profit'), $('#x-profit'), $('#t-profit'), profit, {
+        today, label: short,
+        tip: p => `${dayName(p.k)}: ${peso(p.v)} sales · food cost ${peso(p.cost)} (${pct(p.cost, p.v)}%) · margin ${peso(p.margin)}`,
+        head: ['Day', 'Sales', 'Food cost', 'Margin'], row: p => [dayName(p.k), peso(p.v), `${peso(p.cost)} (${pct(p.cost, p.v)}%)`, peso(p.margin)],
+      });
+      const fc = pct(w.food_cost, w.net_sales);
+      const [word, cls, icon] = fc > 35 ? ['above the 25–35% target', 'text-sili', '▲'] : fc < 25 ? ['below the 25–35% target', 'text-jeepney', '▼'] : ['within the 25–35% target', 'text-jeepney', '✓'];
+      $('#fc').innerHTML = `Food cost <b>${fc}%</b> · <b class="${cls}">${icon} ${word}</b> · margin <b>${peso(w.gross_margin)}</b>`;
+
+      // Sales per day
+      columns($('#c-days'), $('#x-days'), $('#t-days'), profit.map(p => ({ k: p.k, v: p.v, n: daily[days.indexOf(p.k)].orders })), {
+        today, label: short, tip: p => `${dayName(p.k)}: ${peso(p.v)} · ${p.n} order${p.n === 1 ? '' : 's'}`,
+        head: ['Day', 'Orders', 'Sales'], row: p => [dayName(p.k), p.n, peso(p.v)],
+      });
+      $('#w-total').innerHTML = `<b>${peso(w.net_sales)}</b> · ${w.orders} orders`;
+
+      // Busiest hours (whole week)
+      const wh = byHour(w.by_hour), hours = Array.from({ length: 16 }, (_, i) => ({ k: 6 + i, v: wh[6 + i] || 0 }));
+      columns($('#c-hours'), $('#x-hours'), $('#t-hours'), hours, {
+        label: hr, tip: p => `${hr(p.k)}–${hr(p.k + 1)}: ${peso(p.v)}`, head: ['Hour', 'Sales'], row: p => [`${hr(p.k)}–${hr(p.k + 1)}`, peso(p.v)],
+      });
+      const peak = hours.reduce((a, b) => b.v > a.v ? b : a);
+      $('#w-peak').textContent = peak.v ? `Busiest around ${hr(peak.k)}–${hr(peak.k + 1)}` : '';
+
+      // Best sellers
+      const best = w.best_sellers.slice(0, 5), most = Math.max(1, ...best.map(b => b.qty));
+      $('#c-best').innerHTML = best.map(b => `
+        <li><div class="flex justify-between gap-3 text-sm"><span class="font-bold truncate">${esc(b.name)}</span><span class="shrink-0">${b.qty} · ${peso(b.sales)}</span></div>
+          <div class="bar" role="img" aria-label="${esc(b.name)}: ${b.qty} sold, ${peso(b.sales)}"><i style="width:${(b.qty / most * 100).toFixed(1)}%"></i></div></li>`).join('')
+        || '<li class="text-sm text-tinta/70">No sales yet this week.</li>';
+      animateIn($('#c-best'));
+    }
 
     async function load() {
       const today = manilaDate();
@@ -112,10 +365,11 @@
       if (err) { $('#error').hidden = false; $('#error').textContent = KK.message(err); return; }
 
       const r = rep.data;
-      $('#k-sales').textContent = peso(r.net_sales);
-      $('#k-orders').textContent = r.orders;
-      $('#k-avg').textContent = peso(r.average_order);
-      $('#k-disc').textContent = peso(r.bundle_discounts + r.senior_pwd_discounts);
+      countUp($('#k-sales'), r.net_sales, peso);
+      countUp($('#k-orders'), r.orders, String);
+      countUp($('#k-avg'), r.average_order, peso);
+      countUp($('#k-disc'), r.bundle_discounts + r.senior_pwd_discounts, peso);
+      loadWeek(today);
 
       $('#queue').innerHTML = queue.data.length ? queue.data.map(o => `
         <li class="flex items-center justify-between gap-3 rounded-2xl border-2 border-tinta px-4 py-3 ${o.status === 'ready' ? 'bg-kalamansi-soft' : ''}">
@@ -161,7 +415,7 @@
             <div class="min-w-0">${head(o)}<p class="mt-1">GCash reference <b class="tracking-wider">${esc(p.reference)}</b></p></div>
             <div class="flex flex-wrap gap-2 items-center">
               <button type="button" data-confirm="gcash" class="${btn} bg-tinta text-gata hover:bg-banga">Confirm paid</button>
-              <input data-reason class="${input}" placeholder="Reason, if rejecting">
+              <input data-reason class="${input}" aria-label="Reason for rejecting ${orderLabel(o.order_no)}" placeholder="Reason, if rejecting">
               <button type="button" data-reject class="${btn} border-sili hover:bg-sili-soft">Reject</button>
             </div>
           </li>`;
@@ -172,8 +426,8 @@
             <div class="min-w-0">${head(o)}<p class="mt-1 text-sm">${counterGcash ? 'Counter sale paid by GCash' : 'Pay at pickup'}</p></div>
             <div class="flex flex-wrap gap-2 items-center">
               ${counterGcash
-                ? `<input data-ref class="${input}" inputmode="numeric" placeholder="GCash reference"><button type="button" data-confirm="gcash" class="${btn} bg-tinta text-gata hover:bg-banga">Confirm paid</button>`
-                : `<input data-cash class="${input}" type="number" min="${o.total}" inputmode="numeric" placeholder="Cash received (₱)"><button type="button" data-confirm="cash" class="${btn} bg-tinta text-gata hover:bg-banga">Mark paid</button>`}
+                ? `<input data-ref class="${input}" inputmode="numeric" aria-label="GCash reference number for ${orderLabel(o.order_no)}" placeholder="GCash reference"><button type="button" data-confirm="gcash" class="${btn} bg-tinta text-gata hover:bg-banga">Confirm paid</button>`
+                : `<input data-cash class="${input}" aria-label="Cash received for ${orderLabel(o.order_no)}" type="number" min="${o.total}" inputmode="numeric" placeholder="Cash received (₱)"><button type="button" data-confirm="cash" class="${btn} bg-tinta text-gata hover:bg-banga">Mark paid</button>`}
             </div>
           </li>`;
         }

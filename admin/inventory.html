@@ -164,8 +164,8 @@
       const uses = recipes.filter(r => r.ingredient_id === cur.id);
       $('#rec-list').innerHTML = uses.map(r => `<li class="flex items-center gap-3 rounded-xl border-2 border-tinta bg-papel px-3 py-2">
           <span class="flex-1">${esc(pname(r.product_id))}</span><b>${qty(r.qty, cur.unit)}</b>
-          <button type="button" data-unuse="${esc(r.product_id)}" class="text-tinta/60 hover:text-sili" aria-label="Stop using in ${esc(pname(r.product_id))}">✕</button></li>`).join('')
-        || '<li class="text-tinta/60">Not linked to any menu item, so sales won\'t take it out of stock.</li>';
+          <button type="button" data-unuse="${esc(r.product_id)}" class="text-tinta/70 hover:text-sili" aria-label="Stop using in ${esc(pname(r.product_id))}">✕</button></li>`).join('')
+        || '<li class="text-tinta/70">Not linked to any menu item, so sales won\'t take it out of stock.</li>';
       $('#rec-add').elements.product.innerHTML = products.filter(p => !uses.some(r => r.product_id === p.id))
         .map(p => `<option value="${esc(p.id)}">${esc(p.name)}</option>`).join('');
     }

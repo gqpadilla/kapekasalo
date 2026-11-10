@@ -102,7 +102,7 @@
       return `<div><h3 class="text-xs font-bold mb-2">${title}</h3>${rows.map(([k, v]) => `
         <div class="flex items-center gap-3 text-sm mb-1.5"><span class="w-20">${esc(names[k] || k)}</span>
           <span class="flex-1 h-3 rounded-full border-2 border-tinta overflow-hidden bg-gata"><span class="block h-full bg-banga" style="width:${v / total * 100}%"></span></span>
-          <span class="w-24 text-right">${peso(v)} · ${pct(v, total)}</span></div>`).join('') || '<p class="text-sm text-tinta/60">No sales.</p>'}</div>`;
+          <span class="w-24 text-right">${peso(v)} · ${pct(v, total)}</span></div>`).join('') || '<p class="text-sm text-tinta/70">No sales.</p>'}</div>`;
     }
 
     async function load() {
@@ -125,7 +125,7 @@
       $('#by-hour').innerHTML = bars(hours, h => (h % 12 || 12) + (h < 12 ? 'a' : 'p'));
 
       $('#best').innerHTML = r.best_sellers.map(b => `<tr class="border-t border-tinta/15"><td class="py-2">${esc(b.name)}</td><td class="text-right">${b.qty}</td><td class="text-right">${peso(b.sales)}</td></tr>`).join('')
-        || '<tr><td colspan="3" class="py-3 text-tinta/60">No sales in this period.</td></tr>';
+        || '<tr><td colspan="3" class="py-3 text-tinta/70">No sales in this period.</td></tr>';
       $('#mix').innerHTML = split('Category', r.by_category, CAT) + split('Payment', r.by_method, METHOD) + split('Channel', r.by_channel, CHANNEL)
         + `<p class="text-xs text-tinta/70">Discounts given: ${peso(r.bundle_discounts)} Kasalo Bundle · ${peso(r.senior_pwd_discounts)} Senior/PWD</p>`;
     }

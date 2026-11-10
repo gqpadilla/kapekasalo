@@ -88,7 +88,7 @@
             <details class="mt-2 text-sm">
               <summary class="cursor-pointer text-tinta/70 hover:text-banga">Void or refund</summary>
               <div class="mt-2 flex gap-2">
-                <input data-reason class="flex-1 min-w-0 px-3 py-2 rounded-xl border-2 border-tinta" placeholder="Reason, e.g. customer changed order">
+                <input data-reason aria-label="Reason for voiding" class="flex-1 min-w-0 px-3 py-2 rounded-xl border-2 border-tinta" placeholder="Reason, e.g. customer changed order">
                 <button type="button" data-void class="font-label uppercase tracking-wider text-xs px-3 rounded-xl border-2 border-sili hover:bg-sili-soft">Void</button>
               </div>
               <p class="mt-1 text-xs text-tinta/70">Refund GCash payments yourself in the GCash app. Ingredients go back into stock.</p>
@@ -101,7 +101,7 @@
       for (const st of ['paid', 'preparing', 'ready', 'completed']) {
         const list = orders.filter(o => o.status === st && show(o));
         document.querySelector(`[data-col="${st}"]`).innerHTML = list.map(card).join('')
-          || `<li class="text-sm text-tinta/60 px-1">${st === 'paid' ? 'No new orders.' : 'Nothing here.'}</li>`;
+          || `<li class="text-sm text-tinta/70 px-1">${st === 'paid' ? 'No new orders.' : 'Nothing here.'}</li>`;
         document.querySelector(`[data-count="${st}"]`).textContent = list.length;
       }
       const up = unpaid.filter(show);
