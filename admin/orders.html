@@ -34,8 +34,8 @@
 
       <section id="unpaid-wrap" hidden class="mt-6 rounded-3xl border-2 border-dashed border-tinta bg-papel p-5" aria-labelledby="unpaid-title">
         <div class="flex flex-wrap items-center justify-between gap-2">
-          <h2 id="unpaid-title" class="font-label uppercase tracking-wider text-sm">Pay at pickup, not paid yet</h2>
-          <a href="index.html#pay-title" class="text-sm underline underline-offset-4 hover:text-banga">Mark paid on the dashboard</a>
+          <h2 id="unpaid-title" class="font-label uppercase tracking-wider text-sm">Waiting on payment</h2>
+          <a href="index.html#pay-title" class="text-sm underline underline-offset-4 hover:text-banga">Take cash on the dashboard</a>
         </div>
         <ul id="unpaid" class="mt-3 flex gap-3 overflow-x-auto no-scrollbar"></ul>
       </section>
@@ -64,6 +64,7 @@
     const $ = s => document.querySelector(s);
     const NEXT = { paid: ['preparing', 'Start making'], preparing: ['ready', 'Mark ready'], ready: ['completed', 'Picked up'] };
     let orders = [], unpaid = [], channel = 'all';
+    const sent = o => o.payments?.find(p => p.status === 'pending');   // a GCash reference the customer sent
 
     const who = o => esc(o.profiles?.full_name || o.guest_name || (o.channel === 'pos' ? 'Counter' : 'Online'));
     const items = o => o.order_items.map(i => `<li><b>${i.qty}×</b> ${esc(i.name)}${i.variant ? `<span class="block text-xs text-tinta/70 pl-5">${esc(i.variant)}</span>` : ''}</li>`).join('');
@@ -106,12 +107,26 @@
       }
       const up = unpaid.filter(show);
       $('#unpaid-wrap').hidden = !up.length;
-      $('#unpaid').innerHTML = up.map(o => `
-        <li class="shrink-0 w-60 rounded-2xl border-2 border-tinta bg-kalamansi-soft p-3 text-sm">
+      $('#unpaid').innerHTML = up.map(o => {
+        const ref = sent(o)?.reference;
+        return `
+        <li class="shrink-0 w-72 rounded-2xl border-2 border-tinta bg-kalamansi-soft p-3 text-sm" data-order="${o.id}">
           <p class="font-bold">${orderLabel(o.order_no)} · ${peso(o.total)} <span class="font-normal">· ${minutesAgo(o.created_at)} min</span></p>
-          <p class="text-xs">${who(o)}</p>
+          <p class="text-xs">${who(o)} · ${ref ? 'GCash' : 'Pay at pickup'}</p>
           <ul class="mt-2 space-y-0.5">${o.order_items.map(i => `<li>${i.qty}× ${esc(i.name)}</li>`).join('')}</ul>
-        </li>`).join('');
+          ${ref ? `
+            <p class="mt-2">Reference <b class="tracking-wider">${esc(ref)}</b></p>
+            <p class="text-xs text-tinta/70">Match it in your GCash app first.</p>
+            <button type="button" data-confirm class="mt-2 w-full font-label uppercase tracking-wider text-xs py-2.5 rounded-xl border-2 border-tinta bg-tinta text-gata hover:bg-banga transition">Confirm paid</button>
+            <details class="mt-2">
+              <summary class="cursor-pointer text-tinta/70 hover:text-banga">Reject</summary>
+              <div class="mt-2 flex gap-2">
+                <input data-reject-reason aria-label="Reason for rejecting ${orderLabel(o.order_no)}" class="flex-1 min-w-0 px-3 py-2 rounded-xl border-2 border-tinta bg-papel" placeholder="Reason for the customer">
+                <button type="button" data-reject class="font-label uppercase tracking-wider text-xs px-3 rounded-xl border-2 border-sili hover:bg-sili-soft">Send</button>
+              </div>
+            </details>` : ''}
+        </li>`;
+      }).join('');
       document.querySelectorAll('.chan').forEach(b => b.setAttribute('aria-checked', b.dataset.channel === channel));
     }
 
@@ -121,18 +136,31 @@
       const [active, done, waiting] = await Promise.all([
         sb.from('orders').select(cols).in('status', ['paid', 'preparing', 'ready']).order('paid_at').limit(60),
         sb.from('orders').select(cols).eq('status', 'completed').gte('created_at', startOfDay).order('created_at', { ascending: false }).limit(20),
-        sb.from('orders').select(cols).eq('status', 'pending_payment').eq('pay_option', 'pickup').order('created_at').limit(20),
+        sb.from('orders').select(cols + ', payments(status, reference)').eq('status', 'pending_payment').order('created_at').limit(40),
       ]);
       const err = [active, done, waiting].find(r => r.error)?.error;
       if (err) { $('#msg').hidden = false; $('#msg').textContent = KK.message(err); return; }
       orders = [...active.data, ...done.data];
-      unpaid = waiting.data;
+      unpaid = waiting.data.filter(o => o.pay_option === 'pickup' || sent(o));   // GCash orders with no reference yet aren't actionable
       if (!document.querySelector('#main input:focus, #main details[open]')) render();   // don't redraw under someone typing a reason
     }
 
     document.addEventListener('click', async e => {
       const ch = e.target.closest('[data-channel]');
       if (ch) { channel = ch.dataset.channel; return render(); }
+      const pay = e.target.closest('[data-order]'), ok = e.target.closest('[data-confirm]'), no = e.target.closest('[data-reject]');
+      if (pay && (ok || no)) {
+        $('#msg').hidden = true;
+        const reason = pay.querySelector('[data-reject-reason]')?.value.trim();
+        if (no && !reason) { $('#msg').hidden = false; $('#msg').textContent = 'Type a reason for the customer first, e.g. "No GCash payment with that reference".'; return; }
+        (ok || no).disabled = true;
+        const res = ok
+          ? await sb.rpc('confirm_payment', { p_order: pay.dataset.order, p_method: 'gcash', p_cash_tendered: null, p_reference: null })
+          : await sb.rpc('reject_payment', { p_order: pay.dataset.order, p_reason: reason });
+        if (res.error) { $('#msg').hidden = false; $('#msg').textContent = KK.message(res.error); }
+        document.activeElement?.blur();
+        return load();
+      }
       const row = e.target.closest('[data-id]');
       if (!row) return;
       const nextBtn = e.target.closest('[data-next]'), voidBtn = e.target.closest('[data-void]');

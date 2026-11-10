@@ -73,6 +73,7 @@
               <span id="ed-upload-label">Upload photo</span>
               <input id="ed-file" type="file" accept="image/jpeg,image/png,image/webp" class="sr-only">
             </label>
+            <p class="mt-1 text-center text-[11px] leading-tight text-tinta/70">Square photo (1:1), ideally 1080 × 1080</p>
             <button type="button" id="ed-remove-photo" class="mt-1 block w-full text-center text-xs text-tinta/70 hover:text-sili">Remove photo</button>
           </div>
           <div class="grid gap-4">
@@ -264,14 +265,23 @@
     $('#ed-remove-photo').addEventListener('click', () => setPhoto(null));
 
     // Uploads go to the public "menu" bucket; the row keeps the photo's public URL.
+    // Only square photos; anything over 1080 px is scaled down to 1080 × 1080 and saved as WebP.
     $('#ed-file').addEventListener('change', async e => {
       const file = e.target.files[0]; e.target.value = '';
       if (!file) return;
-      if (file.size > 5 * 1024 * 1024) return ($('#ed-msg').textContent = 'That photo is over 5 MB. Please use a smaller one.');
+      $('#ed-msg').textContent = '';
+      if (file.size > 20 * 1024 * 1024) return ($('#ed-msg').textContent = 'That photo is over 20 MB. Please use a smaller one.');
+      let bmp;
+      try { bmp = await createImageBitmap(file); } catch { return ($('#ed-msg').textContent = "That file couldn't be read as a photo. Use a JPG, PNG or WebP."); }
+      if (Math.abs(bmp.width - bmp.height) > Math.max(bmp.width, bmp.height) * 0.01)   // 1% slack for off-by-a-few-pixels crops
+        return ($('#ed-msg').textContent = `Photos must be square (1:1). This one is ${bmp.width} × ${bmp.height}. Crop it to 1080 × 1080 and try again.`);
       $('#ed-upload-label').textContent = 'Uploading…';
-      const ext = (file.type.split('/')[1] || 'jpg').replace('jpeg', 'jpg');
-      const path = `${slug(f().name.value || 'item')}-${Date.now()}.${ext}`;
-      const { error } = await sb.storage.from('menu').upload(path, file, { contentType: file.type });
+      const side = Math.min(bmp.width, bmp.height, 1080);
+      const canvas = Object.assign(document.createElement('canvas'), { width: side, height: side });
+      canvas.getContext('2d').drawImage(bmp, 0, 0, side, side);
+      const blob = await new Promise(r => canvas.toBlob(r, 'image/webp', 0.85));
+      const path = `${slug(f().name.value || 'item')}-${Date.now()}.${blob.type.split('/')[1]}`;   // Safari can't encode WebP and hands back PNG
+      const { error } = await sb.storage.from('menu').upload(path, blob, { contentType: blob.type });
       $('#ed-upload-label').textContent = 'Upload photo';
       if (error) return ($('#ed-msg').textContent = KK.message(error));
       setPhoto(sb.storage.from('menu').getPublicUrl(path).data.publicUrl);
