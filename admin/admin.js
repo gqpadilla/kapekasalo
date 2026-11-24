@@ -69,5 +69,24 @@ window.KKAdmin = (() => {
     return me;
   }
 
-  return { start, esc, time, dateTime, minutesAgo, STATUS };
+  // Receipts (purchase orders, expenses) live in the private 'receipts' bucket. Each upload gets a new name,
+  // so replacing a receipt keeps the old file on record.
+  const RECEIPT_TYPES = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'application/pdf': 'pdf' };
+  async function uploadReceipt(file, folder) {
+    if (!RECEIPT_TYPES[file.type]) return { error: 'The receipt must be a JPG, PNG, WebP photo or a PDF.' };
+    if (file.size > 5 * 1024 * 1024) return { error: 'The receipt must be 5 MB or smaller.' };
+    const path = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${RECEIPT_TYPES[file.type]}`;
+    const { error } = await KK.sb.storage.from('receipts').upload(path, file, { contentType: file.type });
+    return error ? { error: KK.message(error) } : { path };
+  }
+  // Returns an error message, or null once the receipt is open in a new tab.
+  async function openReceipt(path) {
+    const w = window.open('', '_blank');   // open before the await so popup blockers allow it
+    const { data, error } = await KK.sb.storage.from('receipts').createSignedUrl(path, 300);
+    if (error) { w?.close(); return KK.message(error); }
+    if (w) w.location = data.signedUrl; else location.href = data.signedUrl;
+    return null;
+  }
+
+  return { start, esc, time, dateTime, minutesAgo, STATUS, uploadReceipt, openReceipt };
 })();

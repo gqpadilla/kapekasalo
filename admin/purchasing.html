@@ -153,15 +153,11 @@
         </li>`).join('') || '<li class="text-sm text-tinta/70">No suppliers yet.</li>';
     }
 
-    // ---------- Receipts (private bucket; each upload gets a new name so older receipts stay on file) ----------
-    const RECEIPT_TYPES = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'application/pdf': 'pdf' };
+    // ---------- Receipts ----------
     async function uploadReceipt(poId, file) {
-      if (!RECEIPT_TYPES[file.type]) return 'The receipt must be a JPG, PNG, WebP photo or a PDF.';
-      if (file.size > 5 * 1024 * 1024) return 'The receipt must be 5 MB or smaller.';
-      const path = `po-${poId}/${Date.now()}.${RECEIPT_TYPES[file.type]}`;
-      const up = await sb.storage.from('receipts').upload(path, file, { contentType: file.type });
-      if (up.error) return KK.message(up.error);
-      const { error } = await sb.from('purchase_orders').update({ receipt_path: path }).eq('id', poId);
+      const up = await KKAdmin.uploadReceipt(file, `po-${poId}`);
+      if (up.error) return up.error;
+      const { error } = await sb.from('purchase_orders').update({ receipt_path: up.path }).eq('id', poId);
       return error ? KK.message(error) : null;
     }
     let attachTo = null;
@@ -222,10 +218,8 @@
       const att = e.target.closest('[data-attach]'), view = e.target.closest('[data-view]');
       if (att) { attachTo = Number(att.dataset.attach); $('#receipt-file').click(); }
       if (view) {
-        const w = window.open('', '_blank');   // open before the await so popup blockers allow it
-        const { data, error } = await sb.storage.from('receipts').createSignedUrl(pos.find(p => p.id == view.dataset.view).receipt_path, 300);
-        if (error) { w?.close(); return flash(KK.message(error), false); }
-        if (w) w.location = data.signedUrl; else location.href = data.signedUrl;
+        const err = await KKAdmin.openReceipt(pos.find(p => p.id == view.dataset.view).receipt_path);
+        if (err) flash(err, false);
       }
       if (rec) {
         if (!confirm(`Mark PO #${rec.dataset.receive} as received? This adds the items to stock and records the cost as an expense.`)) return;

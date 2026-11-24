@@ -48,10 +48,12 @@
           <label class="text-sm">Category <select name="category" class="inp"></select></label>
           <label class="text-sm">Amount (₱) <input name="amount" type="number" min="1" step="1" class="inp w-28" required></label>
           <label class="text-sm flex-1 min-w-[12rem]">Note <input name="note" class="inp w-full" placeholder="e.g. Meralco, October"></label>
+          <label class="text-sm">Receipt <input name="receipt" type="file" accept="image/jpeg,image/png,image/webp,application/pdf" class="inp w-56" required></label>
           <button class="bg-tinta text-gata font-label uppercase tracking-wider text-xs px-5 py-3 rounded-full">Add expense</button>
         </form>
-        <div class="tbl-wrap"><table class="tbl"><thead><tr><th>Date</th><th>Category</th><th>Note</th><th class="text-right">Amount</th><th></th></tr></thead>
+        <div class="tbl-wrap"><table class="tbl"><thead><tr><th>Date</th><th>Category</th><th>Note</th><th>Receipt</th><th class="text-right">Amount</th><th></th></tr></thead>
           <tbody id="expenses"></tbody></table></div>
+        <input id="exp-file" type="file" accept="image/jpeg,image/png,image/webp,application/pdf" hidden>
       </section>
 
       <section class="card mt-6">
@@ -121,6 +123,7 @@
     const empty = (n, what) => `<tr><td colspan="${n}" class="text-tinta/70">No ${what} in this period.</td></tr>`;
     const poTotal = po => po.purchase_order_items.reduce((a, i) => a + i.qty * i.unit_cost, 0);
     const buyer = o => o.customer?.full_name || o.customer?.email || o.guest_name || (o.channel === 'pos' ? 'Walk-in' : '');
+    const receiptOf = x => x.receipt_path || x.purchase_orders?.receipt_path;   // PO expenses use the PO's receipt
     const paidRef = o => (o.payments.find(p => p.status !== 'failed' && p.reference) || {}).reference || '';
 
     // The API returns at most 1000 rows per request, so a busy month is fetched 1000 at a time.
@@ -140,7 +143,7 @@
       const [o, x, p, s] = await Promise.all([
         all(() => sb.from('orders').select('order_no, receipt_no, channel, status, payment_method, total, paid_at, guest_name, customer:profiles!orders_customer_id_fkey(full_name, email), payments(reference, status)')
           .gte('paid_at', start).lt('paid_at', end).order('paid_at').order('order_no')),
-        sb.from('expenses').select('*').gte('spent_on', f.from.value).lte('spent_on', f.to.value).order('spent_on').order('id'),
+        sb.from('expenses').select('*, purchase_orders(receipt_path)').gte('spent_on', f.from.value).lte('spent_on', f.to.value).order('spent_on').order('id'),
         sb.from('purchase_orders').select('id, received_at, receipt_path, suppliers(name), purchase_order_items(qty, unit_cost)')
           .eq('status', 'received').gte('received_at', start).lt('received_at', end).order('received_at'),
         sb.from('shifts').select('*').not('closed_at', 'is', null).gte('closed_at', start).lt('closed_at', end).order('opened_at'),
@@ -157,7 +160,8 @@
       const spent = sum(data.expenses, r => r.amount), purchases = sum(data.expenses.filter(r => r.category === 'ingredients'), r => r.amount);
       const overShort = sum(data.shifts, r => r.z_report?.over_short ?? 0);
       $('#kpis').innerHTML = kpi('Collected', peso(collected), `${peso(byMethod('cash'))} cash · ${peso(byMethod('gcash'))} GCash · ${peso(refunded)} refunded`)
-        + kpi('Expenses', peso(spent), `${peso(purchases)} of it ingredients`)
+        + kpi('Expenses', peso(spent), `${peso(purchases)} of it ingredients`
+          + ((n => n ? ` · <span class="text-sili font-bold">${n} missing receipt${n === 1 ? '' : 's'}</span>` : '')(data.expenses.filter(r => !receiptOf(r)).length)))
         + kpi('Net', peso(collected - spent), 'Collected minus expenses')
         + kpi('Cash over / short', signed(overShort), `${data.shifts.length} closed shift${data.shifts.length === 1 ? '' : 's'}`);
 
@@ -167,8 +171,11 @@
         <td class="${r.status === 'refunded' ? 'text-sili font-bold' : ''}">${STATUS[r.status]}</td><td class="text-right">${peso(r.total)}</td></tr>`).join('') || empty(9, 'paid orders');
 
       $('#expenses').innerHTML = data.expenses.map(r => `<tr>
-        <td>${r.spent_on}</td><td>${cap(r.category)}</td><td class="whitespace-normal">${esc(r.note)}</td><td class="text-right">${peso(r.amount)}</td>
-        <td class="text-right">${/^Purchase order #/.test(r.note || '') ? '' : `<button type="button" data-del="${r.id}" class="text-xs underline underline-offset-4 hover:text-sili">Delete</button>`}</td></tr>`).join('') || empty(5, 'expenses');
+        <td>${r.spent_on}</td><td>${cap(r.category)}</td><td class="whitespace-normal">${esc(r.note)}</td>
+        <td>${receiptOf(r) ? `<button type="button" data-view="${esc(receiptOf(r))}" class="underline underline-offset-4 hover:text-banga">View</button>${r.po_id ? ' <span class="text-xs text-tinta/70">(PO)</span>' : ` · <button type="button" data-attach="${r.id}" class="underline underline-offset-4 hover:text-banga">Replace</button>`}`
+          : `<span class="text-sili font-bold">Missing</span> · <button type="button" data-attach="${r.id}" class="underline underline-offset-4 hover:text-banga">Attach</button>`}</td>
+        <td class="text-right">${peso(r.amount)}</td>
+        <td class="text-right">${r.po_id || /^Purchase order #/.test(r.note || '') ? '' : `<button type="button" data-del="${r.id}" class="text-xs underline underline-offset-4 hover:text-sili">Delete</button>`}</td></tr>`).join('') || empty(6, 'expenses');
 
       $('#pos').innerHTML = data.pos.map(r => `<tr>
         <td>${dateTime(r.received_at)}</td><td>PO #${r.id}</td><td>${esc(r.suppliers?.name)}</td>
@@ -190,9 +197,12 @@
       const amount = Number(ef.amount.value);
       if (!ef.spent_on.value) return flash('Pick the date the money was spent.', false);
       if (!Number.isInteger(amount) || amount < 1) return flash('Enter the amount in whole pesos.', false);
-      const { error } = await sb.from('expenses').insert({ spent_on: ef.spent_on.value, category: ef.category.value, amount, note: ef.note.value.trim() || null });
+      if (!ef.receipt.files[0]) return flash('Attach the receipt (photo or PDF).', false);
+      const up = await KKAdmin.uploadReceipt(ef.receipt.files[0], 'expenses');
+      if (up.error) return flash(up.error, false);
+      const { error } = await sb.from('expenses').insert({ spent_on: ef.spent_on.value, category: ef.category.value, amount, note: ef.note.value.trim() || null, receipt_path: up.path });
       if (error) return flash(KK.message(error), false);
-      ef.amount.value = ''; ef.note.value = '';
+      ef.amount.value = ''; ef.note.value = ''; ef.receipt.value = '';
       flash('Expense added.'); load();
     });
 
@@ -204,20 +214,28 @@
         if (error) return flash(KK.message(error), false);
         load();
       }
-      if (view) {
-        const w = window.open('', '_blank');   // open before the await so popup blockers allow it
-        const { data: u, error } = await sb.storage.from('receipts').createSignedUrl(view.dataset.view, 300);
-        if (error) { w?.close(); return flash(KK.message(error), false); }
-        if (w) w.location = u.signedUrl; else location.href = u.signedUrl;
-      }
+      if (view) { const err = await KKAdmin.openReceipt(view.dataset.view); if (err) flash(err, false); }
+      const att = e.target.closest('[data-attach]');
+      if (att) { attachTo = Number(att.dataset.attach); $('#exp-file').click(); }
       if (csv && data) download(csv.dataset.csv);
+    });
+
+    let attachTo = null;
+    $('#exp-file').addEventListener('change', async e => {
+      const file = e.target.files[0]; e.target.value = '';
+      if (!file || !attachTo) return;
+      const up = await KKAdmin.uploadReceipt(file, 'expenses');
+      if (up.error) return flash(up.error, false);
+      const { error } = await sb.from('expenses').update({ receipt_path: up.path }).eq('id', attachTo);
+      if (error) return flash(KK.message(error), false);
+      flash('Receipt attached.'); load();
     });
 
     // ---------- CSV ----------
     const SHEETS = {
       sales: [['Paid at', 'Order', 'Receipt no.', 'Customer', 'Channel', 'Method', 'GCash reference', 'Status', 'Amount'],
         r => [dateTime(r.paid_at), 'KK-' + String(r.order_no).padStart(4, '0'), r.receipt_no ?? '', buyer(r), CHANNEL[r.channel], METHOD[r.payment_method] || r.payment_method, paidRef(r), STATUS[r.status], r.total]],
-      expenses: [['Date', 'Category', 'Note', 'Amount'], r => [r.spent_on, cap(r.category), r.note || '', r.amount]],
+      expenses: [['Date', 'Category', 'Note', 'Receipt attached', 'Amount'], r => [r.spent_on, cap(r.category), r.note || '', receiptOf(r) ? 'Yes' : 'No', r.amount]],
       pos: [['Received at', 'PO', 'Supplier', 'Receipt attached', 'Total'], r => [dateTime(r.received_at), r.id, r.suppliers?.name || '', r.receipt_path ? 'Yes' : 'No', poTotal(r).toFixed(2)]],
       shifts: [['Opened', 'Closed', 'Opening cash', 'Expected cash', 'Counted cash', 'Over/short', 'Notes'],
         r => [dateTime(r.opened_at), dateTime(r.closed_at), r.opening_cash, r.expected_cash ?? '', r.counted_cash ?? '', r.z_report?.over_short ?? '', r.notes || '']],

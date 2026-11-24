@@ -159,6 +159,9 @@ await as('authenticated', ADMIN, `update public.purchase_orders set receipt_path
 await as('authenticated', ADMIN, 'select public.receive_purchase_order($1)', [po]);
 ok(await stock('Fresh milk') === 20000, 'receiving a purchase order adds stock');
 ok((await db.query(`select amount from public.expenses where note = $1`, [`Purchase order #${po}`])).rows[0]?.amount === 500, 'receiving records a ₱500 ingredients expense');
+ok(Number((await db.query(`select po_id from public.expenses where note = $1`, [`Purchase order #${po}`])).rows[0]?.po_id) === po, 'the PO expense links back to its purchase order');
+ok(await fails('authenticated', ADMIN, `insert into public.expenses (category, amount) values ('rent', 25000)`, [], 'expenses_need_receipt'), 'an expense needs a receipt');
+await as('authenticated', ADMIN, `insert into public.expenses (category, amount, receipt_path) values ('rent', 25000, 'expenses/rent.pdf')`);
 
 // ---- reports, roles, audit, newsletter ----
 const today = new Date(Date.now() + 8 * 3600e3).toISOString().slice(0, 10);
