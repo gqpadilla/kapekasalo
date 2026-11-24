@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Finance · Kasalo Kape Admin</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="../img/logo/cup-logo.png">
+  <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+  <script src="../js/tailwind.config.js"></script>
+  <link rel="stylesheet" href="../css/brand.css">
+</head>
+
+<body class="bg-gata-light text-tinta font-sans antialiased">
+  <div id="gate" class="min-h-screen grid place-items-center font-label uppercase tracking-wider text-sm">Checking access…</div>
+
+  <div id="app" hidden class="min-h-screen lg:grid lg:grid-cols-[16rem_1fr]">
+    <aside id="sidebar"></aside>
+
+    <main class="px-4 sm:px-8 lg:px-10 py-8 min-w-0">
+      <p class="font-label uppercase tracking-[0.25em] text-xs">Finance</p>
+      <h1 class="font-serif text-4xl sm:text-5xl leading-tight mt-1">Money in, money out</h1>
+
+      <form id="range" class="mt-6 flex flex-wrap gap-3 items-end">
+        <div role="radiogroup" aria-label="Period" class="inline-flex flex-wrap p-1 rounded-full border-2 border-tinta bg-papel">
+          <button type="button" data-days="1" class="per px-4 py-1.5 rounded-full font-label uppercase tracking-wider text-xs">Today</button>
+          <button type="button" data-days="7" class="per px-4 py-1.5 rounded-full font-label uppercase tracking-wider text-xs">7 days</button>
+          <button type="button" data-days="30" class="per px-4 py-1.5 rounded-full font-label uppercase tracking-wider text-xs">30 days</button>
+          <button type="button" data-days="month" class="per px-4 py-1.5 rounded-full font-label uppercase tracking-wider text-xs">This month</button>
+        </div>
+        <label class="text-sm">From <input name="from" type="date" class="inp"></label>
+        <label class="text-sm">To <input name="to" type="date" class="inp"></label>
+      </form>
+      <p id="msg" role="status" hidden class="mt-4 rounded-2xl border-2 px-4 py-3 text-sm"></p>
+
+      <dl id="kpis" class="mt-6 grid grid-cols-2 md:grid-cols-4 gap-3"></dl>
+
+      <section class="card mt-6">
+        <div class="sec-h"><h2 class="card-h">Sales &amp; payments</h2><button type="button" data-csv="sales" class="csv">CSV</button></div>
+        <div class="overflow-x-auto"><table class="tbl"><thead><tr><th>Paid</th><th>Order</th><th>Receipt</th><th>Customer</th><th>Channel</th><th>Method</th><th>GCash ref.</th><th>Status</th><th class="text-right">Amount</th></tr></thead>
+          <tbody id="sales"></tbody></table></div>
+      </section>
+
+      <section class="card mt-6">
+        <div class="sec-h"><h2 class="card-h">Expenses</h2><button type="button" data-csv="expenses" class="csv">CSV</button></div>
+        <form id="exp-form" class="flex flex-wrap gap-3 items-end mb-4" novalidate>
+          <label class="text-sm">Date <input name="spent_on" type="date" class="inp" required></label>
+          <label class="text-sm">Category <select name="category" class="inp"></select></label>
+          <label class="text-sm">Amount (₱) <input name="amount" type="number" min="1" step="1" class="inp w-28" required></label>
+          <label class="text-sm flex-1 min-w-[12rem]">Note <input name="note" class="inp w-full" placeholder="e.g. Meralco, October"></label>
+          <button class="bg-tinta text-gata font-label uppercase tracking-wider text-xs px-5 py-3 rounded-full">Add expense</button>
+        </form>
+        <div class="overflow-x-auto"><table class="tbl"><thead><tr><th>Date</th><th>Category</th><th>Note</th><th class="text-right">Amount</th><th></th></tr></thead>
+          <tbody id="expenses"></tbody></table></div>
+      </section>
+
+      <section class="card mt-6">
+        <div class="sec-h"><h2 class="card-h">Purchase orders received</h2><button type="button" data-csv="pos" class="csv">CSV</button></div>
+        <div class="overflow-x-auto"><table class="tbl"><thead><tr><th>Received</th><th>PO</th><th>Supplier</th><th>Receipt</th><th class="text-right">Total</th></tr></thead>
+          <tbody id="pos"></tbody></table></div>
+      </section>
+
+      <section class="card mt-6">
+        <div class="sec-h"><h2 class="card-h">Cash drawer shifts</h2><button type="button" data-csv="shifts" class="csv">CSV</button></div>
+        <div class="overflow-x-auto"><table class="tbl"><thead><tr><th>Opened</th><th>Closed</th><th class="text-right">Opening</th><th class="text-right">Expected</th><th class="text-right">Counted</th><th class="text-right">Over / short</th><th>Notes</th></tr></thead>
+          <tbody id="shifts"></tbody></table></div>
+      </section>
+    </main>
+  </div>
+
+  <style>
+    .inp { display: block; margin-top: .2rem; padding: .45rem .7rem; background: #FFFFFF; border: 2px solid #141414; border-radius: .75rem; }
+    .per[aria-checked="true"] { background: #141414; color: #F4EBDD; }
+    .card { background: #FFFFFF; border: 2px solid #141414; border-radius: 1.5rem; padding: 1.25rem; box-shadow: 4px 4px 0 #5B3A8C; min-width: 0; }
+    .card-h { font-family: 'MADE Sunflower', sans-serif; text-transform: uppercase; letter-spacing: .05em; font-size: .85rem; }
+    .sec-h { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
+    .csv { font-family: 'MADE Sunflower', sans-serif; text-transform: uppercase; letter-spacing: .05em; font-size: .75rem; padding: .4rem 1rem; border: 2px solid #141414; border-radius: 999px; }
+    .csv:hover { background: #F2B732; }
+    .tbl { width: 100%; font-size: .875rem; white-space: nowrap; }
+    .tbl th { text-align: left; font-family: 'MADE Sunflower', sans-serif; text-transform: uppercase; letter-spacing: .05em; font-size: .7rem; padding: 0 .75rem .5rem 0; }
+    .tbl td { border-top: 1px solid rgba(20, 20, 20, .15); padding: .5rem .75rem .5rem 0; }
+    .tbl th.text-right, .tbl td.text-right { text-align: right; }
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/dist/umd/supabase.js"></script>
+  <script src="../js/supabase.js"></script>
+  <script src="admin.js"></script>
+  <script>
+    const { sb, peso } = KK;
+    const { esc, dateTime, STATUS } = KKAdmin;
+    const $ = s => document.querySelector(s);
+    const f = $('#range').elements;
+    const METHOD = { cash: 'Cash', gcash: 'GCash' }, CHANNEL = { online: 'Online', pos: 'Counter' };
+    const CATS = ['ingredients', 'rent', 'utilities', 'salaries', 'supplies', 'marketing', 'other'];   // expenses.category check
+    const cap = s => s[0].toUpperCase() + s.slice(1);
+    const money = n => '₱' + Number(n).toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const signed = n => (n > 0 ? '+' : '') + peso(n);
+    let data = null;
+
+    const manilaDay = (d = new Date()) => new Date(d.getTime() + 8 * 3600e3).toISOString().slice(0, 10);
+    const addDays = (day, n) => manilaDay(new Date(new Date(day + 'T12:00:00+08:00').getTime() + n * 864e5));
+    const flash = (text, ok = true) => {
+      const m = $('#msg'); m.hidden = false; m.textContent = text;
+      m.className = `mt-4 rounded-2xl border-2 px-4 py-3 text-sm ${ok ? 'border-jeepney bg-jeepney-soft' : 'border-sili bg-sili-soft'}`;
+    };
+
+    function setPeriod(p) {
+      const today = manilaDay();
+      f.to.value = today;
+      f.from.value = p === 'month' ? today.slice(0, 8) + '01' : addDays(today, 1 - Number(p));
+      document.querySelectorAll('.per').forEach(b => b.setAttribute('aria-checked', b.dataset.days === String(p)));
+      load();
+    }
+    document.querySelectorAll('.per').forEach(b => b.addEventListener('click', () => setPeriod(b.dataset.days)));
+    $('#range').addEventListener('change', () => { document.querySelectorAll('.per').forEach(b => b.setAttribute('aria-checked', false)); load(); });
+
+    const kpi = (k, v, note = '') => `<div class="rounded-2xl border-2 border-tinta bg-papel p-4"><dt class="text-xs">${k}</dt>
+      <dd class="font-display text-3xl mt-1">${v}</dd>${note ? `<p class="text-xs text-tinta/70 mt-1">${note}</p>` : ''}</div>`;
+    const empty = (n, what) => `<tr><td colspan="${n}" class="text-tinta/70">No ${what} in this period.</td></tr>`;
+    const poTotal = po => po.purchase_order_items.reduce((a, i) => a + i.qty * i.unit_cost, 0);
+    const buyer = o => o.customer?.full_name || o.customer?.email || o.guest_name || (o.channel === 'pos' ? 'Walk-in' : '');
+    const paidRef = o => (o.payments.find(p => p.status !== 'failed' && p.reference) || {}).reference || '';
+
+    async function load() {
+      if (!f.from.value || !f.to.value || f.from.value > f.to.value) return;
+      const start = f.from.value + 'T00:00:00+08:00', end = addDays(f.to.value, 1) + 'T00:00:00+08:00';
+      // shortcut: PostgREST caps each query at 1000 rows; page through with .range() if a period ever has more.
+      const [o, x, p, s] = await Promise.all([
+        sb.from('orders').select('order_no, receipt_no, channel, status, payment_method, total, paid_at, guest_name, customer:profiles!orders_customer_id_fkey(full_name, email), payments(reference, status)')
+          .gte('paid_at', start).lt('paid_at', end).order('paid_at'),
+        sb.from('expenses').select('*').gte('spent_on', f.from.value).lte('spent_on', f.to.value).order('spent_on').order('id'),
+        sb.from('purchase_orders').select('id, received_at, receipt_path, suppliers(name), purchase_order_items(qty, unit_cost)')
+          .eq('status', 'received').gte('received_at', start).lt('received_at', end).order('received_at'),
+        sb.from('shifts').select('*').not('closed_at', 'is', null).gte('closed_at', start).lt('closed_at', end).order('opened_at'),
+      ]);
+      const err = [o, x, p, s].find(r => r.error)?.error;
+      if (err) return flash(KK.message(err), false);
+      $('#msg').hidden = true;
+      data = { sales: o.data, expenses: x.data, pos: p.data, shifts: s.data };
+
+      const kept = data.sales.filter(r => r.status !== 'refunded');
+      const sum = (rows, fn) => rows.reduce((a, r) => a + fn(r), 0);
+      const collected = sum(kept, r => r.total), refunded = sum(data.sales.filter(r => r.status === 'refunded'), r => r.total);
+      const byMethod = m => sum(kept.filter(r => r.payment_method === m), r => r.total);
+      const spent = sum(data.expenses, r => r.amount), purchases = sum(data.expenses.filter(r => r.category === 'ingredients'), r => r.amount);
+      const overShort = sum(data.shifts, r => r.z_report?.over_short ?? 0);
+      $('#kpis').innerHTML = kpi('Collected', peso(collected), `${peso(byMethod('cash'))} cash · ${peso(byMethod('gcash'))} GCash · ${peso(refunded)} refunded`)
+        + kpi('Expenses', peso(spent), `${peso(purchases)} of it ingredients`)
+        + kpi('Net', peso(collected - spent), 'Collected minus expenses')
+        + kpi('Cash over / short', signed(overShort), `${data.shifts.length} closed shift${data.shifts.length === 1 ? '' : 's'}`);
+
+      $('#sales').innerHTML = data.sales.map(r => `<tr>
+        <td>${dateTime(r.paid_at)}</td><td>KK-${String(r.order_no).padStart(4, '0')}</td><td>${r.receipt_no ?? ''}</td><td>${esc(buyer(r))}</td>
+        <td>${CHANNEL[r.channel]}</td><td>${METHOD[r.payment_method] || esc(r.payment_method)}</td><td>${esc(paidRef(r))}</td>
+        <td class="${r.status === 'refunded' ? 'text-sili font-bold' : ''}">${STATUS[r.status]}</td><td class="text-right">${peso(r.total)}</td></tr>`).join('') || empty(9, 'paid orders');
+
+      $('#expenses').innerHTML = data.expenses.map(r => `<tr>
+        <td>${r.spent_on}</td><td>${cap(r.category)}</td><td class="whitespace-normal">${esc(r.note)}</td><td class="text-right">${peso(r.amount)}</td>
+        <td class="text-right">${/^Purchase order #/.test(r.note || '') ? '' : `<button type="button" data-del="${r.id}" class="text-xs underline underline-offset-4 hover:text-sili">Delete</button>`}</td></tr>`).join('') || empty(5, 'expenses');
+
+      $('#pos').innerHTML = data.pos.map(r => `<tr>
+        <td>${dateTime(r.received_at)}</td><td>PO #${r.id}</td><td>${esc(r.suppliers?.name)}</td>
+        <td>${r.receipt_path ? `<button type="button" data-view="${esc(r.receipt_path)}" class="underline underline-offset-4 hover:text-banga">View receipt</button>` : '<span class="text-sili font-bold">Missing</span>'}</td>
+        <td class="text-right">${money(poTotal(r))}</td></tr>`).join('') || empty(5, 'received purchase orders');
+
+      $('#shifts').innerHTML = data.shifts.map(r => `<tr>
+        <td>${dateTime(r.opened_at)}</td><td>${dateTime(r.closed_at)}</td><td class="text-right">${peso(r.opening_cash)}</td>
+        <td class="text-right">${peso(r.expected_cash ?? 0)}</td><td class="text-right">${peso(r.counted_cash ?? 0)}</td>
+        <td class="text-right ${(r.z_report?.over_short ?? 0) < 0 ? 'text-sili font-bold' : ''}">${signed(r.z_report?.over_short ?? 0)}</td>
+        <td class="whitespace-normal">${esc(r.notes)}</td></tr>`).join('') || empty(7, 'closed shifts');
+    }
+
+    // ---------- Expenses ----------
+    const ef = $('#exp-form').elements;
+    ef.category.innerHTML = CATS.map(c => `<option value="${c}">${cap(c)}</option>`).join('');
+    $('#exp-form').addEventListener('submit', async e => {
+      e.preventDefault();
+      const amount = Number(ef.amount.value);
+      if (!ef.spent_on.value) return flash('Pick the date the money was spent.', false);
+      if (!Number.isInteger(amount) || amount < 1) return flash('Enter the amount in whole pesos.', false);
+      const { error } = await sb.from('expenses').insert({ spent_on: ef.spent_on.value, category: ef.category.value, amount, note: ef.note.value.trim() || null });
+      if (error) return flash(KK.message(error), false);
+      ef.amount.value = ''; ef.note.value = '';
+      flash('Expense added.'); load();
+    });
+
+    document.addEventListener('click', async e => {
+      const del = e.target.closest('[data-del]'), view = e.target.closest('[data-view]'), csv = e.target.closest('[data-csv]');
+      if (del) {
+        if (!confirm('Delete this expense? The deletion is kept in the audit log.')) return;
+        const { error } = await sb.from('expenses').delete().eq('id', del.dataset.del);
+        if (error) return flash(KK.message(error), false);
+        load();
+      }
+      if (view) {
+        const w = window.open('', '_blank');   // open before the await so popup blockers allow it
+        const { data: u, error } = await sb.storage.from('receipts').createSignedUrl(view.dataset.view, 300);
+        if (error) { w?.close(); return flash(KK.message(error), false); }
+        if (w) w.location = u.signedUrl; else location.href = u.signedUrl;
+      }
+      if (csv && data) download(csv.dataset.csv);
+    });
+
+    // ---------- CSV ----------
+    const SHEETS = {
+      sales: [['Paid at', 'Order', 'Receipt no.', 'Customer', 'Channel', 'Method', 'GCash reference', 'Status', 'Amount'],
+        r => [dateTime(r.paid_at), 'KK-' + String(r.order_no).padStart(4, '0'), r.receipt_no ?? '', buyer(r), CHANNEL[r.channel], METHOD[r.payment_method] || r.payment_method, paidRef(r), STATUS[r.status], r.total]],
+      expenses: [['Date', 'Category', 'Note', 'Amount'], r => [r.spent_on, cap(r.category), r.note || '', r.amount]],
+      pos: [['Received at', 'PO', 'Supplier', 'Receipt attached', 'Total'], r => [dateTime(r.received_at), r.id, r.suppliers?.name || '', r.receipt_path ? 'Yes' : 'No', poTotal(r).toFixed(2)]],
+      shifts: [['Opened', 'Closed', 'Opening cash', 'Expected cash', 'Counted cash', 'Over/short', 'Notes'],
+        r => [dateTime(r.opened_at), dateTime(r.closed_at), r.opening_cash, r.expected_cash ?? '', r.counted_cash ?? '', r.z_report?.over_short ?? '', r.notes || '']],
+    };
+    // Text cells starting with = + - @ would run as formulas in Excel, so prefix them with an apostrophe.
+    const cell = v => typeof v === 'number' ? String(v) : `"${String(v).replace(/^[=+\-@]/, "'$&").replace(/"/g, '""')}"`;
+    function download(key) {
+      const [head, row] = SHEETS[key];
+      const lines = [head, ...data[key].map(row)].map(l => l.map(cell).join(','));
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob(['﻿' + lines.join('\r\n')], { type: 'text/csv' }));
+      a.download = `kasalo-${key}-${f.from.value}-to-${f.to.value}.csv`;
+      a.click(); URL.revokeObjectURL(a.href);
+    }
+
+    (async () => {
+      await KKAdmin.start('finance');
+      ef.spent_on.value = manilaDay();
+      setPeriod('month');
+    })();
+  </script>
+</body>
+</html>

@@ -154,6 +154,8 @@ ok(await stock('Fresh milk') === 15000, 'stock count sets the counted value');
 ok(await fails('authenticated', ADMIN, `update public.ingredients set stock = 99999 where id = $1`, [milk]), 'stock cannot be edited directly');
 const po = (await one('authenticated', ADMIN, `insert into public.purchase_orders (supplier_id) values (2) returning id`)).id;
 await as('authenticated', ADMIN, `insert into public.purchase_order_items (po_id, ingredient_id, qty, unit_cost) values ($1, $2, 5000, 0.1)`, [po, milk]);
+ok(await fails('authenticated', ADMIN, 'select public.receive_purchase_order($1)', [po], 'receipt'), 'a purchase order needs a receipt before receiving');
+await as('authenticated', ADMIN, `update public.purchase_orders set receipt_path = 'po-1/test.jpg' where id = $1`, [po]);
 await as('authenticated', ADMIN, 'select public.receive_purchase_order($1)', [po]);
 ok(await stock('Fresh milk') === 20000, 'receiving a purchase order adds stock');
 ok((await db.query(`select amount from public.expenses where note = $1`, [`Purchase order #${po}`])).rows[0]?.amount === 500, 'receiving records a ₱500 ingredients expense');

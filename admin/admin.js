@@ -7,7 +7,7 @@ window.KKAdmin = (() => {
     ['pos', 'POS', 'pos.html', 0], ['shifts', 'Shifts & cash', 'shifts.html', 0],
     ['inventory', 'Inventory', 'inventory.html', 0], ['purchasing', 'Purchasing', 'purchasing.html', 0],
     ['customers', 'Customers', 'customers.html', 0],
-    ['reports', 'Reports', 'reports.html', 0], ['audit', 'Audit log', 'audit.html', 0], ['settings', 'Settings & users', 'settings.html', 0],
+    ['reports', 'Reports', 'reports.html', 0], ['finance', 'Finance', 'finance.html', 0], ['audit', 'Audit log', 'audit.html', 0], ['settings', 'Settings & users', 'settings.html', 0],
   ];
 
   document.head.insertAdjacentHTML('beforeend', `<style>
