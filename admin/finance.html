@@ -37,7 +37,7 @@
 
       <section class="card mt-6">
         <div class="sec-h"><h2 class="card-h">Sales &amp; payments</h2><button type="button" data-csv="sales" class="csv">CSV</button></div>
-        <div class="overflow-x-auto"><table class="tbl"><thead><tr><th>Paid</th><th>Order</th><th>Receipt</th><th>Customer</th><th>Channel</th><th>Method</th><th>GCash ref.</th><th>Status</th><th class="text-right">Amount</th></tr></thead>
+        <div class="tbl-wrap"><table class="tbl"><thead><tr><th>Paid</th><th>Order</th><th>Receipt</th><th>Customer</th><th>Channel</th><th>Method</th><th>GCash ref.</th><th>Status</th><th class="text-right">Amount</th></tr></thead>
           <tbody id="sales"></tbody></table></div>
       </section>
 
@@ -50,19 +50,19 @@
           <label class="text-sm flex-1 min-w-[12rem]">Note <input name="note" class="inp w-full" placeholder="e.g. Meralco, October"></label>
           <button class="bg-tinta text-gata font-label uppercase tracking-wider text-xs px-5 py-3 rounded-full">Add expense</button>
         </form>
-        <div class="overflow-x-auto"><table class="tbl"><thead><tr><th>Date</th><th>Category</th><th>Note</th><th class="text-right">Amount</th><th></th></tr></thead>
+        <div class="tbl-wrap"><table class="tbl"><thead><tr><th>Date</th><th>Category</th><th>Note</th><th class="text-right">Amount</th><th></th></tr></thead>
           <tbody id="expenses"></tbody></table></div>
       </section>
 
       <section class="card mt-6">
         <div class="sec-h"><h2 class="card-h">Purchase orders received</h2><button type="button" data-csv="pos" class="csv">CSV</button></div>
-        <div class="overflow-x-auto"><table class="tbl"><thead><tr><th>Received</th><th>PO</th><th>Supplier</th><th>Receipt</th><th class="text-right">Total</th></tr></thead>
+        <div class="tbl-wrap"><table class="tbl"><thead><tr><th>Received</th><th>PO</th><th>Supplier</th><th>Receipt</th><th class="text-right">Total</th></tr></thead>
           <tbody id="pos"></tbody></table></div>
       </section>
 
       <section class="card mt-6">
         <div class="sec-h"><h2 class="card-h">Cash drawer shifts</h2><button type="button" data-csv="shifts" class="csv">CSV</button></div>
-        <div class="overflow-x-auto"><table class="tbl"><thead><tr><th>Opened</th><th>Closed</th><th class="text-right">Opening</th><th class="text-right">Expected</th><th class="text-right">Counted</th><th class="text-right">Over / short</th><th>Notes</th></tr></thead>
+        <div class="tbl-wrap"><table class="tbl"><thead><tr><th>Opened</th><th>Closed</th><th class="text-right">Opening</th><th class="text-right">Expected</th><th class="text-right">Counted</th><th class="text-right">Over / short</th><th>Notes</th></tr></thead>
           <tbody id="shifts"></tbody></table></div>
       </section>
     </main>
@@ -76,6 +76,8 @@
     .sec-h { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
     .csv { font-family: 'MADE Sunflower', sans-serif; text-transform: uppercase; letter-spacing: .05em; font-size: .75rem; padding: .4rem 1rem; border: 2px solid #141414; border-radius: 999px; }
     .csv:hover { background: #F2B732; }
+    .tbl-wrap { max-height: 26rem; overflow: auto; }
+    .tbl th { position: sticky; top: 0; background: #FFFFFF; }
     .tbl { width: 100%; font-size: .875rem; white-space: nowrap; }
     .tbl th { text-align: left; font-family: 'MADE Sunflower', sans-serif; text-transform: uppercase; letter-spacing: .05em; font-size: .7rem; padding: 0 .75rem .5rem 0; }
     .tbl td { border-top: 1px solid rgba(20, 20, 20, .15); padding: .5rem .75rem .5rem 0; }
@@ -121,13 +123,23 @@
     const buyer = o => o.customer?.full_name || o.customer?.email || o.guest_name || (o.channel === 'pos' ? 'Walk-in' : '');
     const paidRef = o => (o.payments.find(p => p.status !== 'failed' && p.reference) || {}).reference || '';
 
+    // The API returns at most 1000 rows per request, so a busy month is fetched 1000 at a time.
+    async function all(query) {
+      let rows = [];
+      for (let from = 0; ; from += 1000) {
+        const r = await query().range(from, from + 999);
+        if (r.error) return r;
+        rows = rows.concat(r.data);
+        if (r.data.length < 1000) return { data: rows };
+      }
+    }
+
     async function load() {
       if (!f.from.value || !f.to.value || f.from.value > f.to.value) return;
       const start = f.from.value + 'T00:00:00+08:00', end = addDays(f.to.value, 1) + 'T00:00:00+08:00';
-      // shortcut: PostgREST caps each query at 1000 rows; page through with .range() if a period ever has more.
       const [o, x, p, s] = await Promise.all([
-        sb.from('orders').select('order_no, receipt_no, channel, status, payment_method, total, paid_at, guest_name, customer:profiles!orders_customer_id_fkey(full_name, email), payments(reference, status)')
-          .gte('paid_at', start).lt('paid_at', end).order('paid_at'),
+        all(() => sb.from('orders').select('order_no, receipt_no, channel, status, payment_method, total, paid_at, guest_name, customer:profiles!orders_customer_id_fkey(full_name, email), payments(reference, status)')
+          .gte('paid_at', start).lt('paid_at', end).order('paid_at').order('order_no')),
         sb.from('expenses').select('*').gte('spent_on', f.from.value).lte('spent_on', f.to.value).order('spent_on').order('id'),
         sb.from('purchase_orders').select('id, received_at, receipt_path, suppliers(name), purchase_order_items(qty, unit_cost)')
           .eq('status', 'received').gte('received_at', start).lt('received_at', end).order('received_at'),
